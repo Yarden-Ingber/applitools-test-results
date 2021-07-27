@@ -21,6 +21,7 @@ public class WriteKpisToSplunkPeriodically extends TimerTask{
     private static boolean isRunning = false;
     private static Timer timer;
     private static boolean isKpisDumped = false;
+    private static final int SixMonthsAgo = 6;
 
     @EventListener(ApplicationReadyEvent.class)
     public static synchronized void start() {
@@ -74,7 +75,14 @@ public class WriteKpisToSplunkPeriodically extends TimerTask{
         return false;
     }
 
-    private void periodicDumpTickets() {
+    private boolean isDateWithinTimeSpan (Date ticketCreationDate, int numOfMonthsAgo) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.add(Calendar.MONTH, -numOfMonthsAgo);
+        Date dateMonthsAgo = calendar.getTime();
+        return dateMonthsAgo.before(ticketCreationDate);
+    }
+
+    private void periodicDumpTickets() throws ParseException {
         SheetData rawDataSheetData = new SheetData(new SheetTabIdentifier(Enums.SpreadsheetIDs.KPIS.value, Enums.KPIsSheetTabsNames.RawData.value));
         String timeStamp = Logger.getTimaStamp();
         updateCurrentTimestampToAllTickets(rawDataSheetData, timeStamp);
@@ -93,11 +101,14 @@ public class WriteKpisToSplunkPeriodically extends TimerTask{
         }
     }
 
-    private void dumpAllTicketsToSplunk(SheetData rawDataSheetData) {
+    private void dumpAllTicketsToSplunk(SheetData rawDataSheetData) throws ParseException {
         for (JsonElement sheetEntry: rawDataSheetData.getSheetData()){
-            TicketUpdateRequest ticketUpdateRequest = new TicketUpdateRequest();
-            ticketUpdateRequest.setTeam(sheetEntry.getAsJsonObject().get("Team").getAsString());
-            new KpiSplunkReporter(rawDataSheetData, ticketUpdateRequest).reportLatestState(sheetEntry);
+            Date ticketCreationDate = Logger.timestampToDate(sheetEntry.getAsJsonObject().get(Enums.KPIsSheetColumnNames.CreationDate.value).getAsString());
+            if (isDateWithinTimeSpan(ticketCreationDate, SixMonthsAgo)){
+                TicketUpdateRequest ticketUpdateRequest = new TicketUpdateRequest();
+                ticketUpdateRequest.setTeam(sheetEntry.getAsJsonObject().get(Enums.KPIsSheetColumnNames.Team.value).getAsString());
+                new KpiSplunkReporter(rawDataSheetData, ticketUpdateRequest).reportLatestState(sheetEntry);
+            }
         }
     }
 
