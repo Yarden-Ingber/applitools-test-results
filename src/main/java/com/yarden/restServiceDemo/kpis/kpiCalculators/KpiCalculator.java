@@ -27,7 +27,7 @@ public class KpiCalculator {
         SheetData.writeAllTabsToSheet();
     }
 
-    public void calculate() {
+    private void calculate() {
         for (JsonElement sheetEntry: rawSheetData.getSheetData()){
             for (KpisSheetEntryObject kpisSheetEntryObject : kpiSheetEntries.getEntries().values()) {
                 if (sheetEntry.getAsJsonObject().get(Enums.KPIsSheetColumnNames.Team.value).getAsString().equals(kpisSheetEntryObject.team)
@@ -51,7 +51,7 @@ public class KpiCalculator {
         }
     }
 
-    public void dumpKpisToSheet(){
+    private void dumpKpisToSheet(){
         for (KpisSheetEntryObject kpisSheetEntryObject : kpiSheetEntries.getEntries().values()) {
             Iterator iterator = kpisSheetEntryObject.kpisList.entrySet().iterator();
             JsonElementBuilder sheetEntryBuilder = new JsonElementBuilder();
