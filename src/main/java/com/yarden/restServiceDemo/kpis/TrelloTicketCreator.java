@@ -88,6 +88,7 @@ public class TrelloTicketCreator {
 
     private static void addTicketDetailsToDescription(ModelMap ticketFormFields) {
         String ticketDescription = (String)ticketFormFields.get(FormFields.ticketDescription.name());
+        ticketDescription = ticketDescription == null ? "" : ticketDescription;
         if (StringUtils.isNotEmpty((String)ticketFormFields.get(FormFields.customerAppUrl.name()))) {
             ticketDescription = ticketDescription + "\n\nCustomer app url: " + ticketFormFields.get(FormFields.customerAppUrl.name());
         }
