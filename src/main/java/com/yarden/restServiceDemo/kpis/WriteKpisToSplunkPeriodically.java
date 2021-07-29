@@ -104,7 +104,8 @@ public class WriteKpisToSplunkPeriodically extends TimerTask{
     private void dumpAllTicketsToSplunk(SheetData rawDataSheetData) throws ParseException {
         for (JsonElement sheetEntry: rawDataSheetData.getSheetData()){
             Date ticketCreationDate = Logger.timestampToDate(sheetEntry.getAsJsonObject().get(Enums.KPIsSheetColumnNames.CreationDate.value).getAsString());
-            if (isDateWithinTimeSpan(ticketCreationDate, SixMonthsAgo)){
+            boolean isTicketDone = sheetEntry.getAsJsonObject().get(Enums.KPIsSheetColumnNames.CurrentState.value).getAsString().equals(TicketStates.Done.name());
+            if (isDateWithinTimeSpan(ticketCreationDate, SixMonthsAgo) || !isTicketDone){
                 TicketUpdateRequest ticketUpdateRequest = new TicketUpdateRequest();
                 ticketUpdateRequest.setTeam(sheetEntry.getAsJsonObject().get(Enums.KPIsSheetColumnNames.Team.value).getAsString());
                 new KpiSplunkReporter(rawDataSheetData, ticketUpdateRequest).reportLatestState(sheetEntry);
