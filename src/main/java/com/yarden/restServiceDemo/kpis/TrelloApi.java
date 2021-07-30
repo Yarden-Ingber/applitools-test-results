@@ -148,4 +148,17 @@ public class TrelloApi {
         }
         return file;
     }
+    
+    private static File convertMultipartFileToFile2(MultipartFile multipartFile, String fileName) {
+        Logger.info("TrelloApi: Uploading file: " + fileName);
+        String filePath = System.getProperty("java.io.tmpdir")+File.separator+fileName;
+        File file = new File(filePath);
+        Logger.info("TrelloApi: local file path: " + filePath);
+        try (OutputStream os = new FileOutputStream(file)) {
+            os.write(multipartFile.getBytes());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return file;
+    }
 }
