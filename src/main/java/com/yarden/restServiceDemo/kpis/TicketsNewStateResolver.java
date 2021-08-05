@@ -11,10 +11,10 @@ public class TicketsNewStateResolver {
         this.request = request;
     }
 
-    private enum Boards {
+    public enum Boards {
         UltrafastGrid("Ultrafast Grid"), JSSDKs("JS SDKs"), AlgoBugs("Algo Bugs"), SDKs("SDKs"), EyesAppIssues("Eyes App - Issues");
 
-        public String value;
+        public final String value;
 
         Boards(String value) {
             this.value = value;
