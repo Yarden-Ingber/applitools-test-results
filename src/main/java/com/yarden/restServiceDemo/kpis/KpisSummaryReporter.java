@@ -85,7 +85,6 @@ public class KpisSummaryReporter extends TimerTask {
                 return true;
             }
         } else {
-            Logger.info("KpisSummaryReporter: no summary day=" + day + " hour=" + hour + " minute=" + minute);
             isReportsSent = false;
         }
         return false;
@@ -123,8 +122,7 @@ public class KpisSummaryReporter extends TimerTask {
                 String ticketType = sheetEntry.getAsJsonObject().get(Enums.KPIsSheetColumnNames.TicketType.value).getAsString();
                 if (isTicketRelevantForSummary(currentState)) {
                     if (isTicketOnField(currentState)) {
-                        String ticketUrl = sheetEntry.getAsJsonObject().get(Enums.KPIsSheetColumnNames.TicketUrl.value).getAsString();
-                        fieldTickets.append("\n" + ticketUrl);
+                        fieldTickets.append(getSingleTicketLineString(sheetEntry));
                     }
 
                     if (currentState.equals(TicketStates.New)) {
@@ -166,6 +164,7 @@ public class KpisSummaryReporter extends TimerTask {
                                 .put(Emailv31.Message.SUBJECT, mailSubject)
                                 .put(Emailv31.Message.TEXTPART, mailContent)
                                 .put(Emailv31.Message.CUSTOMID, "KpiReport")));
+        Logger.info("KpisSummaryReporter: Sending report with subject: " + mailSubject);
         response = client.post(request);
     }
 
