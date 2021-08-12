@@ -122,7 +122,9 @@ public class KpisSummaryReporter extends TimerTask {
                 String ticketType = sheetEntry.getAsJsonObject().get(Enums.KPIsSheetColumnNames.TicketType.value).getAsString();
                 if (isTicketRelevantForSummary(currentState)) {
                     if (isTicketOnField(currentState)) {
-                        fieldTickets.append(getSingleTicketLineString(sheetEntry));
+                        String createdBy = sheetEntry.getAsJsonObject().get(Enums.KPIsSheetColumnNames.CreatedBy.value).getAsString();
+                        String createdByString = createdBy.isEmpty() ? "" : "(Created by: " + createdBy + ")";
+                        fieldTickets.append(getSingleTicketLineString(sheetEntry) + " " + createdByString);
                     }
 
                     if (currentState.equals(TicketStates.New)) {
