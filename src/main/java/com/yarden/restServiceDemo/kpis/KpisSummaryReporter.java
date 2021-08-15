@@ -120,7 +120,7 @@ public class KpisSummaryReporter extends TimerTask {
             try {
                 TicketStates currentState = TicketStates.valueOf(sheetEntry.getAsJsonObject().get(Enums.KPIsSheetColumnNames.CurrentState.value).getAsString());
                 String ticketType = sheetEntry.getAsJsonObject().get(Enums.KPIsSheetColumnNames.TicketType.value).getAsString();
-                if (isTicketRelevantForSummary(currentState)) {
+                if (isTicketRelevantForSummary(sheetEntry)) {
                     if (isTicketOnField(currentState)) {
                         String createdBy = sheetEntry.getAsJsonObject().get(Enums.KPIsSheetColumnNames.CreatedBy.value).getAsString();
                         String createdByString = createdBy.isEmpty() ? "" : "(Created by: " + createdBy + ")";
@@ -137,11 +137,14 @@ public class KpisSummaryReporter extends TimerTask {
         }
     }
 
-    private boolean isTicketRelevantForSummary(TicketStates currentState) {
+    private boolean isTicketRelevantForSummary(JsonElement sheetEntry) {
+        TicketStates currentState = TicketStates.valueOf(sheetEntry.getAsJsonObject().get(Enums.KPIsSheetColumnNames.CurrentState.value).getAsString());
+        String team = sheetEntry.getAsJsonObject().get(Enums.KPIsSheetColumnNames.Team.value).getAsString();
         return !(
                 currentState.equals(TicketStates.Done) || currentState.equals(TicketStates.MissingQuality) ||
                 currentState.equals(TicketStates.NoState) || currentState.equals(TicketStates.RFE) ||
-                currentState.equals(TicketStates.WaitingForProduct)
+                currentState.equals(TicketStates.WaitingForProduct) ||
+                team.equals(Enums.Strings.Archived.value)
         );
     }
 
