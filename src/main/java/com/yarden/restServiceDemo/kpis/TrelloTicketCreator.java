@@ -1,6 +1,7 @@
 package com.yarden.restServiceDemo.kpis;
 
 import com.mashape.unirest.http.exceptions.UnirestException;
+import com.yarden.restServiceDemo.Logger;
 import com.yarden.restServiceDemo.reportService.SdkReportService;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -89,27 +90,35 @@ public class TrelloTicketCreator {
     private static void addTicketDetailsToDescription(ModelMap ticketFormFields) {
         String ticketDescription = (String)ticketFormFields.get(FormFields.ticketDescription.name());
         ticketDescription = ticketDescription == null ? "" : ticketDescription;
+        Logger.info("TrelloTicketCreator: Adding to description customerAppUrl: " + ticketFormFields.get(FormFields.customerAppUrl.name()));
         if (StringUtils.isNotEmpty((String)ticketFormFields.get(FormFields.customerAppUrl.name()))) {
             ticketDescription = ticketDescription + "\n\nCustomer app url: " + ticketFormFields.get(FormFields.customerAppUrl.name());
         }
+        Logger.info("TrelloTicketCreator: Adding to description sdk: " + ticketFormFields.get(FormFields.sdk.name()));
         if (StringUtils.isNotEmpty((String)ticketFormFields.get(FormFields.sdk.name()))) {
             ticketDescription = ticketDescription + "\n\nSDK: " + ticketFormFields.get(FormFields.sdk.name());
         }
+        Logger.info("TrelloTicketCreator: Adding to description sdkVersion: " + ticketFormFields.get(FormFields.sdkVersion.name()));
         if (StringUtils.isNotEmpty((String)ticketFormFields.get(FormFields.sdkVersion.name()))) {
             ticketDescription = ticketDescription + "\n\nSDK version: " + ticketFormFields.get(FormFields.sdkVersion.name());
         }
+        Logger.info("TrelloTicketCreator: Adding to description linkToTestResults: " + ticketFormFields.get(FormFields.linkToTestResults.name()));
         if (StringUtils.isNotEmpty((String)ticketFormFields.get(FormFields.linkToTestResults.name()))) {
             ticketDescription = ticketDescription + "\n\nEyes dashboard test results: " + ticketFormFields.get(FormFields.linkToTestResults.name());
         }
+        Logger.info("TrelloTicketCreator: Adding to description isAppAccessible: " + ticketFormFields.get(FormFields.isAppAccessible.name()));
         if (StringUtils.isNotEmpty((String)ticketFormFields.get(FormFields.isAppAccessible.name()))) {
             ticketDescription = ticketDescription + "\n\nIs customer app accessible: " + ticketFormFields.get(FormFields.isAppAccessible.name());
         }
+        Logger.info("TrelloTicketCreator: Adding to description renderID: " + ticketFormFields.get(FormFields.renderID.name()));
         if (StringUtils.isNotEmpty((String)ticketFormFields.get(FormFields.renderID.name()))) {
             ticketDescription = ticketDescription + "\n\nRender ID: " + ticketFormFields.get(FormFields.renderID.name());
         }
+        Logger.info("TrelloTicketCreator: Adding to description accountName: " + ticketFormFields.get(FormFields.accountName.name()));
         if (StringUtils.isNotEmpty((String)ticketFormFields.get(FormFields.accountName.name()))) {
             ticketDescription = ticketDescription + "\n\nCreated by: " + ticketFormFields.get(FormFields.accountName.name());
         }
+        Logger.info("TrelloTicketCreator: Adding to description zendeskCompanyName: " + ticketFormFields.get(FormFields.zendeskCompanyName.name()));
         if (StringUtils.isNotEmpty((String)ticketFormFields.get(FormFields.zendeskCompanyName.name()))) {
             ticketDescription = ticketDescription + "\n\nZendesk company name: " + ticketFormFields.get(FormFields.zendeskCompanyName.name());
         }
