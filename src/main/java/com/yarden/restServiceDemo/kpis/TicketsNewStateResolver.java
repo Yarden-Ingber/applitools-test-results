@@ -60,6 +60,8 @@ public class TicketsNewStateResolver {
             return TicketStates.RFE;
         } else if (request.getCurrent_trello_list().equalsIgnoreCase("Waiting for Product")) {
             return TicketStates.WaitingForProduct;
+        } else if (request.getCurrent_trello_list().toLowerCase().contains("low priority")){
+            return TicketStates.LowPriority;
         } else  {
             return noStateFound();
         }
@@ -102,6 +104,8 @@ public class TicketsNewStateResolver {
             return TicketStates.WaitingForFieldInput;
         } else if (request.getCurrent_trello_list().equalsIgnoreCase("Waiting for product")) {
             return TicketStates.WaitingForProduct;
+        } else if (request.getCurrent_trello_list().toLowerCase().contains("low priority")){
+            return TicketStates.LowPriority;
         } else {
             return noStateFound();
         }
@@ -136,6 +140,8 @@ public class TicketsNewStateResolver {
             return TicketStates.WaitingForRD;
         } else if (request.getCurrent_trello_list().equalsIgnoreCase("Fixed - need to release other SDK's")) {
             return TicketStates.Done;
+        } else if (request.getCurrent_trello_list().toLowerCase().contains("low priority")){
+            return TicketStates.LowPriority;
         } else {
             return noStateFound();
         }
@@ -186,6 +192,8 @@ public class TicketsNewStateResolver {
             return TicketStates.WaitingForRD;
         } else if (request.getCurrent_trello_list().equalsIgnoreCase("Missing Quality Info")) {
             return TicketStates.MissingQuality;
+        } else if (request.getCurrent_trello_list().toLowerCase().contains("low priority")){
+            return TicketStates.LowPriority;
         } else {
             return noStateFound();
         }
@@ -218,6 +226,8 @@ public class TicketsNewStateResolver {
             return TicketStates.Done;
         } else if (request.getCurrent_trello_list().equalsIgnoreCase("Waiting for field approval")) {
             return TicketStates.WaitingForFieldApproval;
+        } else if (request.getCurrent_trello_list().toLowerCase().contains("low priority")){
+            return TicketStates.LowPriority;
         } else {
             return noStateFound();
         }
