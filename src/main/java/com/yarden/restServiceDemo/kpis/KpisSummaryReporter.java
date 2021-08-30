@@ -257,6 +257,7 @@ public class KpisSummaryReporter extends TimerTask {
         recipients.put(new JSONObject().put("Email", "yarden.ingber@applitools.com").put("Name", "Yarden Ingber"));
         recipients.put(new JSONObject().put("Email", "yarden.naveh@applitools.com").put("Name", "Yarden Naveh"));
         recipients.put(new JSONObject().put("Email", "liran.barokas@applitools.com").put("Name", "Liran Barokas"));
+        recipients.put(new JSONObject().put("Email", "matt.jasaitis@applitools.com").put("Name", "Matt Jasaitis"));
         sendMailReports("Field Trello tickets report", fieldTickets.toString(), recipients);
     }
 
