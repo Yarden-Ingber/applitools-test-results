@@ -12,7 +12,8 @@ public class TicketsNewStateResolver {
     }
 
     public enum Boards {
-        UltrafastGrid("Ultrafast Grid"), JSSDKs("JS SDKs"), AlgoBugs("Algo Bugs"), SDKs("SDKs"), EyesAppIssues("Eyes App - Issues");
+        UltrafastGrid("Ultrafast Grid"), JSSDKs("JS SDKs"), AlgoBugs("Algo Bugs"), SDKs("SDKs"), EyesAppIssues("Eyes App - Issues"),
+        EyesFrontend("Eyes frontend");
 
         public final String value;
 
@@ -30,7 +31,7 @@ public class TicketsNewStateResolver {
             return resolveStateForAlgoBugs();
         } else if(request.getTeam().equals(Boards.SDKs.value)) {
             return resolveStateForGeneralSdks();
-        } else if(request.getTeam().equals(Boards.EyesAppIssues.value)) {
+        } else if(request.getTeam().equals(Boards.EyesAppIssues.value) || request.getTeam().equals(Boards.EyesFrontend.value)) {
             return resolveStateForEyesIssues();
         } else {
             return noStateFound();
