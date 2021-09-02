@@ -178,3 +178,4 @@ Applitools-Webdriverio-GithubActions
 tutorial-webdriverio7-typescript-basic
 tutorial-images-java
 lottie-ios
+tutorial-playwright
