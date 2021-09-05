@@ -39,7 +39,9 @@ public class KpisSummaryReporter extends TimerTask {
     private StringBuilder sdksTicketsInNew;
     private StringBuilder sdksTicketsWithoutType;
     private StringBuilder eyesTicketsInNew;
+    private StringBuilder eyesFrontendTicketsInNew;
     private StringBuilder eyesTicketsWithoutType;
+    private StringBuilder eyesFrontendTicketsWithoutType;
     private StringBuilder ufgTicketsInNew;
     private StringBuilder ufgTicketsWithoutType;
     private StringBuilder fieldTickets;
@@ -110,6 +112,8 @@ public class KpisSummaryReporter extends TimerTask {
         sdksTicketsWithoutType = new StringBuilder(ticketsWithoutTypeTitle);
         eyesTicketsInNew = new StringBuilder(ticketsInStateNewTitle);
         eyesTicketsWithoutType = new StringBuilder(ticketsWithoutTypeTitle);
+        eyesFrontendTicketsInNew = new StringBuilder(ticketsInStateNewTitle);
+        eyesFrontendTicketsWithoutType = new StringBuilder(ticketsWithoutTypeTitle);
         ufgTicketsInNew = new StringBuilder(ticketsInStateNewTitle);
         ufgTicketsWithoutType = new StringBuilder(ticketsWithoutTypeTitle);
         fieldTickets = new StringBuilder("Tickets on field:\n");
@@ -184,6 +188,8 @@ public class KpisSummaryReporter extends TimerTask {
             sdksTicketsInNew.append(newTicketString);
         } else if (team.equals(TicketsNewStateResolver.Boards.EyesAppIssues.value)) {
             eyesTicketsInNew.append(newTicketString);
+        } else if (team.equals(TicketsNewStateResolver.Boards.EyesFrontend.value)) {
+            eyesFrontendTicketsInNew.append(newTicketString);
         }
     }
 
@@ -198,6 +204,8 @@ public class KpisSummaryReporter extends TimerTask {
             sdksTicketsWithoutType.append(newTicketString);
         } else if (team.equals(TicketsNewStateResolver.Boards.EyesAppIssues.value)) {
             eyesTicketsWithoutType.append(newTicketString);
+        } else if (team.equals(TicketsNewStateResolver.Boards.EyesFrontend.value)) {
+            eyesFrontendTicketsWithoutType.append(newTicketString);
         }
     }
 
@@ -245,11 +253,18 @@ public class KpisSummaryReporter extends TimerTask {
     private void sendEyesMailReport() throws MailjetSocketTimeoutException, MailjetException {
         JSONArray recipients = new JSONArray();
         recipients.put(new JSONObject().put("Email", "yarden.ingber@applitools.com").put("Name", "Yarden Ingber"));
-        recipients.put(new JSONObject().put("Email", "ben.babayoff@applitools.com").put("Name", "Ben Babayoff"));
         recipients.put(new JSONObject().put("Email", "adam.carmi@applitools.com").put("Name", "Adam Carmi"));
         recipients.put(new JSONObject().put("Email", "yotam.madem@applitools.com").put("Name", "Yotam Madem"));
         recipients.put(new JSONObject().put("Email", "amit.zur@applitools.com").put("Name", "Amit Zur"));
         sendMailReports("Eyes Trello board report", eyesTicketsInNew.toString() + "\n\n" + eyesTicketsWithoutType.toString(), recipients);
+    }
+
+    private void sendEyesFrontendMailReport() throws MailjetSocketTimeoutException, MailjetException {
+        JSONArray recipients = new JSONArray();
+        recipients.put(new JSONObject().put("Email", "yarden.ingber@applitools.com").put("Name", "Yarden Ingber"));
+        recipients.put(new JSONObject().put("Email", "adam.carmi@applitools.com").put("Name", "Adam Carmi"));
+        recipients.put(new JSONObject().put("Email", "amit.zur@applitools.com").put("Name", "Amit Zur"));
+        sendMailReports("Eyes Frontend Trello board report", eyesFrontendTicketsInNew.toString() + "\n\n" + eyesFrontendTicketsWithoutType.toString(), recipients);
     }
 
     private void sendFieldMailReport() throws MailjetSocketTimeoutException, MailjetException {
