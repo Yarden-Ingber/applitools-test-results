@@ -100,6 +100,7 @@ public class KpisSummaryReporter extends TimerTask {
         sendSDKsMailReport();
         sendUFGMailReport();
         sendEyesMailReport();
+        sendEyesFrontendMailReport();
         sendFieldMailReport();
     }
 
