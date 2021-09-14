@@ -12,7 +12,7 @@ public class TicketsNewStateResolver {
     }
 
     public enum Boards {
-        UltrafastGrid("Ultrafast Grid"), JSSDKs("JS SDKs"), AlgoBugs("Algo Bugs"), SDKs("SDKs"), EyesAppIssues("Eyes App - Issues"),
+        UltrafastGrid("Ultrafast Grid"), JSSDKs("JS SDKs"), AlgoBugs("Algo Bugs"), SDKs("SDKs"), EyesAppIssues("Eyes Backend"),
         EyesFrontend("Eyes frontend");
 
         public final String value;
