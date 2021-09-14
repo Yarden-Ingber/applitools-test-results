@@ -10,6 +10,8 @@ import org.springframework.context.event.EventListener;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.Charset;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.LinkedList;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -49,7 +51,14 @@ public class SplunkReporter extends TimerTask {
         }
     }
 
-    public String search(String query, String outputMode, int resultsCount) {
+    public String getDataFromSplunk(String query, Date startTimeDate, Date endTimeDate, JobExportArgs.OutputMode outputMode) {
+        String endTime = new SimpleDateFormat("MM/dd/yyyy:HH:mm:ss").format(endTimeDate);
+        String startTime = new SimpleDateFormat("MM/dd/yyyy:HH:mm:ss").format(startTimeDate);
+        query = "search starttime=\"" + startTime + "\" endtime=\"" + endTime + "\" " + query;
+        return search(query, outputMode, 1000);
+    }
+
+    private String search(String query, JobExportArgs.OutputMode outputMode, int resultsCount) {
         Job job = null;
         try {
             job = getService().getJobs().create(query);
@@ -64,7 +73,7 @@ public class SplunkReporter extends TimerTask {
         }
         CollectionArgs outputArgs = new CollectionArgs();
         outputArgs.setCount(resultsCount);
-        outputArgs.put("output_mode", outputMode);
+        outputArgs.put("output_mode", outputMode.toString());
         InputStream stream = job.getResults(outputArgs);
         try {
             return IOUtils.toString(stream, Charset.defaultCharset());
