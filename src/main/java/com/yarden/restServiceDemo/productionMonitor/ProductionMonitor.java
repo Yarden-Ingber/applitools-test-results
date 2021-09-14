@@ -7,6 +7,7 @@ import com.mailjet.client.MailjetResponse;
 import com.mailjet.client.errors.MailjetException;
 import com.mailjet.client.errors.MailjetSocketTimeoutException;
 import com.mailjet.client.resource.Emailv31;
+import com.splunk.JobExportArgs;
 import com.yarden.restServiceDemo.Enums;
 import com.yarden.restServiceDemo.Logger;
 import com.yarden.restServiceDemo.reportService.SheetData;
@@ -22,10 +23,9 @@ import org.springframework.context.event.EventListener;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.text.SimpleDateFormat;
 import java.util.*;
 
-@Configuration
+//@Configuration
 public class ProductionMonitor extends TimerTask {
 
     private static boolean isRunning = false;
@@ -73,10 +73,8 @@ public class ProductionMonitor extends TimerTask {
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(today);
         calendar.add(Calendar.DAY_OF_MONTH, -7);
-        String endTime = new SimpleDateFormat("MM/dd/yyyy:HH:mm:ss").format(today);
-        String startTime = new SimpleDateFormat("MM/dd/yyyy:HH:mm:ss").format(calendar.getTime());
-        String query = "search starttime=\"" + startTime + "\" endtime=\"" + endTime + "\" data.Info.RequestType=GetUserInfo OR data.Info.RequestType=StartSession OR data.Info.RequestType=MatchExpectedOutputAsSession | rex field=data.Context.RequestUrl \"(?<domain>https://.*\\.applitools.com)\" | stats count by domain data.Site | where NOT LIKE(domain, \"https://test%\") | rename data.Site as site | table domain site";
-        String theString = new SplunkReporter().search(query, "csv", 1000);
+        String query = "data.Info.RequestType=GetUserInfo OR data.Info.RequestType=StartSession OR data.Info.RequestType=MatchExpectedOutputAsSession | rex field=data.Context.RequestUrl \"(?<domain>https://.*\\.applitools.com)\" | stats count by domain data.Site | where NOT LIKE(domain, \"https://test%\") | rename data.Site as site | table domain site";
+        String theString = new SplunkReporter().getDataFromSplunk(query, calendar.getTime(), today, JobExportArgs.OutputMode.CSV);
         new SplunkReporter().report(Enums.SplunkSourceTypes.ProductionMonitor, new JSONObject().put("eventType", "log").put("value", theString).put("domainsCount", StringUtils.countMatches(theString, "://")).toString());
         theString = theString.replace("\"", "").replace("domain,site\n", "");
         String[] domainsSitesList = theString.split("\n");
