@@ -36,14 +36,19 @@ public class KpisSummaryReporter extends TimerTask {
 
     private StringBuilder jsTicketsInNew;
     private StringBuilder jsTicketsWithoutType;
+    private StringBuilder jsDoneTicketsWithoutType;
     private StringBuilder sdksTicketsInNew;
     private StringBuilder sdksTicketsWithoutType;
+    private StringBuilder sdksDoneTicketsWithoutType;
     private StringBuilder eyesTicketsInNew;
-    private StringBuilder eyesFrontendTicketsInNew;
     private StringBuilder eyesTicketsWithoutType;
+    private StringBuilder eyesDoneTicketsWithoutType;
+    private StringBuilder eyesFrontendTicketsInNew;
     private StringBuilder eyesFrontendTicketsWithoutType;
+    private StringBuilder eyesDoneFrontendTicketsWithoutType;
     private StringBuilder ufgTicketsInNew;
     private StringBuilder ufgTicketsWithoutType;
+    private StringBuilder ufgDoneTicketsWithoutType;
     private StringBuilder fieldTickets;
 
     @EventListener(ApplicationReadyEvent.class)
@@ -107,16 +112,22 @@ public class KpisSummaryReporter extends TimerTask {
     private void resetTeamsStrings() {
         String ticketsWithoutTypeTitle = "Tickets without type field (not classified yet):\n";
         String ticketsInStateNewTitle = "Tickets under NEW column:\n";
+        String doneTicketsWithoutTypeTitle = "Closed tickets without type field (not classified yet):\n";
         jsTicketsInNew = new StringBuilder(ticketsInStateNewTitle);
         jsTicketsWithoutType = new StringBuilder(ticketsWithoutTypeTitle);
+        jsDoneTicketsWithoutType = new StringBuilder(doneTicketsWithoutTypeTitle);
         sdksTicketsInNew = new StringBuilder(ticketsInStateNewTitle);
         sdksTicketsWithoutType = new StringBuilder(ticketsWithoutTypeTitle);
+        sdksDoneTicketsWithoutType = new StringBuilder(doneTicketsWithoutTypeTitle);
         eyesTicketsInNew = new StringBuilder(ticketsInStateNewTitle);
         eyesTicketsWithoutType = new StringBuilder(ticketsWithoutTypeTitle);
+        eyesDoneTicketsWithoutType = new StringBuilder(doneTicketsWithoutTypeTitle);
         eyesFrontendTicketsInNew = new StringBuilder(ticketsInStateNewTitle);
         eyesFrontendTicketsWithoutType = new StringBuilder(ticketsWithoutTypeTitle);
+        eyesDoneFrontendTicketsWithoutType = new StringBuilder(doneTicketsWithoutTypeTitle);
         ufgTicketsInNew = new StringBuilder(ticketsInStateNewTitle);
         ufgTicketsWithoutType = new StringBuilder(ticketsWithoutTypeTitle);
+        ufgDoneTicketsWithoutType = new StringBuilder(doneTicketsWithoutTypeTitle);
         fieldTickets = new StringBuilder("Tickets on field:\n");
     }
 
@@ -142,15 +153,34 @@ public class KpisSummaryReporter extends TimerTask {
         }
     }
 
-    private boolean isTicketRelevantForSummary(JsonElement sheetEntry) {
+    private boolean isTicketRelevantForSummary(JsonElement sheetEntry) throws ParseException {
         TicketStates currentState = TicketStates.valueOf(sheetEntry.getAsJsonObject().get(Enums.KPIsSheetColumnNames.CurrentState.value).getAsString());
         String team = sheetEntry.getAsJsonObject().get(Enums.KPIsSheetColumnNames.Team.value).getAsString();
-        return !(
+        if (team.equals(Enums.Strings.Archived.value)) {
+            return false;
+        }
+        return (
+                !(
                 currentState.equals(TicketStates.Done) || currentState.equals(TicketStates.MissingQuality) ||
                 currentState.equals(TicketStates.NoState) || currentState.equals(TicketStates.RFE) ||
-                currentState.equals(TicketStates.WaitingForProduct) ||
-                team.equals(Enums.Strings.Archived.value)
+                currentState.equals(TicketStates.WaitingForProduct)
+                )
+
+                ||
+
+                isDoneTicketRelevantForSummary(sheetEntry)
         );
+    }
+
+    private boolean isDoneTicketRelevantForSummary(JsonElement sheetEntry) throws ParseException {
+        TicketStates currentState = TicketStates.valueOf(sheetEntry.getAsJsonObject().get(Enums.KPIsSheetColumnNames.CurrentState.value).getAsString());
+        String movedToDoneString = sheetEntry.getAsJsonObject().get(Enums.KPIsSheetColumnNames.MovedToStateDone.value).getAsString();
+        if (StringUtils.isEmpty(movedToDoneString)) {
+            return false;
+        } else {
+            return currentState.equals(TicketStates.Done) && isDateWithinTimeSpan(Logger.timestampToDate(movedToDoneString), TwoMonthsAgo);
+        }
+
     }
 
     private boolean isTicketOnField(TicketStates currentState) {
@@ -187,7 +217,7 @@ public class KpisSummaryReporter extends TimerTask {
             jsTicketsInNew.append(newTicketString);
         } else if (team.equals(TicketsNewStateResolver.Boards.SDKs.value)) {
             sdksTicketsInNew.append(newTicketString);
-        } else if (team.equals(TicketsNewStateResolver.Boards.EyesAppIssues.value)) {
+        } else if (team.equals(TicketsNewStateResolver.Boards.EyesBackend.value) || team.equals(TicketsNewStateResolver.Boards.EyesAppIssues.value)) {
             eyesTicketsInNew.append(newTicketString);
         } else if (team.equals(TicketsNewStateResolver.Boards.EyesFrontend.value)) {
             eyesFrontendTicketsInNew.append(newTicketString);
@@ -203,7 +233,7 @@ public class KpisSummaryReporter extends TimerTask {
             jsTicketsWithoutType.append(newTicketString);
         } else if (team.equals(TicketsNewStateResolver.Boards.SDKs.value)) {
             sdksTicketsWithoutType.append(newTicketString);
-        } else if (team.equals(TicketsNewStateResolver.Boards.EyesAppIssues.value)) {
+        } else if (team.equals(TicketsNewStateResolver.Boards.EyesBackend.value) || team.equals(TicketsNewStateResolver.Boards.EyesAppIssues.value)) {
             eyesTicketsWithoutType.append(newTicketString);
         } else if (team.equals(TicketsNewStateResolver.Boards.EyesFrontend.value)) {
             eyesFrontendTicketsWithoutType.append(newTicketString);
@@ -213,7 +243,8 @@ public class KpisSummaryReporter extends TimerTask {
     private String getSingleTicketLineString(JsonElement sheetEntry) throws ParseException {
         String ticketUrl = sheetEntry.getAsJsonObject().get(Enums.KPIsSheetColumnNames.TicketUrl.value).getAsString();
         String hot = sheetEntry.getAsJsonObject().get(Enums.KPIsSheetColumnNames.Labels.value).getAsString().toLowerCase().contains("hot") ? " (HOT)" : "";
-        String newTicketString = "\n" + ticketUrl + " (" + getTicketDurationUntilToday(sheetEntry) + " days) " + hot;
+        String closed = sheetEntry.getAsJsonObject().get(Enums.KPIsSheetColumnNames.CurrentState.value).getAsString().equals(TicketStates.Done.name()) ? " (Closed)" : "";
+        String newTicketString = "\n" + ticketUrl + " (" + getTicketDurationUntilToday(sheetEntry) + " days) " + hot + closed;
         return newTicketString;
     }
 
@@ -275,6 +306,15 @@ public class KpisSummaryReporter extends TimerTask {
         recipients.put(new JSONObject().put("Email", "liran.barokas@applitools.com").put("Name", "Liran Barokas"));
         recipients.put(new JSONObject().put("Email", "matt.jasaitis@applitools.com").put("Name", "Matt Jasaitis"));
         sendMailReports("Field Trello tickets report", fieldTickets.toString(), recipients);
+    }
+
+    private static final int TwoMonthsAgo = 2;
+
+    private boolean isDateWithinTimeSpan (Date date, int numOfMonthsAgo) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.add(Calendar.MONTH, -numOfMonthsAgo);
+        Date dateMonthsAgo = calendar.getTime();
+        return dateMonthsAgo.before(date);
     }
 
 }
