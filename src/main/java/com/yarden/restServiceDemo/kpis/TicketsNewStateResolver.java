@@ -87,7 +87,9 @@ public class TicketsNewStateResolver {
             return TicketStates.WaitingForRD;
         } else if (request.getCurrent_trello_list().equalsIgnoreCase("Strict - Broken")) {
             return TicketStates.WaitingForRD;
-        } else if (request.getCurrent_trello_list().equalsIgnoreCase("Doing")) {
+        } else if (request.getCurrent_trello_list().equalsIgnoreCase("Strict - Fixed (not deployed)")) {
+            return TicketStates.WaitingForRD;
+        }else if (request.getCurrent_trello_list().equalsIgnoreCase("Doing")) {
             return TicketStates.Doing;
         } else if (request.getCurrent_trello_list().equalsIgnoreCase("Solved/Waiting for publish")) {
             return TicketStates.Doing;
