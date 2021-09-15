@@ -181,3 +181,4 @@ lottie-ios
 tutorial-playwright
 robotframework-quickstart
 tutorial-puppeteer
+tutorial-selenium-javascript
