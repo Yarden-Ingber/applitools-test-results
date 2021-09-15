@@ -180,3 +180,4 @@ tutorial-images-java
 lottie-ios
 tutorial-playwright
 robotframework-quickstart
+tutorial-puppeteer
