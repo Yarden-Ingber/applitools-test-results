@@ -36,20 +36,17 @@ public class KpisSummaryReporter extends TimerTask {
 
     private StringBuilder jsTicketsInNew;
     private StringBuilder jsTicketsWithoutType;
-    private StringBuilder jsDoneTicketsWithoutType;
     private StringBuilder sdksTicketsInNew;
     private StringBuilder sdksTicketsWithoutType;
-    private StringBuilder sdksDoneTicketsWithoutType;
     private StringBuilder eyesTicketsInNew;
     private StringBuilder eyesTicketsWithoutType;
-    private StringBuilder eyesDoneTicketsWithoutType;
     private StringBuilder eyesFrontendTicketsInNew;
     private StringBuilder eyesFrontendTicketsWithoutType;
-    private StringBuilder eyesDoneFrontendTicketsWithoutType;
     private StringBuilder ufgTicketsInNew;
     private StringBuilder ufgTicketsWithoutType;
-    private StringBuilder ufgDoneTicketsWithoutType;
     private StringBuilder fieldTickets;
+
+    private static final int TwoMonthsAgo = 2;
 
     @EventListener(ApplicationReadyEvent.class)
     public static synchronized void start() {
@@ -112,22 +109,16 @@ public class KpisSummaryReporter extends TimerTask {
     private void resetTeamsStrings() {
         String ticketsWithoutTypeTitle = "Tickets without type field (not classified yet):\n";
         String ticketsInStateNewTitle = "Tickets under NEW column:\n";
-        String doneTicketsWithoutTypeTitle = "Closed tickets without type field (not classified yet):\n";
         jsTicketsInNew = new StringBuilder(ticketsInStateNewTitle);
         jsTicketsWithoutType = new StringBuilder(ticketsWithoutTypeTitle);
-        jsDoneTicketsWithoutType = new StringBuilder(doneTicketsWithoutTypeTitle);
         sdksTicketsInNew = new StringBuilder(ticketsInStateNewTitle);
         sdksTicketsWithoutType = new StringBuilder(ticketsWithoutTypeTitle);
-        sdksDoneTicketsWithoutType = new StringBuilder(doneTicketsWithoutTypeTitle);
         eyesTicketsInNew = new StringBuilder(ticketsInStateNewTitle);
         eyesTicketsWithoutType = new StringBuilder(ticketsWithoutTypeTitle);
-        eyesDoneTicketsWithoutType = new StringBuilder(doneTicketsWithoutTypeTitle);
         eyesFrontendTicketsInNew = new StringBuilder(ticketsInStateNewTitle);
         eyesFrontendTicketsWithoutType = new StringBuilder(ticketsWithoutTypeTitle);
-        eyesDoneFrontendTicketsWithoutType = new StringBuilder(doneTicketsWithoutTypeTitle);
         ufgTicketsInNew = new StringBuilder(ticketsInStateNewTitle);
         ufgTicketsWithoutType = new StringBuilder(ticketsWithoutTypeTitle);
-        ufgDoneTicketsWithoutType = new StringBuilder(doneTicketsWithoutTypeTitle);
         fieldTickets = new StringBuilder("Tickets on field:\n");
     }
 
@@ -307,8 +298,6 @@ public class KpisSummaryReporter extends TimerTask {
         recipients.put(new JSONObject().put("Email", "matt.jasaitis@applitools.com").put("Name", "Matt Jasaitis"));
         sendMailReports("Field Trello tickets report", fieldTickets.toString(), recipients);
     }
-
-    private static final int TwoMonthsAgo = 2;
 
     private boolean isDateWithinTimeSpan (Date date, int numOfMonthsAgo) {
         Calendar calendar = Calendar.getInstance();
