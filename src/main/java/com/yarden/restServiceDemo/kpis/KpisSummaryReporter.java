@@ -279,7 +279,7 @@ public class KpisSummaryReporter extends TimerTask {
         recipients.put(new JSONObject().put("Email", "adam.carmi@applitools.com").put("Name", "Adam Carmi"));
         recipients.put(new JSONObject().put("Email", "yotam.madem@applitools.com").put("Name", "Yotam Madem"));
         recipients.put(new JSONObject().put("Email", "amit.zur@applitools.com").put("Name", "Amit Zur"));
-        sendMailReports("Eyes Trello board report", eyesTicketsInNew.toString() + "\n\n" + eyesTicketsWithoutType.toString(), recipients);
+        sendMailReports("Eyes Backend Trello board report", eyesTicketsInNew.toString() + "\n\n" + eyesTicketsWithoutType.toString(), recipients);
     }
 
     private void sendEyesFrontendMailReport() throws MailjetSocketTimeoutException, MailjetException {
