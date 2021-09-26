@@ -136,12 +136,21 @@ public class KpisSummaryReporter extends TimerTask {
 
                     if (currentState.equals(TicketStates.New)) {
                         addStateNewTicketToStringReport(sheetEntry);
-                    } else if (StringUtils.isEmpty(ticketType)) {
+                    } else if (StringUtils.isEmpty(ticketType) && isTicketRelevantForMissingTypeField(sheetEntry)) {
                         addTicketsWithoutTypeToStringReport(sheetEntry);
                     }
                 }
             } catch (Throwable t) {}
         }
+    }
+
+    private boolean isTicketRelevantForMissingTypeField(JsonElement sheetEntry) {
+        TicketStates currentState = TicketStates.valueOf(sheetEntry.getAsJsonObject().get(Enums.KPIsSheetColumnNames.CurrentState.value).getAsString());
+        return (
+                currentState.equals(TicketStates.Done) || currentState.equals(TicketStates.MissingQuality) || currentState.equals(TicketStates.RFE)
+                || currentState.equals(TicketStates.WaitingForCustomerResponse) || currentState.equals(TicketStates.WaitingForFieldApproval)
+                || currentState.equals(TicketStates.WaitingForFieldInput)
+                );
     }
 
     private boolean isTicketRelevantForSummary(JsonElement sheetEntry) throws ParseException {
