@@ -163,7 +163,7 @@ public class KpisSummaryReporter extends TimerTask {
                 !(
                 currentState.equals(TicketStates.Done) || currentState.equals(TicketStates.MissingQuality) ||
                 currentState.equals(TicketStates.NoState) || currentState.equals(TicketStates.RFE) ||
-                currentState.equals(TicketStates.WaitingForProduct)
+                currentState.equals(TicketStates.WaitingForProduct) || (currentState.equals(TicketStates.OnHold))
                 )
 
                 ||
