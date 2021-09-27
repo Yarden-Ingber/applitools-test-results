@@ -41,6 +41,8 @@ public class TicketsNewStateResolver {
     private TicketStates resolveStateForUFG(){
         if (request.getCurrent_trello_list().equalsIgnoreCase("New")) {
             return TicketStates.New;
+        } else if (request.getCurrent_trello_list().toLowerCase().contains("on hold")){
+            return TicketStates.OnHold;
         } else if (request.getCurrent_trello_list().equalsIgnoreCase("Doing")) {
             return TicketStates.Doing;
         } else if (request.getCurrent_trello_list().equalsIgnoreCase("Waiting for field input")) {
@@ -61,8 +63,6 @@ public class TicketsNewStateResolver {
             return TicketStates.RFE;
         } else if (request.getCurrent_trello_list().equalsIgnoreCase("Waiting for Product")) {
             return TicketStates.WaitingForProduct;
-        } else if (request.getCurrent_trello_list().toLowerCase().contains("on hold")){
-            return TicketStates.OnHold;
         } else  {
             return noStateFound();
         }
@@ -71,6 +71,8 @@ public class TicketsNewStateResolver {
     private TicketStates resolveStateForAlgoBugs() {
         if (request.getCurrent_trello_list().equalsIgnoreCase("Waiting for field input")) {
             return TicketStates.WaitingForFieldInput;
+        } else if (request.getCurrent_trello_list().toLowerCase().contains("on hold")){
+            return TicketStates.OnHold;
         } else if (request.getCurrent_trello_list().equalsIgnoreCase("Waiting for customer response")) {
             return TicketStates.WaitingForCustomerResponse;
         } else if (request.getCurrent_trello_list().equalsIgnoreCase("New/Pending")) {
@@ -107,8 +109,6 @@ public class TicketsNewStateResolver {
             return TicketStates.WaitingForFieldInput;
         } else if (request.getCurrent_trello_list().equalsIgnoreCase("Waiting for product")) {
             return TicketStates.WaitingForProduct;
-        } else if (request.getCurrent_trello_list().toLowerCase().contains("on hold")){
-            return TicketStates.OnHold;
         } else {
             return noStateFound();
         }
@@ -117,6 +117,8 @@ public class TicketsNewStateResolver {
     private TicketStates resolveStateForJSSdks() {
         if (request.getCurrent_trello_list().equalsIgnoreCase("Doing")) {
             return TicketStates.Doing;
+        } else if (request.getCurrent_trello_list().toLowerCase().contains("on hold")){
+            return TicketStates.OnHold;
         } else if (request.getCurrent_trello_list().equalsIgnoreCase("New")) {
             return TicketStates.New;
         } else if (request.getCurrent_trello_list().equalsIgnoreCase("Waiting for field input")) {
@@ -143,8 +145,6 @@ public class TicketsNewStateResolver {
             return TicketStates.WaitingForRD;
         } else if (request.getCurrent_trello_list().equalsIgnoreCase("Fixed - need to release other SDK's")) {
             return TicketStates.Done;
-        } else if (request.getCurrent_trello_list().toLowerCase().contains("on hold")){
-            return TicketStates.OnHold;
         } else {
             return noStateFound();
         }
@@ -153,6 +153,8 @@ public class TicketsNewStateResolver {
     private TicketStates resolveStateForGeneralSdks() {
         if (request.getCurrent_trello_list().equalsIgnoreCase("New | Pending")) {
             return TicketStates.New;
+        } else if (request.getCurrent_trello_list().toLowerCase().contains("on hold")){
+            return TicketStates.OnHold;
         } else if (request.getCurrent_trello_list().equalsIgnoreCase("Trying to Reproduce")) {
             return TicketStates.TryingToReproduce;
         } else if (request.getCurrent_trello_list().equalsIgnoreCase("Doing")) {
@@ -195,8 +197,6 @@ public class TicketsNewStateResolver {
             return TicketStates.WaitingForRD;
         } else if (request.getCurrent_trello_list().equalsIgnoreCase("Missing Quality Info")) {
             return TicketStates.MissingQuality;
-        } else if (request.getCurrent_trello_list().toLowerCase().contains("on hold")){
-            return TicketStates.OnHold;
         } else {
             return noStateFound();
         }
@@ -205,6 +205,8 @@ public class TicketsNewStateResolver {
     private TicketStates resolveStateForEyesIssues() {
         if (request.getCurrent_trello_list().equalsIgnoreCase("New")) {
             return TicketStates.New;
+        } else if (request.getCurrent_trello_list().toLowerCase().contains("on hold")){
+            return TicketStates.OnHold;
         } else if (request.getCurrent_trello_list().equalsIgnoreCase("Waiting for R&D")) {
             return TicketStates.WaitingForRD;
         } else if (request.getCurrent_trello_list().equalsIgnoreCase("Not an issue")) {
@@ -229,8 +231,6 @@ public class TicketsNewStateResolver {
             return TicketStates.Done;
         } else if (request.getCurrent_trello_list().equalsIgnoreCase("Waiting for field approval")) {
             return TicketStates.WaitingForFieldApproval;
-        } else if (request.getCurrent_trello_list().toLowerCase().contains("on hold")){
-            return TicketStates.OnHold;
         } else {
             return noStateFound();
         }
