@@ -127,60 +127,23 @@ public class KpisSummaryReporter extends TimerTask {
             try {
                 TicketStates currentState = TicketStates.valueOf(sheetEntry.getAsJsonObject().get(Enums.KPIsSheetColumnNames.CurrentState.value).getAsString());
                 String ticketType = sheetEntry.getAsJsonObject().get(Enums.KPIsSheetColumnNames.TicketType.value).getAsString();
-                if (isTicketRelevantForSummary(sheetEntry)) {
-                    if (isTicketOnField(currentState)) {
-                        String createdBy = sheetEntry.getAsJsonObject().get(Enums.KPIsSheetColumnNames.CreatedBy.value).getAsString();
-                        String createdByString = createdBy.isEmpty() ? "" : "(Created by: " + createdBy + ")";
-                        fieldTickets.append(getSingleTicketLineString(sheetEntry) + " " + createdByString);
-                    }
-
-                    if (currentState.equals(TicketStates.New)) {
-                        addStateNewTicketToStringReport(sheetEntry);
-                    } else if (StringUtils.isEmpty(ticketType) && isTicketRelevantForMissingTypeField(sheetEntry)) {
-                        addTicketsWithoutTypeToStringReport(sheetEntry);
-                    }
+                String movedToDoneString = sheetEntry.getAsJsonObject().get(Enums.KPIsSheetColumnNames.MovedToStateDone.value).getAsString();
+                if (isTicketOnField(currentState)) {
+                    String createdBy = sheetEntry.getAsJsonObject().get(Enums.KPIsSheetColumnNames.CreatedBy.value).getAsString();
+                    String createdByString = createdBy.isEmpty() ? "" : "(Created by: " + createdBy + ")";
+                    fieldTickets.append(getSingleTicketLineString(sheetEntry) + " " + createdByString);
                 }
-            } catch (Throwable t) {}
+
+                if (currentState.equals(TicketStates.New)) {
+                    addStateNewTicketToStringReport(sheetEntry);
+                } else if (StringUtils.isEmpty(ticketType) && currentState.equals(TicketStates.Done) && isDateWithinTimeSpan(Logger.timestampToDate(movedToDoneString), TwoMonthsAgo)) {
+                    addTicketsWithoutTypeToStringReport(sheetEntry);
+                }
+            } catch (Throwable t) {
+                Logger.error("KpisSummaryReporter: Failed to add ticket to KPI summary report");
+                t.printStackTrace();
+            }
         }
-    }
-
-    private boolean isTicketRelevantForMissingTypeField(JsonElement sheetEntry) {
-        TicketStates currentState = TicketStates.valueOf(sheetEntry.getAsJsonObject().get(Enums.KPIsSheetColumnNames.CurrentState.value).getAsString());
-        return (
-                currentState.equals(TicketStates.Done) || currentState.equals(TicketStates.MissingQuality) || currentState.equals(TicketStates.RFE)
-                || currentState.equals(TicketStates.WaitingForCustomerResponse) || currentState.equals(TicketStates.WaitingForFieldApproval)
-                || currentState.equals(TicketStates.WaitingForFieldInput)
-                );
-    }
-
-    private boolean isTicketRelevantForSummary(JsonElement sheetEntry) throws ParseException {
-        TicketStates currentState = TicketStates.valueOf(sheetEntry.getAsJsonObject().get(Enums.KPIsSheetColumnNames.CurrentState.value).getAsString());
-        String team = sheetEntry.getAsJsonObject().get(Enums.KPIsSheetColumnNames.Team.value).getAsString();
-        if (team.equals(Enums.Strings.Archived.value)) {
-            return false;
-        }
-        return (
-                !(
-                currentState.equals(TicketStates.Done) || currentState.equals(TicketStates.MissingQuality) ||
-                currentState.equals(TicketStates.NoState) || currentState.equals(TicketStates.RFE) ||
-                currentState.equals(TicketStates.WaitingForProduct) || (currentState.equals(TicketStates.OnHold))
-                )
-
-                ||
-
-                isDoneTicketRelevantForSummary(sheetEntry)
-        );
-    }
-
-    private boolean isDoneTicketRelevantForSummary(JsonElement sheetEntry) throws ParseException {
-        TicketStates currentState = TicketStates.valueOf(sheetEntry.getAsJsonObject().get(Enums.KPIsSheetColumnNames.CurrentState.value).getAsString());
-        String movedToDoneString = sheetEntry.getAsJsonObject().get(Enums.KPIsSheetColumnNames.MovedToStateDone.value).getAsString();
-        if (StringUtils.isEmpty(movedToDoneString)) {
-            return false;
-        } else {
-            return currentState.equals(TicketStates.Done) && isDateWithinTimeSpan(Logger.timestampToDate(movedToDoneString), TwoMonthsAgo);
-        }
-
     }
 
     private boolean isTicketOnField(TicketStates currentState) {
