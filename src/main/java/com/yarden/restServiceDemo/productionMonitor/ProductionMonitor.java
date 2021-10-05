@@ -25,7 +25,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.*;
 
-//@Configuration
+@Configuration
 public class ProductionMonitor extends TimerTask {
 
     private static boolean isRunning = false;
@@ -82,7 +82,7 @@ public class ProductionMonitor extends TimerTask {
         for (String domainSite : domainsSitesList) {
             String domain = domainSite.split(",")[0];
             String site = domainSite.split(",")[1];
-            if (!(site.equalsIgnoreCase("Sqli") || site.equalsIgnoreCase("Unitymedia"))) {
+            if (!(site.contains("***"))) {
                 domain = domain + "/api/admin/userinfo";
                 URL endpoint = new URL(domain);
                 JSONObject productionMonitorEventJson = new JSONObject();
