@@ -136,7 +136,7 @@ public class KpisSummaryReporter extends TimerTask {
 
                 if (currentState.equals(TicketStates.New)) {
                     addStateNewTicketToStringReport(sheetEntry);
-                } else if (StringUtils.isEmpty(ticketType) && currentState.equals(TicketStates.Done) && isDateWithinTimeSpan(Logger.timestampToDate(movedToDoneString), TwoMonthsAgo)) {
+                } else if (StringUtils.isEmpty(ticketType) && isTicketRelevantForMissingTypeField(currentState) && isDateWithinTimeSpan(Logger.timestampToDate(movedToDoneString), TwoMonthsAgo)) {
                     addTicketsWithoutTypeToStringReport(sheetEntry);
                 }
             } catch (Throwable t) {
@@ -150,6 +150,11 @@ public class KpisSummaryReporter extends TimerTask {
         return currentState.equals(TicketStates.WaitingForFieldApproval) ||
                 currentState.equals(TicketStates.WaitingForFieldInput) ||
                 currentState.equals(TicketStates.WaitingForCustomerResponse);
+    }
+
+    private boolean isTicketRelevantForMissingTypeField(TicketStates currentState) {
+        return currentState.equals(TicketStates.Done) ||
+                currentState.equals(TicketStates.WaitingForFieldApproval);
     }
 
     private void sendMailReports(String mailSubject, String mailContent, JSONArray recipients) throws MailjetSocketTimeoutException, MailjetException {
