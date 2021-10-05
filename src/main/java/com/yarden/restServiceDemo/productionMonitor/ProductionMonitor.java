@@ -72,7 +72,7 @@ public class ProductionMonitor extends TimerTask {
         Date today = new Date();
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(today);
-        calendar.add(Calendar.DAY_OF_MONTH, -4);
+        calendar.add(Calendar.DAY_OF_MONTH, -7);
         String query = "data.Info.RequestType=GetUserInfo OR data.Info.RequestType=StartSession OR data.Info.RequestType=MatchExpectedOutputAsSession | rex field=data.Context.RequestUrl \"(?<domain>https://.*\\.applitools.com)\" | stats count by domain data.Site | where NOT LIKE(domain, \"https://test%\") | rename data.Site as site | table domain site";
         String theString = new SplunkReporter().getDataFromSplunk(query, calendar.getTime(), today, JobExportArgs.OutputMode.CSV);
         new SplunkReporter().report(Enums.SplunkSourceTypes.ProductionMonitor, new JSONObject().put("eventType", "log").put("value", theString).put("domainsCount", StringUtils.countMatches(theString, "://")).toString());
