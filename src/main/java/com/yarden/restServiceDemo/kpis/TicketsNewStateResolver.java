@@ -137,6 +137,8 @@ public class TicketsNewStateResolver {
             return TicketStates.WaitingForFieldApproval;
         } else if (request.getCurrent_trello_list().equalsIgnoreCase("RFEs")) {
             return TicketStates.RFE;
+        } else if (request.getCurrent_trello_list().equalsIgnoreCase("WebDriver.IO RFEs")) {
+            return TicketStates.RFE;
         } else if (request.getCurrent_trello_list().equalsIgnoreCase("Waiting for Product")) {
             return TicketStates.WaitingForProduct;
         } else if (request.getCurrent_trello_list().equalsIgnoreCase("Next")) {
