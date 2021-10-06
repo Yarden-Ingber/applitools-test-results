@@ -127,7 +127,6 @@ public class KpisSummaryReporter extends TimerTask {
             try {
                 TicketStates currentState = TicketStates.valueOf(sheetEntry.getAsJsonObject().get(Enums.KPIsSheetColumnNames.CurrentState.value).getAsString());
                 String ticketType = sheetEntry.getAsJsonObject().get(Enums.KPIsSheetColumnNames.TicketType.value).getAsString();
-                String movedToDoneString = sheetEntry.getAsJsonObject().get(Enums.KPIsSheetColumnNames.MovedToStateDone.value).getAsString();
                 if (isTicketOnField(currentState)) {
                     String createdBy = sheetEntry.getAsJsonObject().get(Enums.KPIsSheetColumnNames.CreatedBy.value).getAsString();
                     String createdByString = createdBy.isEmpty() ? "" : "(Created by: " + createdBy + ")";
@@ -136,7 +135,7 @@ public class KpisSummaryReporter extends TimerTask {
 
                 if (currentState.equals(TicketStates.New)) {
                     addStateNewTicketToStringReport(sheetEntry);
-                } else if (StringUtils.isEmpty(ticketType) && isTicketRelevantForMissingTypeField(currentState) && isDateWithinTimeSpan(Logger.timestampToDate(movedToDoneString), TwoMonthsAgo)) {
+                } else if (StringUtils.isEmpty(ticketType) && isTicketRelevantForMissingTypeField(sheetEntry)) {
                     addTicketsWithoutTypeToStringReport(sheetEntry);
                 }
             } catch (Throwable t) {
@@ -152,8 +151,11 @@ public class KpisSummaryReporter extends TimerTask {
                 currentState.equals(TicketStates.WaitingForCustomerResponse);
     }
 
-    private boolean isTicketRelevantForMissingTypeField(TicketStates currentState) {
-        return currentState.equals(TicketStates.Done) ||
+    private boolean isTicketRelevantForMissingTypeField(JsonElement sheetEntry) throws ParseException {
+        String movedToDoneString = sheetEntry.getAsJsonObject().get(Enums.KPIsSheetColumnNames.MovedToStateDone.value).getAsString();
+        TicketStates currentState = TicketStates.valueOf(sheetEntry.getAsJsonObject().get(Enums.KPIsSheetColumnNames.CurrentState.value).getAsString());
+        return
+                (currentState.equals(TicketStates.Done) && isDateWithinTimeSpan(Logger.timestampToDate(movedToDoneString), TwoMonthsAgo)) ||
                 currentState.equals(TicketStates.WaitingForFieldApproval);
     }
 
