@@ -78,6 +78,7 @@ public class TrelloTicketCreator {
         MultipartFile[] reproducibleFiles = ((MultipartFile[])ticketFormFields.get(FormFields.reproducibleFiles.name()));
         TrelloApi.uploadFilesToTicket(ticketId, reproducibleFiles);
         uploadExtraFiles(ticketId, ticketFormFields);
+        Logger.info("TrelloTicketCreator: Ticket " + ticketId + " created");
     }
 
     private static void uploadExtraFiles(String ticketId, ModelMap ticketFormFields) throws UnirestException {
@@ -109,12 +110,15 @@ public class TrelloTicketCreator {
         if (StringUtils.isNotEmpty((String)ticketFormFields.get(FormFields.renderID.name()))) {
             ticketDescription = ticketDescription + "\n\nRender ID: " + ticketFormFields.get(FormFields.renderID.name());
         }
+        if (StringUtils.isNotEmpty((String)ticketFormFields.get(FormFields.zendeskCompanyName.name()))) {
+            ticketDescription = ticketDescription + "\n\nZendesk company name: " + ticketFormFields.get(FormFields.zendeskCompanyName.name());
+        }
+        if (StringUtils.isNotEmpty((String)ticketFormFields.get(FormFields.renderID.name()))) {
+            ticketDescription = ticketDescription + "\n\nRender ID: " + ticketFormFields.get(FormFields.renderID.name());
+        }
         Logger.info("TrelloTicketCreator: Adding to description accountName: " + ticketFormFields.get(FormFields.accountName.name()));
         if (StringUtils.isNotEmpty((String)ticketFormFields.get(FormFields.accountName.name()))) {
             ticketDescription = ticketDescription + "\n\nCreated by: " + ticketFormFields.get(FormFields.accountName.name());
-        }
-        if (StringUtils.isNotEmpty((String)ticketFormFields.get(FormFields.zendeskCompanyName.name()))) {
-            ticketDescription = ticketDescription + "\n\nZendesk company name: " + ticketFormFields.get(FormFields.zendeskCompanyName.name());
         }
         ticketFormFields.addAttribute(FormFields.ticketDescription.name(), ticketDescription);
         Logger.info("TrelloTicketCreator: After adding 1, the description is: " + ticketFormFields.get(FormFields.ticketDescription.name()));
