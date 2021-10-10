@@ -181,13 +181,13 @@ public class TicketsNewStateResolver {
             return TicketStates.Done;
         } else if (request.getCurrent_trello_list().equalsIgnoreCase("Known Limitations / Waiting for 3rd Party")) {
             return TicketStates.Done;
-        } else if (request.getCurrent_trello_list().contains("RFEs")) {
+        } else if (request.getCurrent_trello_list().toLowerCase().contains("RFEs")) {
             return TicketStates.RFE;
         } else if (request.getCurrent_trello_list().equalsIgnoreCase("Waiting for Product")) {
             return TicketStates.WaitingForProduct;
-        } else if (request.getCurrent_trello_list().contains("Waiting for R&D investigation")) {
+        } else if (request.getCurrent_trello_list().toLowerCase().contains("Waiting for R&D investigation")) {
             return TicketStates.WaitingForRD;
-        } else if (request.getCurrent_trello_list().contains("BUGs")) {
+        } else if (request.getCurrent_trello_list().toLowerCase().contains("BUGs")) {
             return TicketStates.WaitingForRD;
         } else if (request.getCurrent_trello_list().equalsIgnoreCase("Next")) {
             return TicketStates.WaitingForRD;
@@ -229,6 +229,8 @@ public class TicketsNewStateResolver {
             return TicketStates.WaitingForRD;
         } else if (request.getCurrent_trello_list().equalsIgnoreCase("To be Deployed next Hotfix")) {
             return TicketStates.WaitingForRD;
+        } else if (request.getCurrent_trello_list().equalsIgnoreCase("RFE")) {
+            return TicketStates.RFE;
         } else if (request.getCurrent_trello_list().toLowerCase().contains("done")) {
             return TicketStates.Done;
         } else if (request.getCurrent_trello_list().equalsIgnoreCase("Waiting for field approval")) {
