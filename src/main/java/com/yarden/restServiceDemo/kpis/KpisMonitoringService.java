@@ -39,6 +39,7 @@ public class KpisMonitoringService {
     public void updateTicketFields() {
         try {
             JsonElement ticket = findSheetEntry();
+            ignoreTeamChangeForEyesOperationsBoard(ticket);
             updateTicketFields(ticket);
         } catch (NotFoundException e) {
             Logger.info("KPIs: Ticket " + ticketUpdateRequest.getTicketId() + " wasn't found in the sheet");
