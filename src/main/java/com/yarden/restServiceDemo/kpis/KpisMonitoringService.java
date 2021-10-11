@@ -24,6 +24,7 @@ public class KpisMonitoringService {
         try {
             JsonElement ticket = findSheetEntry();
             new TicketsStateChanger().updateExistingTicketState(ticket, newState);
+            ignoreTeamChangeForEyesOperationsBoard(ticket);
             updateTicketFields(ticket);
         } catch (NotFoundException e) {
             if (newState.equals(TicketStates.New)) {
@@ -59,6 +60,12 @@ public class KpisMonitoringService {
             Logger.info("KPIs: Ticket " + ticketUpdateRequest.getTicketId() + " wasn't found in the sheet");
         }
         new KpiSplunkReporter(rawDataSheetData, ticketUpdateRequest).reportStandAloneEvent(newState);
+    }
+
+    private void ignoreTeamChangeForEyesOperationsBoard(JsonElement ticket) {
+        if (ticketUpdateRequest.getTeam().equals(TicketsNewStateResolver.Boards.EyesOperations.value)) {
+            ticketUpdateRequest.setTeam(ticket.getAsJsonObject().get(Enums.KPIsSheetColumnNames.Team.value).getAsString());
+        }
     }
 
     private void updateTicketFields(JsonElement ticket) {

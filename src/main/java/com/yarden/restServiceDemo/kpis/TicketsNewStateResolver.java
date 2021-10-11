@@ -13,7 +13,7 @@ public class TicketsNewStateResolver {
 
     public enum Boards {
         UltrafastGrid("Ultrafast Grid"), JSSDKs("JS SDKs"), AlgoBugs("Algo Bugs"), SDKs("SDKs"), EyesBackend("Eyes Backend"),
-        EyesFrontend("Eyes frontend"), EyesAppIssues("Eyes App - Issues");
+        EyesFrontend("Eyes frontend"), EyesAppIssues("Eyes App - Issues"), EyesOperations("Eyes operations");
 
         public final String value;
 
@@ -33,6 +33,8 @@ public class TicketsNewStateResolver {
             return resolveStateForGeneralSdks();
         } else if(request.getTeam().equals(Boards.EyesBackend.value) || request.getTeam().equals(Boards.EyesFrontend.value)) {
             return resolveStateForEyesIssues();
+        } else if (request.getTeam().equals(Boards.EyesOperations.value)) {
+            return resolveStateForEyesOperations();
         } else {
             return noStateFound();
         }
@@ -233,6 +235,16 @@ public class TicketsNewStateResolver {
             return TicketStates.Done;
         } else if (request.getCurrent_trello_list().equalsIgnoreCase("Waiting for field approval")) {
             return TicketStates.WaitingForFieldApproval;
+        } else {
+            return noStateFound();
+        }
+    }
+
+    private TicketStates resolveStateForEyesOperations() {
+        if (request.getCurrent_trello_list().toLowerCase().contains("on hold")){
+            return TicketStates.OnHold;
+        } else if (request.getCurrent_trello_list().toLowerCase().contains("done")){
+            return TicketStates.Done;
         } else {
             return noStateFound();
         }
