@@ -248,7 +248,7 @@ public class KpisSummaryReporter extends TimerTask {
         recipients.put(new JSONObject().put("Email", "yarden.ingber@applitools.com").put("Name", "Yarden Ingber"));
         recipients.put(new JSONObject().put("Email", "ben.babayoff@applitools.com").put("Name", "Ben Babayoff"));
         recipients.put(new JSONObject().put("Email", "adam.carmi@applitools.com").put("Name", "Adam Carmi"));
-        recipients.put(new JSONObject().put("Email", "yotam.madem@applitools.com").put("Name", "Yotam Madem"));
+        recipients.put(new JSONObject().put("Email", "or.david@applitools.com").put("Name", "Or David"));
         sendMailReports("UFG Trello board report", ufgTicketsInNew.toString() + "\n\n" + ufgTicketsWithoutType.toString(), recipients);
     }
 
@@ -257,7 +257,6 @@ public class KpisSummaryReporter extends TimerTask {
         recipients.put(new JSONObject().put("Email", "yarden.ingber@applitools.com").put("Name", "Yarden Ingber"));
         recipients.put(new JSONObject().put("Email", "adam.carmi@applitools.com").put("Name", "Adam Carmi"));
         recipients.put(new JSONObject().put("Email", "yotam.madem@applitools.com").put("Name", "Yotam Madem"));
-        recipients.put(new JSONObject().put("Email", "amit.zur@applitools.com").put("Name", "Amit Zur"));
         sendMailReports("Eyes Backend Trello board report", eyesTicketsInNew.toString() + "\n\n" + eyesTicketsWithoutType.toString(), recipients);
     }
 
