@@ -276,8 +276,10 @@
                 <div id="ticketDescriptionDiv"><label for="ticketDescription"><span>Ticket description:</span>
                     <textarea name="ticketDescription" id="ticketDescription" cols="60" rows="4" required></textarea></label><br></div>
 
-                <div id="zendeskUrlDiv"><label for="zendeskUrl"><span>Zendesk URL:</span>
-                    <input type="text" id="zendeskUrl" name="zendeskUrl" value="" readonly></label><br></div>
+                <div id="zendeskUrlDiv"><label for="zendeskUrl"><span>Zendesk:</span>
+                    <input type="text" id="zendeskUrl" name="zendeskUrl" value="" readonly>
+                    <br><br>
+                    <input id="zendeskCompanyName" name="zendeskCompanyName" value="" readonly></label><br></div>
 
                 <div id="customerAppUrlDiv"><label for="customerAppUrl"><span>Customer app url:</span>
                     <input type="text" id="customerAppUrl" name="customerAppUrl" size="80" required>
@@ -354,7 +356,6 @@
 
                 <input type="hidden" id="requestID" name="requestID" value="random">
                 <input type="hidden" id="zendeskCustomerName" name="zendeskCustomerName" value="">
-                <input type="hidden" id="zendeskCompanyName" name="zendeskCompanyName" value="">
                 <input type="hidden" id="zendeskTier" name="zendeskTier" value="">
                 <input type="hidden" id="zendeskCustomerType" name="zendeskCustomerType" value="">
 
