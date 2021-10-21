@@ -276,10 +276,8 @@
                 <div id="ticketDescriptionDiv"><label for="ticketDescription"><span>Ticket description:</span>
                     <textarea name="ticketDescription" id="ticketDescription" cols="60" rows="4" required></textarea></label><br></div>
 
-                <div id="zendeskUrlDiv"><label for="zendeskUrl"><span>Zendesk:</span>
-                    <input type="text" id="zendeskUrl" name="zendeskUrl" value="" readonly>
-                    <br><br>
-                    <input type="text" id="zendeskCompanyName" name="zendeskCompanyName" value="" readonly style="margin-left:100px;"></label><br></div>
+                <div id="zendeskCompanyNameDiv"><label for="zendeskCompanyName"><span>Zendesk customer:</span>
+                    <input type="text" id="zendeskCompanyName" name="zendeskCompanyName" value="" readonly></label><br></div>
 
                 <div id="customerAppUrlDiv"><label for="customerAppUrl"><span>Customer app url:</span>
                     <input type="text" id="customerAppUrl" name="customerAppUrl" size="80" required>
@@ -358,6 +356,7 @@
                 <input type="hidden" id="zendeskCustomerName" name="zendeskCustomerName" value="">
                 <input type="hidden" id="zendeskTier" name="zendeskTier" value="">
                 <input type="hidden" id="zendeskCustomerType" name="zendeskCustomerType" value="">
+                <input type="hidden" id="zendeskUrl" name="zendeskUrl" value="">
 
                 <input type="submit" id="btn-submit" value="Create ticket">
                 <center><label id="ticketUrl" class="ticketUrl"><span><a href="" target="_blank">Done!</a></span></label></center>
