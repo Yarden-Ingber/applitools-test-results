@@ -248,7 +248,7 @@ public class TicketsNewStateResolver {
         } else if (request.getCurrent_trello_list().toLowerCase().contains("done")){
             return TicketStates.Done;
         } else {
-            return noStateFound();
+            return TicketStates.WaitingForRD;
         }
     }
 
