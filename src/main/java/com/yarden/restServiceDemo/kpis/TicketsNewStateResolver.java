@@ -101,6 +101,8 @@ public class TicketsNewStateResolver {
             return TicketStates.WaitingForFieldApproval;
         } else if (request.getCurrent_trello_list().equalsIgnoreCase("Closed")) {
             return TicketStates.Done;
+        } else if (request.getCurrent_trello_list().equalsIgnoreCase("Done")) {
+            return TicketStates.Done;
         } else if (request.getCurrent_trello_list().equalsIgnoreCase("No Algo Change Required")) {
             return TicketStates.Done;
         } else if (request.getCurrent_trello_list().equalsIgnoreCase("Known limitations (RFE)")) {
