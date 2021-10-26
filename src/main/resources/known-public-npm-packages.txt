@@ -54,3 +54,4 @@
 @applitools/test-server
 @applitools/eyes-universal
 @applitools/spec-driver-selenium
+@applitools/spec-driver-playwright
