@@ -125,18 +125,21 @@ public class KpisSummaryReporter extends TimerTask {
     private void buildStringReports(SheetData rawDataSheetData) {
         for (JsonElement sheetEntry: rawDataSheetData.getSheetData()){
             try {
-                TicketStates currentState = TicketStates.valueOf(sheetEntry.getAsJsonObject().get(Enums.KPIsSheetColumnNames.CurrentState.value).getAsString());
-                String ticketType = sheetEntry.getAsJsonObject().get(Enums.KPIsSheetColumnNames.TicketType.value).getAsString();
-                if (isTicketOnField(currentState)) {
-                    String createdBy = sheetEntry.getAsJsonObject().get(Enums.KPIsSheetColumnNames.CreatedBy.value).getAsString();
-                    String createdByString = createdBy.isEmpty() ? "" : "(Created by: " + createdBy + ")";
-                    fieldTickets.append(getSingleTicketLineString(sheetEntry) + " " + createdByString);
-                }
+                String team = sheetEntry.getAsJsonObject().get(Enums.KPIsSheetColumnNames.Team.value).getAsString();
+                if (!team.equals(Enums.Strings.Archived.value)) {
+                    TicketStates currentState = TicketStates.valueOf(sheetEntry.getAsJsonObject().get(Enums.KPIsSheetColumnNames.CurrentState.value).getAsString());
+                    String ticketType = sheetEntry.getAsJsonObject().get(Enums.KPIsSheetColumnNames.TicketType.value).getAsString();
+                    if (isTicketOnField(currentState)) {
+                        String createdBy = sheetEntry.getAsJsonObject().get(Enums.KPIsSheetColumnNames.CreatedBy.value).getAsString();
+                        String createdByString = createdBy.isEmpty() ? "" : "(Created by: " + createdBy + ")";
+                        fieldTickets.append(getSingleTicketLineString(sheetEntry) + " " + createdByString);
+                    }
 
-                if (currentState.equals(TicketStates.New)) {
-                    addStateNewTicketToStringReport(sheetEntry);
-                } else if (StringUtils.isEmpty(ticketType) && isTicketRelevantForMissingTypeField(sheetEntry)) {
-                    addTicketsWithoutTypeToStringReport(sheetEntry);
+                    if (currentState.equals(TicketStates.New)) {
+                        addStateNewTicketToStringReport(sheetEntry);
+                    } else if (StringUtils.isEmpty(ticketType) && isTicketRelevantForMissingTypeField(sheetEntry)) {
+                        addTicketsWithoutTypeToStringReport(sheetEntry);
+                    }
                 }
             } catch (Throwable t) {
                 Logger.error("KpisSummaryReporter: Failed to add ticket to KPI summary report");
