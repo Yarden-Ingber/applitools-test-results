@@ -53,3 +53,4 @@
 @applitools/test-utils
 @applitools/test-server
 @applitools/eyes-universal
+@applitools/spec-driver-selenium
