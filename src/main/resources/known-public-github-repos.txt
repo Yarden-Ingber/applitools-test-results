@@ -182,3 +182,4 @@ tutorial-playwright
 robotframework-quickstart
 tutorial-puppeteer
 tutorial-selenium-javascript
+ImageTester
