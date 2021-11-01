@@ -183,3 +183,4 @@ robotframework-quickstart
 tutorial-puppeteer
 tutorial-selenium-javascript
 ImageTester
+EyesUtilities
