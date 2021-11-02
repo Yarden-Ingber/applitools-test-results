@@ -28,6 +28,7 @@ public class TicketsStateChanger {
         try {
             String timeStamp = Logger.getTimaStamp();
             updateTimeUntilLeftNew(ticket, timeStamp);
+            logTicketStateUpdate(ticket, currentState, newState);
             executeUpdateState(ticket, currentState, newState, timeStamp);
         } catch (ParseException e) {
             e.printStackTrace();
@@ -69,8 +70,10 @@ public class TicketsStateChanger {
         if (previousStateTimeFromSheet != null && !previousStateTimeFromSheet.isJsonNull()) {
             currentCalculatedTimeString = previousStateTimeFromSheet.getAsString();
         }
-        Logger.info("Setting time in previous state: " + currentState.name() + " for ticket: " + ticket.getAsJsonObject().get(Enums.KPIsSheetColumnNames.TicketID.value).getAsString() +
-                " enter previous state: " + startTime.toString() + " enter new state: " + endTime.toString() + " calculated time before change: " + currentCalculatedTimeString + " new calculated time: " + newCalculatedTime.toString());
+        Logger.info("TicketsStateChanger: enter previous state: " + startTime.toString() +
+                " enter new state: " + endTime.toString() +
+                " calculated time before change: " + currentCalculatedTimeString +
+                " new calculated time: " + newCalculatedTime.toString());
         Long currentCalculatedTime = 0l;
         if (!currentCalculatedTimeString.isEmpty()) {
             currentCalculatedTime = Long.valueOf(currentCalculatedTimeString);
@@ -85,6 +88,12 @@ public class TicketsStateChanger {
         Logger.info("Setting time until left new for the first time for ticket: " + ticket.getAsJsonObject().get(Enums.KPIsSheetColumnNames.TicketID.value).getAsString() +
                 " Createion date: " + creationDate.toString() + " current timestamp: " + currentDate.toString() + " total time: " + timeUntilLeftNew);
         ticket.getAsJsonObject().addProperty(Enums.KPIsSheetColumnNames.TimeUntilLeftNewForTheFirstTime.value, timeUntilLeftNew);
+    }
+
+    private void logTicketStateUpdate(JsonElement ticket, TicketStates currentState, TicketStates newState) {
+        Logger.info("TicketsStateChanger: updating state for ticket: " + ticket.getAsJsonObject().get(Enums.KPIsSheetColumnNames.TicketID.value).getAsString());
+        Logger.info("TicketsStateChanger: previous state: " + currentState.name());
+        Logger.info("TicketsStateChanger: new state: " + newState.name());
     }
 
     private void sendMailWarning(JsonElement ticket, TicketStates newState) {
