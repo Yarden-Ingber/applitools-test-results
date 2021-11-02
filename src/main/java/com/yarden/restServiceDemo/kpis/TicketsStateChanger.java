@@ -26,9 +26,9 @@ public class TicketsStateChanger {
             return;
         }
         try {
+            logTicketStateUpdate(ticket, currentState, newState);
             String timeStamp = Logger.getTimaStamp();
             updateTimeUntilLeftNew(ticket, timeStamp);
-            logTicketStateUpdate(ticket, currentState, newState);
             executeUpdateState(ticket, currentState, newState, timeStamp);
         } catch (ParseException e) {
             e.printStackTrace();
@@ -70,7 +70,7 @@ public class TicketsStateChanger {
         if (previousStateTimeFromSheet != null && !previousStateTimeFromSheet.isJsonNull()) {
             currentCalculatedTimeString = previousStateTimeFromSheet.getAsString();
         }
-        Logger.info("TicketsStateChanger: enter previous state: " + startTime.toString() +
+        Logger.info("KPIs: enter previous state: " + startTime.toString() +
                 " enter new state: " + endTime.toString() +
                 " calculated time before change: " + currentCalculatedTimeString +
                 " new calculated time: " + newCalculatedTime.toString());
@@ -91,9 +91,9 @@ public class TicketsStateChanger {
     }
 
     private void logTicketStateUpdate(JsonElement ticket, TicketStates currentState, TicketStates newState) {
-        Logger.info("TicketsStateChanger: updating state for ticket: " + ticket.getAsJsonObject().get(Enums.KPIsSheetColumnNames.TicketID.value).getAsString());
-        Logger.info("TicketsStateChanger: previous state: " + currentState.name());
-        Logger.info("TicketsStateChanger: new state: " + newState.name());
+        Logger.info("KPIs: updating state for ticket: " + ticket.getAsJsonObject().get(Enums.KPIsSheetColumnNames.TicketID.value).getAsString());
+        Logger.info("KPIs: previous state: " + currentState.name());
+        Logger.info("KPIs: new state: " + newState.name());
     }
 
     private void sendMailWarning(JsonElement ticket, TicketStates newState) {
@@ -117,7 +117,7 @@ public class TicketsStateChanger {
                                 )
                                 .put(Emailv31.Message.SUBJECT, "KPIs monitoring warning")
                                 .put(Emailv31.Message.TEXTPART, "Ticket " + ticketID + " made an illegal state change from " + currentState + " to " + newState.name())
-                                .put(Emailv31.Message.CUSTOMID, "TicketsStateChanger")));
+                                .put(Emailv31.Message.CUSTOMID, "KPIs")));
         try {
             response = client.post(request);
             Logger.info("KPIs: " + response.getStatus());
