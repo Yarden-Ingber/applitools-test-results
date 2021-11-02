@@ -40,7 +40,6 @@ public class KpiSplunkReporter {
         splunkEventJson.put(Enums.KPIsSheetColumnNames.CurrentTrelloList.value.replace(" ", "_"), ticketUpdateRequest.getCurrent_trello_list());
         splunkEventJson.put(Enums.KPIsSheetColumnNames.Labels.value.replace(" ", "_"), ticketUpdateRequest.getLabels());
         splunkEventJson.put(Enums.KPIsSheetColumnNames.CurrentState.value.replace(" ", "_"), newState.name());
-        Logger.info("KPIs: reporting a new ticket event to Splunk: " + splunkEventJson.toString());
         new SplunkReporter().report(Enums.SplunkSourceTypes.RawKPILog, splunkEventJson.toString());
     }
 
