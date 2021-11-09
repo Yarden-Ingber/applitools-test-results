@@ -184,3 +184,4 @@ tutorial-puppeteer
 tutorial-selenium-javascript
 ImageTester
 EyesUtilities
+android-ufg-espresso-quickstart
