@@ -185,3 +185,4 @@ tutorial-selenium-javascript
 ImageTester
 EyesUtilities
 android-ufg-espresso-quickstart
+android-ufg-java-appium-quickstart
