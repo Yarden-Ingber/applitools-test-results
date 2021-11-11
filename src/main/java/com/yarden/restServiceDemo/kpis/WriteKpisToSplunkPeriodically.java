@@ -75,13 +75,6 @@ public class WriteKpisToSplunkPeriodically extends TimerTask{
         return false;
     }
 
-    private boolean isDateWithinTimeSpan (Date ticketCreationDate, int numOfMonthsAgo) {
-        Calendar calendar = Calendar.getInstance();
-        calendar.add(Calendar.MONTH, -numOfMonthsAgo);
-        Date dateMonthsAgo = calendar.getTime();
-        return dateMonthsAgo.before(ticketCreationDate);
-    }
-
     private void periodicDumpTickets() throws ParseException {
         SheetData rawDataSheetData = new SheetData(new SheetTabIdentifier(Enums.SpreadsheetIDs.KPIS.value, Enums.KPIsSheetTabsNames.RawData.value));
         String timeStamp = Logger.getTimaStamp();
@@ -105,12 +98,17 @@ public class WriteKpisToSplunkPeriodically extends TimerTask{
         for (JsonElement sheetEntry: rawDataSheetData.getSheetData()){
             Date ticketCreationDate = Logger.timestampToDate(sheetEntry.getAsJsonObject().get(Enums.KPIsSheetColumnNames.CreationDate.value).getAsString());
             boolean isTicketDone = sheetEntry.getAsJsonObject().get(Enums.KPIsSheetColumnNames.CurrentState.value).getAsString().equals(TicketStates.Done.name());
-            if (isDateWithinTimeSpan(ticketCreationDate, SixMonthsAgo) || !isTicketDone){
-                TicketUpdateRequest ticketUpdateRequest = new TicketUpdateRequest();
-                ticketUpdateRequest.setTeam(sheetEntry.getAsJsonObject().get(Enums.KPIsSheetColumnNames.Team.value).getAsString());
-                new KpiSplunkReporter(rawDataSheetData, ticketUpdateRequest).reportLatestState(sheetEntry);
-            }
+            TicketUpdateRequest ticketUpdateRequest = new TicketUpdateRequest();
+            ticketUpdateRequest.setTeam(sheetEntry.getAsJsonObject().get(Enums.KPIsSheetColumnNames.Team.value).getAsString());
+            new KpiSplunkReporter(rawDataSheetData, ticketUpdateRequest).reportLatestState(sheetEntry);
         }
+    }
+
+    private boolean isDateWithinTimeSpan (Date ticketCreationDate, int numOfMonthsAgo) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.add(Calendar.MONTH, -numOfMonthsAgo);
+        Date dateMonthsAgo = calendar.getTime();
+        return dateMonthsAgo.before(ticketCreationDate);
     }
 
 }
