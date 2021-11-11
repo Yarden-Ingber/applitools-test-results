@@ -46,7 +46,7 @@ public class KpisSummaryReporter extends TimerTask {
     private StringBuilder ufgTicketsWithoutType;
     private StringBuilder fieldTickets;
 
-    private static final int TwoMonthsAgo = 2;
+    private static final int SixMonthsAgo = 6;
 
     @EventListener(ApplicationReadyEvent.class)
     public static synchronized void start() {
@@ -158,7 +158,7 @@ public class KpisSummaryReporter extends TimerTask {
         String movedToDoneString = sheetEntry.getAsJsonObject().get(Enums.KPIsSheetColumnNames.MovedToStateDone.value).getAsString();
         TicketStates currentState = TicketStates.valueOf(sheetEntry.getAsJsonObject().get(Enums.KPIsSheetColumnNames.CurrentState.value).getAsString());
         return
-                (currentState.equals(TicketStates.Done) && isDateWithinTimeSpan(Logger.timestampToDate(movedToDoneString), TwoMonthsAgo)) ||
+                (currentState.equals(TicketStates.Done) && isDateWithinTimeSpan(Logger.timestampToDate(movedToDoneString), SixMonthsAgo)) ||
                 currentState.equals(TicketStates.WaitingForFieldApproval);
     }
 
