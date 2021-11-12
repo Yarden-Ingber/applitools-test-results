@@ -54,28 +54,8 @@ public class KpiSplunkReporter {
                 splunkEventJson.put("Board", ticketUpdateRequest.getTeam());
             } else if (column.equals(Enums.KPIsSheetColumnNames.Workaround.value)) {
                 addWorkaroundValue(splunkEventJson, singleTicketFieldData, column);
-            } else if (column.contains(Enums.KPIsSheetColumnNames.CalculatedTimeInState.value)) {
-                addCalculatedTimeInState(splunkEventJson, singleTicketFieldData, column);
             } else if (!column.contains(Enums.KPIsSheetColumnNames.EnterForTimeCalculationState.value)){
                 addGeneralColumnValue(splunkEventJson, singleTicketFieldData, column);
-            }
-        }
-    }
-
-    private void addCalculatedTimeInState(JSONObject splunkEventJson, JsonElement singleTicketFieldData, String column) {
-        if (singleTicketFieldData == null || singleTicketFieldData.isJsonNull()) {
-            splunkEventJson.put(column.replace(" ", "_"), 0);
-        } else {
-            String stringValue = singleTicketFieldData.getAsString();
-            if (stringValue.isEmpty()) {
-                splunkEventJson.put(column.replace(" ", "_"), 0);
-            } else {
-                try {
-                    int intValue = Integer.parseInt(stringValue);
-                    splunkEventJson.put(column.replace(" ", "_"), intValue);
-                } catch (NumberFormatException e) {
-                    splunkEventJson.put(column.replace(" ", "_"), stringValue);
-                }
             }
         }
     }
