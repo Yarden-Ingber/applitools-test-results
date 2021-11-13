@@ -56,3 +56,4 @@
 @applitools/spec-driver-selenium
 @applitools/spec-driver-playwright
 @applitools/spec-driver-webdriverio
+@applitools/spec-driver-puppeteer
