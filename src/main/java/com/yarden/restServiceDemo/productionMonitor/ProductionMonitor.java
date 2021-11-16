@@ -79,6 +79,7 @@ public class ProductionMonitor extends TimerTask {
         theString = theString.replace("\"", "").replace("domain,site\n", "");
         String[] domainsSitesList = theString.split("\n");
         StringBuilder failedEndpoints = new StringBuilder("");
+        String uuid = UUID.randomUUID().toString().substring(0, 8);
         for (String domainSite : domainsSitesList) {
             String domain = domainSite.split(",")[0];
             String site = domainSite.split(",")[1];
@@ -115,14 +116,14 @@ public class ProductionMonitor extends TimerTask {
                     productionMonitorEventJson.put("isUp", 0);
                     failedEndpoints.append(site).append(";");
                 }
-                productionMonitorEventJson.put("uuid", UUID.randomUUID().toString().substring(0, 8));
+                productionMonitorEventJson.put("uuid", uuid);
                 new SplunkReporter().report(Enums.SplunkSourceTypes.ProductionMonitor, productionMonitorEventJson.toString());
             } else {
                 Logger.info("ProductionMonitor: site=" + site + ", domain=" + domain + " was skipped in monitor");
             }
         }
         if (!failedEndpoints.toString().isEmpty()) {
-            sendEndpointMailNotification(failedEndpoints.toString());
+            sendEndpointMailNotification(failedEndpoints.toString(), uuid);
         }
     }
 
@@ -166,9 +167,9 @@ public class ProductionMonitor extends TimerTask {
         sendMailNotification(recipient, "Production monitor alert", "Alert that more than 50% of the browsers in the VG failed \n\n uuid: " + uuid);
     }
 
-    private void sendEndpointMailNotification(String endpoint) throws MailjetSocketTimeoutException, MailjetException {
+    private void sendEndpointMailNotification(String endpoint, String uuid) throws MailjetSocketTimeoutException, MailjetException {
         JSONArray recipient = new JSONArray().put(new JSONObject().put("Email", "eyesops@applitools.com").put("Name", "Production_monitor"));
-        sendMailNotification(recipient, "Production monitor alert", "The GET request for endpoints: " + endpoint + " failed");
+        sendMailNotification(recipient, "Production monitor alert", "The GET request for endpoints: " + endpoint + " failed \n\n uuid: " + uuid);
     }
 
     private void sendMailNotification(JSONArray recipient, String subject, String content) throws MailjetSocketTimeoutException, MailjetException {
