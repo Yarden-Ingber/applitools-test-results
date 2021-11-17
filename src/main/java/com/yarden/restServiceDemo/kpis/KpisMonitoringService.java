@@ -23,9 +23,11 @@ public class KpisMonitoringService {
     public void updateStateChange() {
         try {
             JsonElement ticket = findSheetEntry();
-            new TicketsStateChanger().updateExistingTicketState(ticket, newState);
-            ignoreTeamChangeForEyesOperationsBoard(ticket);
-            updateTicketFields(ticket);
+            if (!newState.equals(TicketStates.NoState)) {
+                new TicketsStateChanger().updateExistingTicketState(ticket, newState);
+                ignoreTeamChangeForEyesOperationsBoard(ticket);
+                updateTicketFields(ticket);
+            }
         } catch (NotFoundException e) {
             if (newState.equals(TicketStates.New)) {
                 JsonElement ticket = addNewTicketEntry();
