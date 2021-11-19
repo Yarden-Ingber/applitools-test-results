@@ -187,3 +187,4 @@ EyesUtilities
 android-ufg-espresso-quickstart
 android-ufg-java-appium-quickstart
 android-ufg-java-appium-quickstart-test-app
+applitoolsify
