@@ -129,7 +129,7 @@ public class KpisSummaryReporter extends TimerTask {
                 if (!team.equals(Enums.Strings.Archived.value)) {
                     TicketStates currentState = TicketStates.valueOf(sheetEntry.getAsJsonObject().get(Enums.KPIsSheetColumnNames.CurrentState.value).getAsString());
                     String ticketType = sheetEntry.getAsJsonObject().get(Enums.KPIsSheetColumnNames.TicketType.value).getAsString();
-                    if (isTicketOnField(currentState)) {
+                    if (isTicketOnField(currentState, team)) {
                         String createdBy = sheetEntry.getAsJsonObject().get(Enums.KPIsSheetColumnNames.CreatedBy.value).getAsString();
                         String createdByString = createdBy.isEmpty() ? "" : "(Created by: " + createdBy + ")";
                         fieldTickets.append(getSingleTicketLineString(sheetEntry) + " " + createdByString);
@@ -148,10 +148,11 @@ public class KpisSummaryReporter extends TimerTask {
         }
     }
 
-    private boolean isTicketOnField(TicketStates currentState) {
-        return currentState.equals(TicketStates.WaitingForFieldApproval) ||
+    private boolean isTicketOnField(TicketStates currentState, String team) {
+        return !team.equals(TicketsNewStateResolver.Boards.AlgoBugs.value) &&
+                (currentState.equals(TicketStates.WaitingForFieldApproval) ||
                 currentState.equals(TicketStates.WaitingForFieldInput) ||
-                currentState.equals(TicketStates.WaitingForCustomerResponse);
+                currentState.equals(TicketStates.WaitingForCustomerResponse));
     }
 
     private boolean isTicketRelevantForMissingTypeField(JsonElement sheetEntry) throws ParseException {
