@@ -179,8 +179,10 @@ public class TicketsNewStateResolver {
             return TicketStates.Done;
         } else if (request.getCurrent_trello_list().equalsIgnoreCase("All SDKs: Implementation updates")) {
             return TicketStates.Done;
+        } else if (request.getCurrent_trello_list().equalsIgnoreCase("All SDKs")) {
+            return TicketStates.Doing;
         } else if (request.getCurrent_trello_list().equalsIgnoreCase("On Hold")) {
-            return TicketStates.Done;
+            return TicketStates.OnHold;
         } else if (request.getCurrent_trello_list().equalsIgnoreCase("Known Limitations / Waiting for 3rd Party")) {
             return TicketStates.Done;
         } else if (request.getCurrent_trello_list().toLowerCase().contains("rfe")) {
