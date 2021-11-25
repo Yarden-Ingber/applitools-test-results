@@ -63,6 +63,8 @@ public class TicketsNewStateResolver {
             return TicketStates.WaitingForFieldApproval;
         } else if (request.getCurrent_trello_list().toLowerCase().contains("rfe")) {
             return TicketStates.RFE;
+        } else if (request.getCurrent_trello_list().equalsIgnoreCase("Known Limitations / Not yet supported")) {
+            return TicketStates.RFE;
         } else if (request.getCurrent_trello_list().equalsIgnoreCase("Waiting for Product")) {
             return TicketStates.WaitingForProduct;
         } else  {
