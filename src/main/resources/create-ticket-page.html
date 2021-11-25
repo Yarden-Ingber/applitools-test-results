@@ -277,7 +277,9 @@
                     <textarea name="ticketDescription" id="ticketDescription" cols="60" rows="4" required></textarea></label><br></div>
 
                 <div id="zendeskCompanyNameDiv"><label for="zendeskCompanyName"><span>Zendesk customer:</span>
-                    <input type="text" id="zendeskCompanyName" name="zendeskCompanyName" value="" readonly></label><br></div>
+                    <input type="text" id="zendeskCompanyName" name="zendeskCompanyName" value="" readonly>
+                    <a id="clearZendesk" href="#" onclick="clearZendeskData();return false;">Clear</a>
+                    </label><br></div>
 
                 <div id="customerAppUrlDiv"><label for="customerAppUrl"><span>Customer app url:</span>
                     <input type="text" id="customerAppUrl" name="customerAppUrl" size="80" required>
@@ -643,6 +645,14 @@
             addExtraFilesButton.style.background = '#C1C1C1';
         }
     });
+
+    function clearZendeskData() {
+        document.querySelector('#zendeskCustomerName').value = "";
+        document.querySelector('#zendeskCompanyName').value = "";
+        document.querySelector('#zendeskUrl').value = "";
+        document.querySelector('#zendeskTier').value = "";
+        document.querySelector('#zendeskCustomerType').value = "";
+    }
 
 
 </script>
