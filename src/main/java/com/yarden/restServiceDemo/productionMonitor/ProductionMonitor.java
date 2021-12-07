@@ -36,7 +36,7 @@ public class ProductionMonitor extends TimerTask {
     public static synchronized void start() {
         if (!isRunning) {
             timer = new Timer("ProductionMonitor");
-            timer.scheduleAtFixedRate(new ProductionMonitor(), 30, 1000 * 60 * 10);
+            timer.scheduleAtFixedRate(new ProductionMonitor(), 30, 1000 * 60 * 20);
             isRunning = true;
             Logger.info("ProductionMonitor started");
         }
