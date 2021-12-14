@@ -58,18 +58,6 @@ public class KpisRestCalls {
         }
     }
 
-    @RequestMapping(method = RequestMethod.POST, path = "/update_only_trello_list")
-    public ResponseEntity update_only_trello_list(@RequestBody String json) {
-        synchronized (RestCalls.lock) {
-            WriteEntireSheetsPeriodically.shouldStopSheetWritingTimer = false;
-            WriteEntireSheetsPeriodically.start();
-            newRequestPrint(json, "/update_only_trello_list");
-            TicketUpdateRequest ticketUpdateRequest = new Gson().fromJson(json, TicketUpdateRequest.class);
-            new KpisMonitoringService(ticketUpdateRequest).updateOnlyTrelloList();
-            return new ResponseEntity(ticketUpdateRequest.toString(), HttpStatus.OK);
-        }
-    }
-
     @GetMapping(value = "/get_create_ticket_page", produces = MediaType.TEXT_HTML_VALUE)
     @ResponseBody
     public String get_create_ticket_page() throws IOException, UnirestException {
@@ -79,7 +67,7 @@ public class KpisRestCalls {
     @RequestMapping(method = RequestMethod.GET, path = "/get_trello_ticket_url")
     public String get_trello_ticket_url(@RequestParam String requestID) {
         String ticketUrl = TrelloTicketCreator.getTrelloTicketUrl(requestID);
-        Logger.info("KpisRestCalls: request for a created ticket url: " + ticketUrl);
+        Logger.info("KPIs: request for a created ticket url: " + ticketUrl);
         return ticketUrl;
     }
 
@@ -139,7 +127,7 @@ public class KpisRestCalls {
         ticketFormFields.addAttribute(TrelloTicketCreator.FormFields.extraFiles3.name(), extraFiles3);
         ticketFormFields.addAttribute(TrelloTicketCreator.FormFields.extraFiles4.name(), extraFiles4);
         ticketFormFields.addAttribute(TrelloTicketCreator.FormFields.extraFiles5.name(), extraFiles5);
-        Logger.info("KpisRestCalls: Trello ticket creation request: " + ticketFormFields.toString());
+        Logger.info("KPIs: Trello ticket creation request: " + ticketFormFields.toString());
         try {
             TrelloTicketCreator.createTicket(ticketFormFields);
         } catch (UnirestException e) {

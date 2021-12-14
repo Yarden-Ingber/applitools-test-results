@@ -49,11 +49,6 @@ public class KpisMonitoringService {
         new KpiSplunkReporter(rawDataSheetData, ticketUpdateRequest).reportStandAloneEvent(newState);
     }
 
-    public void updateOnlyTrelloList() {
-        Logger.info("KPIs: Updating ticket trello list only for ticket " + ticketUpdateRequest.getTicketId() + ": " + ticketUpdateRequest.getCurrent_trello_list());
-        new KpiSplunkReporter(rawDataSheetData, ticketUpdateRequest).reportStandAloneEvent(newState);
-    }
-
     public void archiveCard() {
         try {
             ticketUpdateRequest.setTeam(Enums.Strings.Archived.value);
