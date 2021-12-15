@@ -89,6 +89,8 @@ public class TicketsNewStateResolver {
             return TicketStates.WaitingForRD;
         } else if (request.getCurrent_trello_list().equalsIgnoreCase("Waiting for Adam")) {
             return TicketStates.WaitingForRD;
+        } else if (request.getCurrent_trello_list().equalsIgnoreCase("Content")) {
+            return TicketStates.WaitingForRD;
         } else if (request.getCurrent_trello_list().equalsIgnoreCase("Automated maintenance")) {
             return TicketStates.WaitingForRD;
         } else if (request.getCurrent_trello_list().equalsIgnoreCase("Strict - Broken")) {
