@@ -190,3 +190,4 @@ android-ufg-java-appium-quickstart-test-app
 applitoolsify
 storybook-contexts-example
 fastlane-plugin-applitoolsify
+workshop-cbt-selenium-java
