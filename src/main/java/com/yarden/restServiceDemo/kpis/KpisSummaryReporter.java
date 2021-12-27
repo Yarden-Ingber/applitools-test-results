@@ -218,7 +218,9 @@ public class KpisSummaryReporter extends TimerTask {
         String ticketUrl = sheetEntry.getAsJsonObject().get(Enums.KPIsSheetColumnNames.TicketUrl.value).getAsString();
         String hot = sheetEntry.getAsJsonObject().get(Enums.KPIsSheetColumnNames.Labels.value).getAsString().toLowerCase().contains("hot") ? " (HOT)" : "";
         String closed = sheetEntry.getAsJsonObject().get(Enums.KPIsSheetColumnNames.CurrentState.value).getAsString().equals(TicketStates.Done.name()) ? " (Closed)" : "";
-        String newTicketString = "\n" + ticketUrl + " (" + getTicketDurationUntilToday(sheetEntry) + " days) " + hot + closed;
+        String newTicketString = "\n" +
+                ticketUrl + " (Ticket lifetime: " + getTicketDurationUntilToday(sheetEntry) + " days ===== Time in state NEW: " + getTicketDurationInStateNew(sheetEntry) + " days) "
+                + hot + closed;
         return newTicketString;
     }
 
@@ -227,6 +229,15 @@ public class KpisSummaryReporter extends TimerTask {
         Date today = calendar.getTime();
         Date creationDate = Logger.timestampToDate(sheetEntry.getAsJsonObject().get(Enums.KPIsSheetColumnNames.CreationDate.value).getAsString());
         return TimeUnit.DAYS.convert(today.getTime() - creationDate.getTime(), TimeUnit.MILLISECONDS);
+    }
+
+    private long getTicketDurationInStateNew(JsonElement sheetEntry) {
+        String timeInNew = sheetEntry.getAsJsonObject().get(Enums.KPIsSheetColumnNames.CalculatedTimeInState.value + TicketStates.New.name()).getAsString();
+        if (StringUtils.isEmpty(timeInNew)) {
+            return 0;
+        } else {
+            return Long.parseLong(timeInNew) / 24;
+        }
     }
 
     private void sendJsMailReport() throws MailjetSocketTimeoutException, MailjetException {
