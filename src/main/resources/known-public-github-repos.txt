@@ -191,3 +191,4 @@ applitoolsify
 storybook-contexts-example
 fastlane-plugin-applitoolsify
 workshop-cbt-selenium-java
+apps-android-wikipedia
