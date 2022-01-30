@@ -251,7 +251,8 @@ public class SdkSlackReportSender {
 
     private JSONArray getReleaseMailRecipient(){
         JSONArray recipients = new JSONArray();
-        recipients.put(new JSONObject().put("Email", Enums.EnvVariables.MailReportRecipient.value).put("Name", "Release_Report"));
+        recipients.put(new JSONObject().put("Email", Enums.EnvVariables.MailReportRecipient.value).put("Name", "Release_Report"))
+                .put(new JSONObject().put("Email", "yarden.ingber@applitools.com").put("Name", "Yarden Ingber"));
         return recipients;
     }
 
