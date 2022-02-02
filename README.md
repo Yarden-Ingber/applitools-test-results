@@ -166,6 +166,7 @@ Send a `POST` to `/extra_test_data` with the JSON payload (below) - returns a `2
   "changeLog":"### Fixed
                 - Updated accessibility enums (experimental).",
   "testCoverageGap": "coverage gap",
+  "frameworkVersions":"Appium 1.14.0;Selenium 4.1.1;Node 16.13.2",
   "specificRecipient":"optional_specific_mail@applitools.com"
 }
 ```
@@ -207,17 +208,16 @@ By default the mail will be sent to a mail report group release.reports@applitoo
 
 This endpoint allows Eyes report service to reset the state of the spreadsheet and the EndTaskCounter so Eyes will be able to start reporting from the beginning or rebuild with same ID.
 
-##### Send a `POST` to `/send_mail/generic` with the JSON payload (below) - returns a `200`.
+##### Send a `POST` to `/send_mail/no_tests` with the JSON payload (below) - returns a `200`.
 
 ```
 {  
-  "mailTextPart":"Hello World!",
-  "reportTitle":"Test Report for: Selenium IDE",
-  "version":"RELEASE_CANDIDATE;Eyes.Appium@4.0.5;Eyes.Images@2.4.4",
+  "sdk":"cypress",
+  "version":"3.23.7",
   "changeLog":"### Fixed
                 - Updated accessibility enums (experimental).",
-  "testCoverageGap": "coverage gap",
-  "specificRecipient":"optional_specific_mail@applitools.com"
+  "frameworkVersions":"Appium 1.14.0;Selenium 4.1.1;Node 16.13.2",
+  "specificRecipient":"yarden.ingber@applitools.com"
 }
 ```
 
