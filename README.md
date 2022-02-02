@@ -212,12 +212,12 @@ This endpoint allows Eyes report service to reset the state of the spreadsheet a
 
 ```
 {  
-  "sdk":"cypress",
-  "version":"3.23.7",
+  "sdk":"storybook",
+  "version":"3.27.3",
   "changeLog":"### Fixed
                 - Updated accessibility enums (experimental).",
-  "frameworkVersions":"Appium 1.14.0;Selenium 4.1.1;Node 16.13.2",
-  "specificRecipient":"yarden.ingber@applitools.com"
+  "frameworkVersions":"Chrome 98.0.4758.80;Storybook 6.4.18;Node 16.13.2",
+  "specificRecipient":"optional_specific_mail@applitools.com"
 }
 ```
 
