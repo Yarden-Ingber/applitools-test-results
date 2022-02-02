@@ -30,6 +30,9 @@ public class SlackReportNotificationJson {
     @SerializedName("specificRecipient")
     @Expose
     private String specificRecipient;
+    @SerializedName("frameworkVersions")
+    @Expose
+    private String frameworkVersions;
 
     public String getSdk() {
         return sdk;
@@ -100,5 +103,13 @@ public class SlackReportNotificationJson {
 
     public void setId(String id) {
         this.id = id;
+    }
+
+    public String getFrameworkVersions() {
+        return frameworkVersions;
+    }
+
+    public void setFrameworkVersions(String frameworkVersions) {
+        this.frameworkVersions = frameworkVersions;
     }
 }

@@ -85,6 +85,10 @@ public class HtmlReportGenerator {
             htmlReportStringBuilder.append(slackReportData.getChangeLog() + "<br/>");
             htmlReportStringBuilder.append("</details><br/>");
         }
+        if (slackReportData.getFrameworkVersions() != null && !slackReportData.getFrameworkVersions().isEmpty()) {
+            htmlReportStringBuilder.append("<h2>Tested framework versions:</h2>");
+            htmlReportStringBuilder.append(versionToList(slackReportData.getFrameworkVersions()) + "<br/><br/>");
+        }
         if (slackReportData.getHighLevelReportTable() != null) {
             htmlReportStringBuilder.append("<h2>Test summary</h2><br/>");
             htmlReportStringBuilder.append(slackReportData.getHighLevelReportTable());

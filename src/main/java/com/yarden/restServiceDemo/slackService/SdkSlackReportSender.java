@@ -54,6 +54,7 @@ public class SdkSlackReportSender {
                 .setMailSubject("Test report for SDK: " + sdk)
                 .setSdk(sdk)
                 .setVersion(version)
+                .setFrameworkVersions(requestJson.getFrameworkVersions())
                 .setChangeLog(changeLog)
                 .setCoverageGap(testCoverageGap)
                 .setHighLevelReportTable(sdkReleaseEventHighLevelReportTableBuilder.getHighLevelReportTable())

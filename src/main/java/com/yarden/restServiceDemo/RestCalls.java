@@ -6,7 +6,7 @@ import com.yarden.restServiceDemo.firebaseService.FirebaseResultsJsonsService;
 import com.yarden.restServiceDemo.pojos.SdkResultRequestJson;
 import com.yarden.restServiceDemo.reportService.*;
 import com.yarden.restServiceDemo.slackService.EyesSlackReporterSender;
-import com.yarden.restServiceDemo.slackService.NonTestTableSlackReportSender;
+import com.yarden.restServiceDemo.slackService.NoTestTableSlackReportSender;
 import com.yarden.restServiceDemo.slackService.SdkSlackReportSender;
 import com.yarden.restServiceDemo.splunkService.SplunkReporter;
 import org.json.JSONObject;
@@ -198,12 +198,25 @@ public class RestCalls {
         }
     }
 
+    @RequestMapping(method = RequestMethod.POST, path = "/send_mail/no_tests")
+    public ResponseEntity sendReleaseReportWithoutTests(@RequestBody String json){
+        synchronized (lock) {
+            newRequestPrint(json, "/send_mail/no_tests", PrintPayload);
+            try {
+                new NoTestTableSlackReportSender().send(json);
+            } catch (Throwable throwable) {
+                return new ResponseEntity("Failed sending email: " + throwable.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+            }
+            return new ResponseEntity("Mail sent", HttpStatus.OK);
+        }
+    }
+
     @RequestMapping(method = RequestMethod.POST, path = "/send_mail/generic")
     public ResponseEntity sendGenericMailReport(@RequestBody String json){
         synchronized (lock) {
             newRequestPrint(json, "/send_mail/generic", PrintPayload);
             try {
-                new NonTestTableSlackReportSender().send(json);
+                new NoTestTableSlackReportSender().send(json);
             } catch (Throwable throwable) {
                 return new ResponseEntity("Failed sending email: " + throwable.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
             }

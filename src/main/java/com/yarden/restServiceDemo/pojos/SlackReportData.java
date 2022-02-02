@@ -19,6 +19,7 @@ public class SlackReportData {
     private String mailSubject = "";
     private String changeLog = "";
     private String version = "";
+    private String frameworkVersions = "";
     private String coverageGap = "";
     private JSONArray recipientsJsonArray = null;
     private String htmlReportS3BucketName = "";
@@ -196,6 +197,15 @@ public class SlackReportData {
 
     public SlackReportData setMissingTestsCount(int missingTestsCount) {
         this.missingTestsCount = missingTestsCount;
+        return this;
+    }
+
+    public String getFrameworkVersions() {
+        return frameworkVersions;
+    }
+
+    public SlackReportData setFrameworkVersions(String frameworkVersions) {
+        this.frameworkVersions = frameworkVersions;
         return this;
     }
 }
