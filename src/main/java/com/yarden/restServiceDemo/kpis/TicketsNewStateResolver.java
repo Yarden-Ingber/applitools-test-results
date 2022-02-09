@@ -205,7 +205,7 @@ public class TicketsNewStateResolver {
             return TicketStates.WaitingForRD;
         } else if (request.getCurrent_trello_list().equalsIgnoreCase("UFT")) {
             return TicketStates.WaitingForRD;
-        } else if (request.getCurrent_trello_list().equalsIgnoreCase("Missing Quality Info")) {
+        } else if (request.getCurrent_trello_list().equalsIgnoreCase("Missing quality")) {
             return TicketStates.MissingQuality;
         } else {
             return noStateFound();
