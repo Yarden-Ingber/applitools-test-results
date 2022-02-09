@@ -27,6 +27,7 @@ public class SlackReportData {
     private int passedTestsCount = 0;
     private int failedTestsCount = 0;
     private int missingTestsCount = 0;
+    private MailingGroups mailingGroupId = null;
 
     public String getReportTitle() {
         return reportTitle;
@@ -207,5 +208,24 @@ public class SlackReportData {
     public SlackReportData setFrameworkVersions(String frameworkVersions) {
         this.frameworkVersions = frameworkVersions;
         return this;
+    }
+
+    public SlackReportData setMailingGroupId (MailingGroups mailingGroup) {
+        this.mailingGroupId = mailingGroup;
+        return this;
+    }
+
+    public MailingGroups getMailingGroupId () {
+        return this.mailingGroupId;
+    }
+
+    public enum MailingGroups {
+        ReleaseReports("61a32dfb-b8f4-4104-9be5-495e447d57f4"), Ops("7a4e31b8-e12e-4619-9e75-906ef8474517");
+
+        public String id;
+
+        MailingGroups(String id) {
+            this.id = id;
+        }
     }
 }

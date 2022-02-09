@@ -166,7 +166,7 @@ public class Enums {
     public enum EnvVariables {
         MailjetApiKeyPublic(System.getenv("MJ_APIKEY_PUBLIC")), MailjetApiKeyPrivate(System.getenv("MJ_APIKEY_PRIVATE")),
         AwsS3SdkReportsBucketName(System.getenv("SDK_REPORTS_S3_BUCKET")), AwsS3EyesReportsBucketName(System.getenv("EYE_REPORTS_S3_BUCKET")),
-        MailReportRecipient(System.getenv("MAIL_REPORT_RECIPIENT")), SlackSdkReleaseChannelEndpoint(System.getenv("SDK_RELEASE_SLACK_CHANNEL_ENDPOINT")),
+        SlackSdkReleaseChannelEndpoint(System.getenv("SDK_RELEASE_SLACK_CHANNEL_ENDPOINT")),
         ApiToken(System.getenv("API_TOKEN")), TurnOffFullRegressionEmail(System.getenv("TURN_OFF_FULL_REGRESSION_EMAIL")),
         SplunkUsername(System.getenv("SPLUNK_USERNAME")), SplunkPassword(System.getenv("SPLUNK_PASSWORD")),
         EyesTestTasksCount(System.getenv("EYES_TEST_TASKS_COUNT")), AwsS3ResultsJsonsBucketName(System.getenv("RESULTS_JSONS_S3_BUCKET")),

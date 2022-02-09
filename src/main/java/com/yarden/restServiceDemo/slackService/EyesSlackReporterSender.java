@@ -199,7 +199,7 @@ public class EyesSlackReporterSender {
         if (requestJson.getSpecificRecipient() != null && !requestJson.getSpecificRecipient().isEmpty()) {
             recipientMail = requestJson.getSpecificRecipient();
         } else {
-            recipientMail = Enums.EnvVariables.MailReportRecipient.value;
+            recipientMail = "yarden.ingber@applitools.com";
         }
         slackReportData.setRecipientsJsonArray(new JSONArray().put(new JSONObject().put("Email", recipientMail).put("Name", "Release_Report")));
     }

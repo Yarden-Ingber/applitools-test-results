@@ -8,6 +8,7 @@ import com.yarden.restServiceDemo.Enums;
 import com.yarden.restServiceDemo.Logger;
 import com.yarden.restServiceDemo.pojos.SlackReportData;
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.xhtmlrenderer.pdf.ITextRenderer;
@@ -32,13 +33,23 @@ public class MailSender {
                                         .put("Name", "Yarden Ingber"))
                                 .put(Emailv31.Message.TO, slackReportData.getRecipientsJsonArray())
                                 .put(Emailv31.Message.SUBJECT, slackReportData.getMailSubject())
-                                .put(Emailv31.Message.HTMLPART, slackReportData.getReportTextPart().replace("\n", "<br/>") +
-                                        "<br><br>HTML Report:<br>" +
-                                        slackReportData.getHtmlReportUrl())
+                                .put(Emailv31.Message.HTMLPART, getMailContent())
                                 .put(Emailv31.Message.CUSTOMID, "SdkRelease")));
         response = client.post(request);
         Logger.info(Integer.toString(response.getStatus()));
         Logger.info(response.getData().toString());
+    }
+
+    private String getMailContent () {
+        String content = "";
+        if (StringUtils.isNotEmpty(slackReportData.getReportTextPart())) {
+            content = slackReportData.getReportTextPart().replace("\n", "<br/>") +
+                    "<br><br>HTML Report:<br>" + slackReportData.getHtmlReportUrl();
+        }
+        if (slackReportData.getMailingGroupId() != null) {
+            content = content + "<br><br>" + slackReportData.getMailingGroupId().id;
+        }
+        return  content;
     }
 
     private String getPdfReportAsBase64() throws IOException, DocumentException {

@@ -1,29 +1,25 @@
 package com.yarden.restServiceDemo.slackService;
 
 import com.google.gson.Gson;
-import com.google.gson.JsonParseException;
 import com.mailjet.client.errors.MailjetException;
 import com.mailjet.client.errors.MailjetSocketTimeoutException;
 import com.yarden.restServiceDemo.Enums;
 import com.yarden.restServiceDemo.HtmlReportGenerator;
-import com.yarden.restServiceDemo.Logger;
 import com.yarden.restServiceDemo.mailService.MailSender;
-import com.yarden.restServiceDemo.pojos.SlackReportNotificationJson;
 import com.yarden.restServiceDemo.pojos.SlackReportData;
+import com.yarden.restServiceDemo.pojos.SlackReportNotificationJson;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.http.impl.execchain.RequestAbortedException;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 
 public class NoTestTableSlackReportSender {
 
-    public void send(String json) throws MailjetSocketTimeoutException, MailjetException, RequestAbortedException, FileNotFoundException, UnsupportedEncodingException {
+    public void send(String json) throws MailjetSocketTimeoutException, MailjetException, FileNotFoundException, UnsupportedEncodingException {
         SlackReportNotificationJson requestJson = new Gson().fromJson(json, SlackReportNotificationJson.class);
-        String recipient = StringUtils.isEmpty(requestJson.getSpecificRecipient()) ? Enums.EnvVariables.MailReportRecipient.value : requestJson.getSpecificRecipient();
+        String recipient = StringUtils.isEmpty(requestJson.getSpecificRecipient()) ? "yarden.ingber@applitools.com" : requestJson.getSpecificRecipient();
         SlackReportData slackReportData = new SlackReportData()
                 .setSdk(requestJson.getSdk())
                 .setVersion(getVersion(requestJson))
@@ -36,7 +32,8 @@ public class NoTestTableSlackReportSender {
                         .put(new JSONObject()
                                 .put("Email", recipient)
                                 .put("Name", "Release_Report")))
-                .setHtmlReportS3BucketName(Enums.EnvVariables.AwsS3SdkReportsBucketName.value);
+                .setHtmlReportS3BucketName(Enums.EnvVariables.AwsS3SdkReportsBucketName.value)
+                .setMailingGroupId(SlackReportData.MailingGroups.ReleaseReports);
         slackReportData.setHtmlReportUrl(new HtmlReportGenerator(slackReportData).getHtmlReportUrlInAwsS3(slackReportData.getHtmlReportS3BucketName()));
         new MailSender().send(slackReportData);
     }

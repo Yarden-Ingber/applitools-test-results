@@ -61,7 +61,8 @@ public class SdkSlackReportSender {
                 .setPassedTestsCount(Integer.parseInt(sdkReleaseEventHighLevelReportTableBuilder.currentTotalTestCount))
                 .setDetailedMissingTestsTable(getDetailedMissingTestsTable())
                 .setDetailedPassedTestsTable(getDetailedPassedTestsTable())
-                .setHtmlReportS3BucketName(Enums.EnvVariables.AwsS3SdkReportsBucketName.value);
+                .setHtmlReportS3BucketName(Enums.EnvVariables.AwsS3SdkReportsBucketName.value)
+                .setMailingGroupId(SlackReportData.MailingGroups.ReleaseReports);
         slackReportData.setHtmlReportUrl(new HtmlReportGenerator(slackReportData).getHtmlReportUrlInAwsS3(slackReportData.getHtmlReportS3BucketName()));
         slackReportData.setRecipientsJsonArray(getRecipientMail(ReleaseMail));
         if (requestJson.getSpecificRecipient() == null || requestJson.getSpecificRecipient().isEmpty()){
@@ -245,15 +246,14 @@ public class SdkSlackReportSender {
 
     private JSONArray getFullRegressionRecipient(){
         JSONArray recipients = new JSONArray();
-        recipients.put(new JSONObject().put("Email", "yarden.ingber@applitools.com").put("Name", "Release_Report"))
-                .put(new JSONObject().put("Email", "daniel.puterman@applitools.com").put("Name", "Release_Report"));
+        recipients.put(new JSONObject().put("Email", "yarden.ingber@applitools.com").put("Name", "Yarden Ingber"))
+                .put(new JSONObject().put("Email", "daniel.puterman@applitools.com").put("Name", "Daniel Puterman"));
         return recipients;
     }
 
     private JSONArray getReleaseMailRecipient(){
         JSONArray recipients = new JSONArray();
-        recipients.put(new JSONObject().put("Email", Enums.EnvVariables.MailReportRecipient.value).put("Name", "Release_Report"))
-                .put(new JSONObject().put("Email", "yarden.ingber@applitools.com").put("Name", "Yarden Ingber"));
+        recipients.put(new JSONObject().put("Email", "yarden.ingber@applitools.com").put("Name", "Yarden Ingber"));
         return recipients;
     }
 
