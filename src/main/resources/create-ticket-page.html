@@ -275,12 +275,31 @@
 
                 <div id="ticketDescriptionDiv"><label for="ticketDescription"><span>Ticket description:</span>
                     <textarea name="ticketDescription" id="ticketDescription" cols="60" rows="4" required></textarea></label><br></div>
+                <br>
+                <details>
 
-                <div id="zendeskCompanyNameDiv"><label for="zendeskCompanyName"><span>Zendesk customer:</span>
-                    <input type="text" id="zendeskCompanyName" name="zendeskCompanyName" value="" readonly>
-                    <a id="clearZendesk" href="#" onclick="clearZendeskData();return false;">Clear</a>
+                    <summary>Zendesk data <button id="clearZendesk" href="#" onclick="clearZendeskData();return false;">Clear</button></summary>
+
+                    <br>
+                    <div id="zendeskCompanyNameDiv"><label for="zendeskCompanyName"><span>Company name:</span>
+                        <input type="text" id="zendeskCompanyName" name="zendeskCompanyName" value="">
                     </label><br></div>
 
+                    <div id="zendeskCustomerNameDiv"><label for="zendeskCustomerName"><span>Customer name:</span>
+                        <input type="text" id="zendeskCustomerName" name="zendeskCustomerName" value="">
+                    </label><br></div>
+                    <div id="zendeskTierDiv"><label for="zendeskTier"><span>Zendesk tier:</span>
+                        <input type="text" id="zendeskTier" name="zendeskTier" value="">
+                    </label><br></div>
+                    <div id="zendeskCustomerTypeDiv"><label for="zendeskCustomerType"><span>Customer type:</span>
+                        <input type="text" id="zendeskCustomerType" name="zendeskCustomerType" value="">
+                    </label><br></div>
+                    <div id="zendeskUrlDiv"><label for="zendeskUrl"><span>Zendesk URL:</span>
+                        <input type="text" id="zendeskUrl" name="zendeskUrl" value="">
+                    </label><br><br></div>
+
+                </details>
+                <br><br>
                 <div id="customerAppUrlDiv"><label for="customerAppUrl"><span>Customer app url:</span>
                     <input type="text" id="customerAppUrl" name="customerAppUrl" size="80" required>
                     <input type="checkbox" id="isCustomerAppAvailable" name="isCustomerAppAvailable" checked=true></label><br></div>
@@ -355,10 +374,6 @@
                 <div id="loading" class="loading">Loading&#8230;</div>
 
                 <input type="hidden" id="requestID" name="requestID" value="random">
-                <input type="hidden" id="zendeskCustomerName" name="zendeskCustomerName" value="">
-                <input type="hidden" id="zendeskTier" name="zendeskTier" value="">
-                <input type="hidden" id="zendeskCustomerType" name="zendeskCustomerType" value="">
-                <input type="hidden" id="zendeskUrl" name="zendeskUrl" value="">
 
                 <input type="submit" id="btn-submit" value="Create ticket">
                 <center><label id="ticketUrl" class="ticketUrl"><span><a href="" target="_blank">Done!</a></span></label></center>

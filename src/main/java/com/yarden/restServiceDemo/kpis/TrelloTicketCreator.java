@@ -110,12 +110,6 @@ public class TrelloTicketCreator {
         if (StringUtils.isNotEmpty((String)ticketFormFields.get(FormFields.renderID.name()))) {
             ticketDescription = ticketDescription + "\n\nRender ID: " + ticketFormFields.get(FormFields.renderID.name());
         }
-        if (StringUtils.isNotEmpty((String)ticketFormFields.get(FormFields.zendeskCompanyName.name()))) {
-            ticketDescription = ticketDescription + "\n\nZendesk company name: " + ticketFormFields.get(FormFields.zendeskCompanyName.name());
-        }
-        if (StringUtils.isNotEmpty((String)ticketFormFields.get(FormFields.zendeskCustomerName.name()))) {
-            ticketDescription = ticketDescription + "\n\nZendesk customer name: " + ticketFormFields.get(FormFields.zendeskCustomerName.name());
-        }
         Logger.info("TrelloTicketCreator: Adding to description accountName: " + ticketFormFields.get(FormFields.accountName.name()));
         if (StringUtils.isNotEmpty((String)ticketFormFields.get(FormFields.accountName.name()))) {
             ticketDescription = ticketDescription + "\n\nCreated by: " + ticketFormFields.get(FormFields.accountName.name());
@@ -170,9 +164,11 @@ public class TrelloTicketCreator {
         try {
             if (StringUtils.isEmpty(zendeskCustomerType)) {
                 return "Lead";
-            } else if (zendeskCustomerType.equalsIgnoreCase("Prospect")) {
+            } else if (zendeskCustomerType.equalsIgnoreCase("Prospect")
+                    || zendeskCustomerType.equalsIgnoreCase("POC")) {
                 return "POC";
-            } else if (zendeskCustomerType.equalsIgnoreCase("Customer")) {
+            } else if (zendeskCustomerType.equalsIgnoreCase("Customer")
+                    || zendeskCustomerType.equalsIgnoreCase("Paying")) {
                 return "Paying";
             } else {
                 return "";
