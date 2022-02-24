@@ -194,3 +194,4 @@ workshop-cbt-selenium-java
 apps-android-wikipedia
 workshop-cbt-cypress
 MFS-BatchMapper-Generator
+workshop-cbt-playwright-js
