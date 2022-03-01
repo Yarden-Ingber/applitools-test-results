@@ -274,8 +274,23 @@
                     <input type="text" id="ticketTitle" name="ticketTitle" size="80" required></label><br></div>
 
                 <div id="ticketDescriptionDiv"><label for="ticketDescription"><span>Ticket description:</span>
-                    <textarea name="ticketDescription" id="ticketDescription" cols="60" rows="4" required></textarea></label><br></div>
-                <br>
+                    <textarea name="ticketDescription" id="ticketDescription" cols="60" rows="4" required></textarea></label>
+                    <details>
+                    <summary>Styling</summary>
+                    <br>
+                    <input class="** **" type="button" id="boldStyleBtn" value="Bold"/>
+                    <input class="* *" type="button" id="italicStyleBtn" value="Italic"/>
+                    <input class="` `" type="button" id="inlineCodeStyleButton" value="Inline code"/>
+                    <input class="```&#10;&#13```" type="button" id="codeBlockStyleButton" value="Code block"/>
+                    <input class="---" type="button" id="horizontalLineStyleBtn" value="Horizontal line"/>
+                    <input class="[text](link)" type="button" id="linkStyleBtn" value="Link"/>
+                    <input class="- " type="button" id="bulletStyleBtn" value="Bullet"/>
+                    <input class="#" type="button" id="h1StyleBtn" value="H1"/>
+                    <input class="##" type="button" id="h2StyleBtn" value="H2"/>
+                    <input class="###" type="button" id="h3StyleBtn" value="H3"/>
+                    </details>
+                </div>
+                <br><br>
                 <details>
 
                     <summary>Zendesk data <button id="clearZendesk" href="#" onclick="clearZendeskData();return false;">Clear</button></summary>
@@ -668,6 +683,31 @@
         document.querySelector('#zendeskTier').value = "";
         document.querySelector('#zendeskCustomerType').value = "";
     }
+
+    document.addEventListener('DOMContentLoaded', start, false);
+    function start(){
+        document.getElementById("italicStyleBtn").addEventListener("click", function(){addText(this);} );
+        document.getElementById("boldStyleBtn").addEventListener("click", function(){addText(this);} );
+        document.getElementById("inlineCodeStyleButton").addEventListener("click", function(){addText(this);} );
+        document.getElementById("codeBlockStyleButton").addEventListener("click", function(){addText(this);} );
+        document.getElementById("horizontalLineStyleBtn").addEventListener("click", function(){addText(this);} );
+        document.getElementById("linkStyleBtn").addEventListener("click", function(){addText(this);} );
+        document.getElementById("bulletStyleBtn").addEventListener("click", function(){addText(this);} );
+        document.getElementById("h1StyleBtn").addEventListener("click", function(){addText(this);} );
+        document.getElementById("h2StyleBtn").addEventListener("click", function(){addText(this);} );
+        document.getElementById("h3StyleBtn").addEventListener("click", function(){addText(this);} );
+        function addText(button) {
+            let textArea = document.getElementById('ticketDescription');
+            let cursorPosition = textArea.selectionStart;
+            let v = textArea.value;
+            let textBefore = v.substring(0,  cursorPosition );
+            let textAfter  = v.substring( cursorPosition, v.length );
+            textArea.value = textBefore + button.className + textAfter;
+            cursorPosition += button.className.length;
+            textArea.focus();
+            textArea.setSelectionRange(cursorPosition, cursorPosition);
+        }
+    };
 
 
 </script>
