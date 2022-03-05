@@ -26,7 +26,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.*;
 
-@Configuration
+//@Configuration
 public class ProductionMonitor extends TimerTask {
 
     private static boolean isRunning = false;
