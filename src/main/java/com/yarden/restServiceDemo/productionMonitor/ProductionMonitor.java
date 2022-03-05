@@ -26,7 +26,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.*;
 
-//@Configuration
+@Configuration
 public class ProductionMonitor extends TimerTask {
 
     private static boolean isRunning = false;
@@ -84,7 +84,7 @@ public class ProductionMonitor extends TimerTask {
         for (String domainSite : domainsSitesList) {
             String domain = domainSite.split(",")[0];
             String site = domainSite.split(",")[1];
-            if (! ( domain.contains("***") || site.equals("Itaitest") || domain.contains("gehceyes") || site.equals("Jpmcqa")) ) {
+            if (! ( domain.contains("***") || site.equals("Itaitest") || domain.contains("gehceyes") || domain.contains("canvabeyes") || site.equals("Jpmcqa")) ) {
                 domain = domain + "/api/admin/userinfo";
                 URL endpoint = new URL(domain);
                 JSONObject productionMonitorEventJson = new JSONObject();
