@@ -129,7 +129,6 @@ tutorial-capybara-ruby-basic
 tutorial-images-python
 tutorial-appium-native-java
 tutorial-appium-web-csharp-basic
-tutorial-appium-web-java-basic
 TestResultsHandler-Java
 TestResultsHandler-DotNet
 TestResultsHandler-JS
@@ -188,7 +187,7 @@ android-ufg-espresso-quickstart
 android-ufg-java-appium-quickstart
 android-ufg-java-appium-quickstart-test-app
 applitoolsify
-storybook-contexts-example
+storybook-contexts-extutorial-appium-web-java-basicample
 fastlane-plugin-applitoolsify
 workshop-cbt-selenium-java
 apps-android-wikipedia
@@ -197,4 +196,3 @@ MFS-BatchMapper-Generator
 workshop-cbt-playwright-js
 troubleshoot
 workshop-cbt-storybook
-tutorial-appium-web-java-basic
