@@ -187,7 +187,6 @@ android-ufg-espresso-quickstart
 android-ufg-java-appium-quickstart
 android-ufg-java-appium-quickstart-test-app
 applitoolsify
-storybook-contexts-extutorial-appium-web-java-basicample
 fastlane-plugin-applitoolsify
 workshop-cbt-selenium-java
 apps-android-wikipedia
