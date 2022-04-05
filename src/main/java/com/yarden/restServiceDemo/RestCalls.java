@@ -92,6 +92,7 @@ public class RestCalls {
     @RequestMapping(method = RequestMethod.POST, path = "/vg_status")
     public ResponseEntity postVisualGridStatus(@RequestBody String json) {
         synchronized (lock) {
+            newRequestPrint(json, "/vg_status", PrintPayload);
             VisualGridStatusPageRequestTimer.isRequestReceived = true;
             WriteEntireSheetsPeriodically.shouldStopSheetWritingTimer = false;
             WriteEntireSheetsPeriodically.start();
