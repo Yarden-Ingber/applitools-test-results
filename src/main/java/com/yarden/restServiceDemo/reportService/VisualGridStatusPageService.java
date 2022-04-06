@@ -43,8 +43,9 @@ public class VisualGridStatusPageService {
 
     private String getSystemStatusFromRequestJson(String system) {
         for (VisualGridStatus visualGridStatus : visualGridStatusPageRequestJson.getStatus()) {
+            Logger.info("Checking status for system1: " + visualGridStatus.getSystem());
             if (visualGridStatus.getSystem().equals(system)) {
-                Logger.info("Checking status for system: " + visualGridStatus.getSystem());
+                Logger.info("Checking status for system2: " + visualGridStatus.getSystem());
                 if (visualGridStatus.getStatus()) {
                     return Enums.TestResults.Passed.value;
                 } else {
