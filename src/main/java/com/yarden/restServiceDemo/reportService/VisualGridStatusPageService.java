@@ -33,6 +33,7 @@ public class VisualGridStatusPageService {
         String newEntryJsonString = "\"" + Enums.VisualGridSheetColumnNames.Timestamp.value + "\":\"" + Logger.getTimaStamp() + "\",";
         for (String column : sheetData.getColumnNames()) {
             if (!column.equals(Enums.VisualGridSheetColumnNames.Timestamp.value)) {
+                Logger.info("Checking column: " + column);
                 newEntryJsonString = newEntryJsonString + "\"" + column + "\":\"" + getSystemStatusFromRequestJson(column) + "\",";
             }
         }
@@ -43,6 +44,7 @@ public class VisualGridStatusPageService {
     private String getSystemStatusFromRequestJson(String system) {
         for (VisualGridStatus visualGridStatus : visualGridStatusPageRequestJson.getStatus()) {
             if (visualGridStatus.getSystem().equals(system)) {
+                Logger.info("Checking status for system: " + visualGridStatus.getSystem());
                 if (visualGridStatus.getStatus()) {
                     return Enums.TestResults.Passed.value;
                 } else {
