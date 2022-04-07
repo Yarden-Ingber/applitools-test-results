@@ -18,6 +18,7 @@ public class VisualGridStatusPageService {
 
     public void postResults(String json) throws IOException {
         visualGridStatusPageRequestJson = new Gson().fromJson(json, VisualGridStatusPageRequestJson.class);
+        visualGridStatusPageRequestJson.printSystemList();
         sheetData = new SheetData(new SheetTabIdentifier(Enums.SpreadsheetIDs.VisualGrid.value, Enums.VisualGridSheetTabsNames.Status.value));
         if (getNumOfStatusLines() >= NumOfResultsToShow) {
             sheetData.deleteLastRowInSheet();
