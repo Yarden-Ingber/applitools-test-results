@@ -32,7 +32,6 @@ public class VisualGridStatusPageService {
     private JsonElement parseRequestJsonToStatusEntry() {
         String newEntryJsonString = "\"" + Enums.VisualGridSheetColumnNames.Timestamp.value + "\":\"" + Logger.getTimaStamp() + "\",";
         for (String column : sheetData.getColumnNames()) {
-            Logger.info("Checking column: " + column);
             if (!column.equals(Enums.VisualGridSheetColumnNames.Timestamp.value)) {
                 newEntryJsonString = newEntryJsonString + "\"" + column + "\":\"" + getSystemStatusFromRequestJson(column) + "\",";
             }
