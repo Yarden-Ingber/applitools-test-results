@@ -166,7 +166,7 @@ public class ProductionMonitor extends TimerTask {
     private void sendVGMailNotification(String uuid) throws MailjetSocketTimeoutException, MailjetException {
         JSONArray recipient = new JSONArray();
         recipient.put(new JSONObject().put("Email", "yarden.ingber@applitools.com").put("Name", "Yarden Ingber"));
-//        sendMailNotification(recipient, "Production monitor alert", "Alert that more than 50% of the browsers in the VG failed \n\n uuid: " + uuid + "\n\n" + "Group ID: " + SlackReportData.MailingGroups.Ops.id);
+        sendMailNotification(recipient, "Production monitor alert", "Alert that more than 50% of the browsers in the VG failed \n\n uuid: " + uuid + "\n\n" + "Group ID: " + SlackReportData.MailingGroups.Ops.id);
     }
 
     private void sendEndpointMailNotification(String endpoint, String uuid) throws MailjetSocketTimeoutException, MailjetException {

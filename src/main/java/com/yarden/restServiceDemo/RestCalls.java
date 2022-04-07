@@ -10,6 +10,7 @@ import com.yarden.restServiceDemo.slackService.NoTestTableSlackReportSender;
 import com.yarden.restServiceDemo.slackService.SdkSlackReportSender;
 import com.yarden.restServiceDemo.splunkService.SplunkReporter;
 import org.json.JSONObject;
+import org.junit.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -92,7 +93,6 @@ public class RestCalls {
     @RequestMapping(method = RequestMethod.POST, path = "/vg_status")
     public ResponseEntity postVisualGridStatus(@RequestBody String json) {
         synchronized (lock) {
-            newRequestPrint(json, "/vg_status", PrintPayload);
             VisualGridStatusPageRequestTimer.isRequestReceived = true;
             WriteEntireSheetsPeriodically.shouldStopSheetWritingTimer = false;
             WriteEntireSheetsPeriodically.start();
