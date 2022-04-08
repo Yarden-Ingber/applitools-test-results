@@ -196,3 +196,4 @@ workshop-cbt-playwright-js
 troubleshoot
 workshop-cbt-storybook
 storybook-contexts-example
+webinar-cypress-vs-playwright
