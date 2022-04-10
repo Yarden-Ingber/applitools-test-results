@@ -9,13 +9,16 @@ import com.yarden.restServiceDemo.slackService.EyesSlackReporterSender;
 import com.yarden.restServiceDemo.slackService.NoTestTableSlackReportSender;
 import com.yarden.restServiceDemo.slackService.SdkSlackReportSender;
 import com.yarden.restServiceDemo.splunkService.SplunkReporter;
+import org.apache.commons.io.IOUtils;
 import org.json.JSONObject;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 
 @RestController
 public class RestCalls {
@@ -234,6 +237,15 @@ public class RestCalls {
             }
             return new ResponseEntity("Sheet is updated", HttpStatus.OK);
         }
+    }
+
+    @GetMapping(value = "/get_tv_news_feed", produces = MediaType.TEXT_HTML_VALUE)
+    @ResponseBody
+    public String get_tv_news_feed() throws IOException {
+        InputStream inputStream = SdkReportService.class.getResourceAsStream("/tv-news-feed.html");
+        String page = IOUtils.toString(inputStream, StandardCharsets.UTF_8.name());
+        inputStream.close();
+        return page;
     }
 
     private void newRequestPrint(String json, String request, boolean shouldPrintPayload){
