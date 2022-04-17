@@ -84,7 +84,7 @@ public class KpisSummaryReporter extends TimerTask {
         int day = calendar.get(Calendar.DAY_OF_WEEK);
         int hour = calendar.get(Calendar.HOUR_OF_DAY);
         int minute = calendar.get(Calendar.MINUTE);
-        if (day == Calendar.SUNDAY && hour == 8 && minute < 30) {
+        if (day == Calendar.SUNDAY && hour == 6 && minute < 30) {
             Logger.info("KpisSummaryReporter: Report window is open. Don't restart server!!!!!!!!!!!!!!");
             if (!isReportsSent) {
                 isReportsSent = true;
