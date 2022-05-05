@@ -26,12 +26,14 @@ public class UpdateTicketStateFromQueue extends TimerTask {
             Logger.info("UpdateTicketStateFromQueue started");
         }
     }
-    
+
     @Override
     public void run() {
         synchronized (RestCalls.lock) {
             if (requestQueue.size() > 0) {
-                new KpisMonitoringService(requestQueue.removeFirst()).updateStateChange();
+                TicketUpdateRequest ticketUpdateRequest = requestQueue.removeFirst();
+                Logger.info("UpdateTicketStateFromQueue: Dumping ticket state update request. ticket id: " + ticketUpdateRequest.getTicketId());
+                new KpisMonitoringService(ticketUpdateRequest).updateStateChange();
             }
         }
     }
