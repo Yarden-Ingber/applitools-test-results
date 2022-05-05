@@ -24,14 +24,12 @@ public class KpisRestCalls {
 
     @RequestMapping(method = RequestMethod.POST, path = "/state_update")
     public ResponseEntity state_update(@RequestBody String json) {
-        synchronized (RestCalls.lock) {
-            WriteEntireSheetsPeriodically.shouldStopSheetWritingTimer = false;
-            WriteEntireSheetsPeriodically.start();
-            newRequestPrint(json, "/state_update");
-            TicketUpdateRequest ticketUpdateRequest = new Gson().fromJson(json, TicketUpdateRequest.class);
-            new KpisMonitoringService(ticketUpdateRequest).updateStateChange();
-            return new ResponseEntity(ticketUpdateRequest.toString(), HttpStatus.OK);
-        }
+        WriteEntireSheetsPeriodically.shouldStopSheetWritingTimer = false;
+        WriteEntireSheetsPeriodically.start();
+        newRequestPrint(json, "/state_update");
+        TicketUpdateRequest ticketUpdateRequest = new Gson().fromJson(json, TicketUpdateRequest.class);
+        UpdateTicketStateFromQueue.addUpdateTicketStateRequest(ticketUpdateRequest);
+        return new ResponseEntity(ticketUpdateRequest.toString(), HttpStatus.OK);
     }
 
     @RequestMapping(method = RequestMethod.POST, path = "/update_ticket_fields")
