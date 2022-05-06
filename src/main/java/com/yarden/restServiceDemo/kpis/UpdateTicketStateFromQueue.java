@@ -34,7 +34,7 @@ public class UpdateTicketStateFromQueue extends TimerTask {
         synchronized (RestCalls.lock) {
             if (requestQueue.get().size() > 0) {
                 TicketUpdateRequest ticketUpdateRequest = requestQueue.get().removeFirst();
-                Logger.info("UpdateTicketStateFromQueue: Dumping ticket state update request. ticket id: " + ticketUpdateRequest.getTicketId());
+                Logger.info("UpdateTicketStateFromQueue: Dumping ticket state update request. ticket id: " + ticketUpdateRequest.getTicketId() + " queue size=" + requestQueue.get().size());
                 new KpisMonitoringService(ticketUpdateRequest).updateStateChange();
             }
         }
