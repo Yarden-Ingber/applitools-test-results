@@ -23,7 +23,7 @@ import java.nio.charset.StandardCharsets;
 @RestController
 public class RestCalls {
 
-    public static final String lock = "LOCK";
+    public static final String lock = "LOCK SHEET";
     private static final boolean PrintPayload = true;
     private static final boolean DontPrintPayload = false;
 
