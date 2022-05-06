@@ -31,17 +31,21 @@ public class UpdateTicketStateFromQueue extends TimerTask {
 
     @Override
     public void run() {
-        synchronized (RestCalls.lock) {
-            if (requestQueue.get().size() > 0) {
+        dumpRequestToSheet();
+    }
+
+    public synchronized static void addUpdateTicketStateRequest(TicketUpdateRequest ticketUpdateRequest) {
+        requestQueue.get().addLast(ticketUpdateRequest);
+    }
+
+    private void dumpRequestToSheet() {
+        if (requestQueue.get().size() > 0) {
+            synchronized (RestCalls.lock) {
                 TicketUpdateRequest ticketUpdateRequest = requestQueue.get().removeFirst();
                 Logger.info("UpdateTicketStateFromQueue: Dumping ticket state update request. ticket id: " + ticketUpdateRequest.getTicketId() + " queue size=" + requestQueue.get().size());
                 new KpisMonitoringService(ticketUpdateRequest).updateStateChange();
             }
         }
-    }
-
-    public synchronized static void addUpdateTicketStateRequest(TicketUpdateRequest ticketUpdateRequest) {
-        requestQueue.get().addLast(ticketUpdateRequest);
     }
 
 }
