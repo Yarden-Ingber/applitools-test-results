@@ -3,7 +3,6 @@ package com.yarden.restServiceDemo.kpis;
 import com.google.gson.Gson;
 import com.mashape.unirest.http.exceptions.UnirestException;
 import com.yarden.restServiceDemo.Logger;
-import com.yarden.restServiceDemo.RestCalls;
 import com.yarden.restServiceDemo.reportService.WriteEntireSheetsPeriodically;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -28,32 +27,28 @@ public class KpisRestCalls {
         WriteEntireSheetsPeriodically.start();
         newRequestPrint(json, "/state_update");
         TicketUpdateRequest ticketUpdateRequest = new Gson().fromJson(json, TicketUpdateRequest.class);
-        UpdateTicketStateFromQueue.addUpdateTicketStateRequest(ticketUpdateRequest);
+        TrelloUpdateRequestQueue.addStateUpdateRequestToQueue(ticketUpdateRequest);
         return new ResponseEntity(ticketUpdateRequest.toString(), HttpStatus.OK);
     }
 
     @RequestMapping(method = RequestMethod.POST, path = "/update_ticket_fields")
     public ResponseEntity update_ticket_fields(@RequestBody String json) {
-        synchronized (RestCalls.lock) {
-            WriteEntireSheetsPeriodically.shouldStopSheetWritingTimer = false;
-            WriteEntireSheetsPeriodically.start();
-            newRequestPrint(json, "/update_ticket_fields");
-            TicketUpdateRequest ticketUpdateRequest = new Gson().fromJson(json, TicketUpdateRequest.class);
-            new KpisMonitoringService(ticketUpdateRequest).updateTicketFields();
-            return new ResponseEntity(ticketUpdateRequest.toString(), HttpStatus.OK);
-        }
+        WriteEntireSheetsPeriodically.shouldStopSheetWritingTimer = false;
+        WriteEntireSheetsPeriodically.start();
+        newRequestPrint(json, "/update_ticket_fields");
+        TicketUpdateRequest ticketUpdateRequest = new Gson().fromJson(json, TicketUpdateRequest.class);
+        TrelloUpdateRequestQueue.addUpdateTicketFieldsRequestToQueue(ticketUpdateRequest);
+        return new ResponseEntity(ticketUpdateRequest.toString(), HttpStatus.OK);
     }
 
     @RequestMapping(method = RequestMethod.POST, path = "/archive_card")
     public ResponseEntity archive_card(@RequestBody String json) {
-        synchronized (RestCalls.lock) {
-            WriteEntireSheetsPeriodically.shouldStopSheetWritingTimer = false;
-            WriteEntireSheetsPeriodically.start();
-            newRequestPrint(json, "/archive_card");
-            TicketUpdateRequest ticketUpdateRequest = new Gson().fromJson(json, TicketUpdateRequest.class);
-            new KpisMonitoringService(ticketUpdateRequest).archiveCard();
-            return new ResponseEntity(ticketUpdateRequest.toString(), HttpStatus.OK);
-        }
+        WriteEntireSheetsPeriodically.shouldStopSheetWritingTimer = false;
+        WriteEntireSheetsPeriodically.start();
+        newRequestPrint(json, "/archive_card");
+        TicketUpdateRequest ticketUpdateRequest = new Gson().fromJson(json, TicketUpdateRequest.class);
+        TrelloUpdateRequestQueue.addArchiveTicketRequestToQueue(ticketUpdateRequest);
+        return new ResponseEntity(ticketUpdateRequest.toString(), HttpStatus.OK);
     }
 
     @GetMapping(value = "/get_create_ticket_page", produces = MediaType.TEXT_HTML_VALUE)
