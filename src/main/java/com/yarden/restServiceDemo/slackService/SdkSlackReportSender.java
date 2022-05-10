@@ -12,9 +12,12 @@ import com.yarden.restServiceDemo.Logger;
 import com.yarden.restServiceDemo.firebaseService.FirebaseResultsJsonsService;
 import com.yarden.restServiceDemo.mailService.MailSender;
 import com.yarden.restServiceDemo.pojos.SdkResultRequestJson;
-import com.yarden.restServiceDemo.reportService.*;
-import com.yarden.restServiceDemo.pojos.SlackReportNotificationJson;
 import com.yarden.restServiceDemo.pojos.SlackReportData;
+import com.yarden.restServiceDemo.pojos.SlackReportNotificationJson;
+import com.yarden.restServiceDemo.reportService.SdkReportService;
+import com.yarden.restServiceDemo.reportService.SdkVersionsReportService;
+import com.yarden.restServiceDemo.reportService.SheetData;
+import com.yarden.restServiceDemo.reportService.SheetTabIdentifier;
 import com.yarden.restServiceDemo.splunkService.SplunkReporter;
 import javassist.NotFoundException;
 import org.apache.commons.lang3.StringUtils;
@@ -22,6 +25,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.util.HashSet;
 
 public class SdkSlackReportSender {
 
@@ -59,8 +63,9 @@ public class SdkSlackReportSender {
                 .setCoverageGap(testCoverageGap)
                 .setHighLevelReportTable(sdkReleaseEventHighLevelReportTableBuilder.getHighLevelReportTable())
                 .setPassedTestsCount(Integer.parseInt(sdkReleaseEventHighLevelReportTableBuilder.currentTotalTestCount))
-                .setDetailedMissingTestsTable(getDetailedMissingTestsTable())
+//                .setDetailedMissingTestsTable(getDetailedMissingTestsTable())
                 .setDetailedPassedTestsTable(getDetailedPassedTestsTable())
+                .setDetailedMissingGenericTestsTable(getDetailedMissingGenericTestsTable())
                 .setHtmlReportS3BucketName(Enums.EnvVariables.AwsS3SdkReportsBucketName.value)
                 .setMailingGroupId(SlackReportData.MailingGroups.ReleaseReports);
         slackReportData.setHtmlReportUrl(new HtmlReportGenerator(slackReportData).getHtmlReportUrlInAwsS3(slackReportData.getHtmlReportS3BucketName()));
@@ -91,7 +96,7 @@ public class SdkSlackReportSender {
                 .setMailSubject("Full regression test report for SDK: " + sdk)
                 .setSdk(sdk)
                 .setHighLevelReportTable(sdkHighLevelFullRegressionReportTableBuilder.getHighLevelReportTable())
-                .setDetailedMissingTestsTable(getDetailedMissingTestsTable())
+//                .setDetailedMissingTestsTable(getDetailedMissingTestsTable())
                 .setDetailedPassedTestsTable(getDetailedPassedTestsTable())
                 .setDetailedFailedTestsTable(getDetailedFailedTestsTable())
                 .setHtmlReportS3BucketName(Enums.EnvVariables.AwsS3SdkReportsBucketName.value);
@@ -163,6 +168,16 @@ public class SdkSlackReportSender {
                     }
                 }
             }
+        }
+        return tableBuilder;
+    }
+
+    private HTMLTableBuilder getDetailedMissingGenericTestsTable(){
+        HTMLTableBuilder tableBuilder = new HTMLTableBuilder(false, 2, 1);
+        tableBuilder.addTableHeader("<div align=\"left\">Test</div>");
+        HashSet<String> missingGenericTests = SdkReleaseEventHighLevelReportTableBuilder.getMissingGenericTestsSet(requestJson);
+        for (String test : missingGenericTests) {
+            tableBuilder.addRowValues(false, test);
         }
         return tableBuilder;
     }

@@ -12,6 +12,7 @@ public class SlackReportData {
     private String sdk;
     private String reportTextPart;
     private HTMLTableBuilder detailedMissingTestsTable = null;
+    private HTMLTableBuilder detailedMissingGenericTestsTable = null;
     private HTMLTableBuilder highLevelReportTable = null;
     private HTMLTableBuilder detailedPassedTestsTable = null;
     private HTMLTableBuilder detailedFailedTestsTable = null;
@@ -95,6 +96,15 @@ public class SlackReportData {
 
     public SlackReportData setDetailedMissingTestsTable(HTMLTableBuilder detailedMissingTestsTable) {
         this.detailedMissingTestsTable = detailedMissingTestsTable;
+        return this;
+    }
+
+    public HTMLTableBuilder getDetailedMissingGenericTestsTable() {
+        return detailedMissingGenericTestsTable;
+    }
+
+    public SlackReportData setDetailedMissingGenericTestsTable(HTMLTableBuilder detailedMissingGenericTestsTable) {
+        this.detailedMissingGenericTestsTable = detailedMissingGenericTestsTable;
         return this;
     }
 

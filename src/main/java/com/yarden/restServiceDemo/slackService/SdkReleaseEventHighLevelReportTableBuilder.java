@@ -16,6 +16,8 @@ import javassist.NotFoundException;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.impl.execchain.RequestAbortedException;
 
+import java.util.HashSet;
+
 public class SdkReleaseEventHighLevelReportTableBuilder extends SdkHighLevelTableBuilderBaseClass{
 
     public final String currentTotalTestCount;
@@ -35,7 +37,7 @@ public class SdkReleaseEventHighLevelReportTableBuilder extends SdkHighLevelTabl
         currentSpecificTestCount = Integer.toString(getPassedTestCountForSdk((String testName) -> !testName.contains(Enums.Strings.Generic.value)));
         currentGenericTestCount = Integer.toString(getPassedTestCountForSdk((String testName) -> testName.contains(Enums.Strings.Generic.value)));
         currentTotalTestCount = String.valueOf(Integer.parseInt(currentGenericTestCount) + Integer.parseInt(currentSpecificTestCount));
-        currentUnexecutedGenericTestCount = Integer.toString(getMissingGenericTestsCount());
+        currentUnexecutedGenericTestCount = Integer.toString(getMissingGenericTestsSet(requestJson).size());
         if (currentTotalTestCount == "0"){
             throw new RequestAbortedException("No test results in sheet for sdk: " + requestJson.getSdk());
         }
@@ -71,11 +73,11 @@ public class SdkReleaseEventHighLevelReportTableBuilder extends SdkHighLevelTabl
         return "";
     }
 
-    private int getMissingGenericTestsCount(){
-        int count = 0;
+    public static HashSet<String> getMissingGenericTestsSet(SlackReportNotificationJson requestJson){
+        HashSet<String> missingGenericTestsSet = new HashSet<>();
         FirebaseResultsJsonsService.dumpMappedRequestsToFirebase();
         for (Enums.SdkGroupsSheetTabNames group : Enums.SdkGroupsSheetTabNames.values()) {
-            String id = getIdForSdkByGroup(group);
+            String id = getIdForSdkByGroup(group, requestJson);
             if (StringUtils.isNotEmpty(id) && !id.equals("null")) {
                 try {
                     SdkResultRequestJson sdkResultRequestJson = new Gson().fromJson(FirebaseResultsJsonsService.getCurrentSdkRequestFromFirebase(id, group.value), SdkResultRequestJson.class);
@@ -83,7 +85,7 @@ public class SdkReleaseEventHighLevelReportTableBuilder extends SdkHighLevelTabl
                     for (JsonElement result : resultsArray) {
                         TestResultData testResult = new Gson().fromJson(result, TestResultData.class);
                         if (testResult.isGeneric() && testResult.isSkipped()) {
-                            count++;
+                            missingGenericTestsSet.add(testResult.getTestName() + " " + testResult.getParameters().toString());
                         }
                     }
                 } catch (NotFoundException e) {
@@ -91,10 +93,10 @@ public class SdkReleaseEventHighLevelReportTableBuilder extends SdkHighLevelTabl
                 }
             }
         }
-        return count;
+        return missingGenericTestsSet;
     }
 
-    private String getIdForSdkByGroup(Enums.SdkGroupsSheetTabNames group){
+    private static String getIdForSdkByGroup(Enums.SdkGroupsSheetTabNames group, SlackReportNotificationJson requestJson){
         JsonArray reportSheet = new SheetData(new SheetTabIdentifier(Enums.SpreadsheetIDs.SDK.value, group.value)).getSheetData();
         for (JsonElement sheetEntry: reportSheet){
             if (sheetEntry.getAsJsonObject().get(Enums.SdkSheetColumnNames.TestName.value).getAsString().equals(Enums.SdkSheetColumnNames.IDRow.value)){
