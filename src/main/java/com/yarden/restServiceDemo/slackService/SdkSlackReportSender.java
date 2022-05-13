@@ -66,13 +66,13 @@ public class SdkSlackReportSender {
 //                .setDetailedMissingTestsTable(getDetailedMissingTestsTable())
                 .setDetailedPassedTestsTable(getDetailedPassedTestsTable())
                 .setDetailedMissingGenericTestsTable(getDetailedMissingGenericTestsTable())
-                .setHtmlReportS3BucketName(Enums.EnvVariables.AwsS3SdkReportsBucketName.value)
-                .setMailingGroupId(SlackReportData.MailingGroups.ReleaseReports);
+                .setHtmlReportS3BucketName(Enums.EnvVariables.AwsS3SdkReportsBucketName.value);
         slackReportData.setHtmlReportUrl(new HtmlReportGenerator(slackReportData).getHtmlReportUrlInAwsS3(slackReportData.getHtmlReportS3BucketName()));
         slackReportData.setRecipientsJsonArray(getRecipientMail(ReleaseMail));
         if (requestJson.getSpecificRecipient() == null || requestJson.getSpecificRecipient().isEmpty()){
             new SlackReporter().report(slackReportData);
             new SdkVersionsReportService().updateVersion(json);
+            slackReportData.setMailingGroupId(SlackReportData.MailingGroups.ReleaseReports);
         }
         slackReportData.setReportTextPart(slackReportData.getReportTextPart() +
                 "<br>" + sdkReleaseEventHighLevelReportTableBuilder.getHighLevelReportTable());
