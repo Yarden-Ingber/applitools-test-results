@@ -1,32 +1,32 @@
 # applitools-test-results
 
-### Instructions
+## Instructions
 This is a Rest API for the web service to post test results to a unified report.
 Below you can find a link to the google sheets report and all the endpoints of the web service. <br>
 Sandbox tab is for everyday testing. Raw data tab spans the different permutations. Other tabs are the recent status of the tests for each testing package released to customers.
 To toggle the results posting between Sandbox and the release tabs toggle "sandbox" boolean field in the result json.
 All results are also posted to Raw data tab.
-#### Please use the release sheets only for RELEASE test runs. For Dev, use sandbox sheet.
+### Please use the release sheets only for RELEASE test runs. For Dev, use sandbox sheet.
 
-### Results queue mechanism
+## Results queue mechanism
 In order to reduce the amount of requests to google, the results server adds all the requests to a buffer. Every minute the buffer gets dumped to the sheet.
 This means that a new request may take up to a minute to be shown on the google sheet.
 
-### Report
+## Report
 
 SDK: https://docs.google.com/spreadsheets/d/1JZnUB5-nEHWouHJimwyJrTyr-TFsoC9RrKI6U66HJoY <br>
 Eyes: https://docs.google.com/spreadsheets/d/1kCOwx8AP6Fg0ltivnw1o55IA3ZkV3hROB1dZ61FRQh8 <br>
 Visual grid status page: https://docs.google.com/spreadsheets/d/1umqCfSK3UICmw_ycbyhLjxdcyksBHYxwFNSqAXAN4SQ/edit#gid=0
 
-### Production Endpoint
+## Production Endpoint
 
 http://sdk-test-results.herokuapp.com
 
-### Routes
+## Routes
 
 Send a `GET` to `/health` - returns a `200`
 
-#### Post new test results for sdk
+### Post new test results for sdk
 Send a `POST` to `/result` with the JSON payload (below) - returns a `200` and the requested JSON.
 
 ```
@@ -81,7 +81,7 @@ Set it to `false`, or stop sending it in your request, to start using the shared
 If set to true && the reporting sdk is DotNet, the mandatory column will be updated. posted results with the same id will accumulate also on the mandatory column.
 Non DotNet sdks can't update the mandatory column.
 
-#### Delete previous results for a specific sdk
+### Delete previous results for a specific sdk
 Send a `DELETE` to `/delete_previous_results` with the JSON payload (below) - returns a `200` and the requested JSON.
 
 ```
@@ -90,7 +90,7 @@ Send a `DELETE` to `/delete_previous_results` with the JSON payload (below) - re
 }
 ```
 
-#### Post new test results for Eyes
+### Post new test results for Eyes
 
 Send a `POST` to `/eyes_result` with the JSON payload (below) - returns a `200` and the requested JSON.
 ```
@@ -137,7 +137,7 @@ If set to true, the ["sandbox"](https://docs.google.com/spreadsheets/d/1kCOwx8AP
 
 Set it to `false`, or stop sending it in your request, to post to the main tabs.
 
-#### Add any string data to a result in sandbox sheet
+### Add any string data to a result in sandbox sheet
 Send a `POST` to `/extra_test_data` with the JSON payload (below) - returns a `200` and the requested JSON.
 
 ```
@@ -156,7 +156,7 @@ Send a `POST` to `/extra_test_data` with the JSON payload (below) - returns a `2
 }
 ```
 
-#### Send a `POST` to `/send_mail/sdks` with the JSON payload (below) - returns a `200`.
+### Send a `POST` to `/send_mail/sdks` with the JSON payload (below) - returns a `200`.
 
 ```
 {  
@@ -175,7 +175,7 @@ Send a `POST` to `/extra_test_data` with the JSON payload (below) - returns a `2
 
 By default the mail will be sent to a mail report group release.reports@applitools.com. To test this endpoint add a specific recipient and it will overwrite the default value.
 
-#### Send a `POST` to `/send_full_regression/sdks` with the JSON payload (below) - returns a `200`.
+### Send a `POST` to `/send_full_regression/sdks` with the JSON payload (below) - returns a `200`.
 
 ```
 {
@@ -188,7 +188,7 @@ By default the mail will be sent to a mail report group release.reports@applitoo
 
 By default the mail will be sent to a mail report group release.reports@applitools.com. To test this endpoint add a specific recipient and it will overwrite the default value.
 
-#### Send a `POST` to `/tests_end/eyes` with the JSON payload (below) - returns a `200`.
+### Send a `POST` to `/tests_end/eyes` with the JSON payload (below) - returns a `200`.
 
 ```
 {
@@ -204,11 +204,11 @@ By default the mail will be sent to a mail report group release.reports@applitoo
 
 By default the mail will be sent to a mail report group release.reports@applitools.com. To test this endpoint add a specific recipient and it will overwrite the default value.
 
-##### Send a `Delete` to `/reset_eyes_report_data` - returns a `200`.
+### Send a `Delete` to `/reset_eyes_report_data` - returns a `200`.
 
 This endpoint allows Eyes report service to reset the state of the spreadsheet and the EndTaskCounter so Eyes will be able to start reporting from the beginning or rebuild with same ID.
 
-#### Send a `POST` to `/send_mail/no_tests` with the JSON payload (below) - returns a `200`.
+### Send a `POST` to `/send_mail/no_tests` with the JSON payload (below) - returns a `200`.
 
 ```
 {  
@@ -225,7 +225,7 @@ This endpoint allows Eyes report service to reset the state of the spreadsheet a
 
 By default the mail will be sent to a mail report group release.reports@applitools.com. To test this endpoint add a specific recipient and it will overwrite the default value.
   
-#### Send a `GET` to `/get_sdk_results_by_id?id={id}&group={group}`.
+### Send a `GET` to `/get_sdk_results_by_id?id={id}&group={group}`.
 
 <u>`id` - String<u>
   
@@ -267,11 +267,7 @@ The group of the result request sent in [result](#post-new-test-results-for-sdk)
 }
 ```
 
-<u>`specificRecipient` - String - optional<u>
-
-By default the mail will be sent to a mail report group release.reports@applitools.com. To test this endpoint add a specific recipient and it will overwrite the default value.
-
-#### Post results for VG status page
+### Post results for VG status page
 Send a `POST` to `/vg_status` with the JSON payload (below) - returns a `200`.
 
 ```
