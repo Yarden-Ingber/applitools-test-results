@@ -76,9 +76,6 @@ public class RestCalls {
     @RequestMapping(method = RequestMethod.GET, path = "/get_sdk_results_by_id")
     public String getSdkResultsById(@RequestParam String id, @RequestParam String group) {
         newRequestPrint(id, "/get_sdk_results_by_id", PrintPayload);
-        if (id.equalsIgnoreCase(FirebaseResultsJsonsService.FirebasePrefixStrings.Sdk.value)) {
-            id = FirebaseResultsJsonsService.FirebasePrefixStrings.Sdk.value;
-        }
         if (group.equalsIgnoreCase(Enums.SdkGroupsSheetTabNames.Selenium.value)) {
             group = group.toLowerCase();
         }
