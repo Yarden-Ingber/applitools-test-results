@@ -156,7 +156,7 @@ Send a `POST` to `/extra_test_data` with the JSON payload (below) - returns a `2
 }
 ```
 
-##### Send a `POST` to `/send_mail/sdks` with the JSON payload (below) - returns a `200`.
+#### Send a `POST` to `/send_mail/sdks` with the JSON payload (below) - returns a `200`.
 
 ```
 {  
@@ -175,7 +175,7 @@ Send a `POST` to `/extra_test_data` with the JSON payload (below) - returns a `2
 
 By default the mail will be sent to a mail report group release.reports@applitools.com. To test this endpoint add a specific recipient and it will overwrite the default value.
 
-##### Send a `POST` to `/send_full_regression/sdks` with the JSON payload (below) - returns a `200`.
+#### Send a `POST` to `/send_full_regression/sdks` with the JSON payload (below) - returns a `200`.
 
 ```
 {
@@ -188,7 +188,7 @@ By default the mail will be sent to a mail report group release.reports@applitoo
 
 By default the mail will be sent to a mail report group release.reports@applitools.com. To test this endpoint add a specific recipient and it will overwrite the default value.
 
-##### Send a `POST` to `/tests_end/eyes` with the JSON payload (below) - returns a `200`.
+#### Send a `POST` to `/tests_end/eyes` with the JSON payload (below) - returns a `200`.
 
 ```
 {
@@ -208,7 +208,7 @@ By default the mail will be sent to a mail report group release.reports@applitoo
 
 This endpoint allows Eyes report service to reset the state of the spreadsheet and the EndTaskCounter so Eyes will be able to start reporting from the beginning or rebuild with same ID.
 
-##### Send a `POST` to `/send_mail/no_tests` with the JSON payload (below) - returns a `200`.
+#### Send a `POST` to `/send_mail/no_tests` with the JSON payload (below) - returns a `200`.
 
 ```
 {  
@@ -218,6 +218,52 @@ This endpoint allows Eyes report service to reset the state of the spreadsheet a
                 - Updated accessibility enums (experimental).",
   "frameworkVersions":"Chrome 98.0.4758.80;Storybook 6.4.18;Node 16.13.2",
   "specificRecipient":"optional_specific_mail@applitools.com"
+}
+```
+
+<u>`specificRecipient` - String - optional<u>
+
+By default the mail will be sent to a mail report group release.reports@applitools.com. To test this endpoint add a specific recipient and it will overwrite the default value.
+  
+#### Send a `GET` to `/get_sdk_results_by_id?id={id}&group={group}`.
+
+<u>`id` - String<u>
+  
+The id of the result request sent in [result](#post-new-test-results-for-sdk) request
+  
+<u>`group` - String<u>
+  
+The group of the result request sent in [result](#post-new-test-results-for-sdk) request
+  
+##### Returns json object of test results
+  
+```
+{  
+  "sdk":"java",
+  "group":"selenium",
+  "id":"1234",
+  "sandbox":true,
+  "mandatory":false,
+  "results":[  
+    {  
+      "test_name": "test7",
+      "parameters":{
+        "browser":"chrome",
+        "stitching":"css"
+      },
+      "isSkipped":false,
+      "passed":true
+    },
+    {  
+      "test_name": "test7",
+      "parameters":{
+        "browser":"firefox",
+        "stitching":"scroll"
+      },
+      "isSkipped":false,
+      "passed":false
+    }
+  ]
 }
 ```
 
