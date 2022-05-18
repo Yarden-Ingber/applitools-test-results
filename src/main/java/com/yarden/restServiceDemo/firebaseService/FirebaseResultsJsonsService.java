@@ -168,7 +168,7 @@ public class FirebaseResultsJsonsService extends TimerTask {
         return requestFileNamePrefix + "-" + id + "-" + group.toLowerCase();
     }
 
-    private enum FirebasePrefixStrings {
+    public enum FirebasePrefixStrings {
         Sdk("Sdk"), Eyes("Eyes");
 
         public final String value;

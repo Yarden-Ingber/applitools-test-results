@@ -9,6 +9,7 @@ import com.yarden.restServiceDemo.slackService.EyesSlackReporterSender;
 import com.yarden.restServiceDemo.slackService.NoTestTableSlackReportSender;
 import com.yarden.restServiceDemo.slackService.SdkSlackReportSender;
 import com.yarden.restServiceDemo.splunkService.SplunkReporter;
+import javassist.NotFoundException;
 import org.apache.commons.io.IOUtils;
 import org.json.JSONObject;
 import org.springframework.http.HttpStatus;
@@ -69,6 +70,23 @@ public class RestCalls {
                 return new ResponseEntity(errorMessage, HttpStatus.BAD_REQUEST);
             }
             return new ResponseEntity(json, HttpStatus.OK);
+        }
+    }
+
+    @RequestMapping(method = RequestMethod.GET, path = "/get_sdk_results_by_id")
+    public String getSdkResultsById(@RequestParam String id, @RequestParam String group) {
+        newRequestPrint(id, "/get_sdk_results_by_id", PrintPayload);
+        if (id.equalsIgnoreCase(FirebaseResultsJsonsService.FirebasePrefixStrings.Sdk.value)) {
+            id = FirebaseResultsJsonsService.FirebasePrefixStrings.Sdk.value;
+        }
+        if (group.equalsIgnoreCase(Enums.SdkGroupsSheetTabNames.Selenium.value)) {
+            group = group.toLowerCase();
+        }
+        try {
+            return FirebaseResultsJsonsService.getCurrentSdkRequestFromFirebase(id, group);
+        } catch (NotFoundException e) {
+            Logger.warn("No results for id: " + id + " group: " + group);
+            return "No results for id: " + id + " group: " + group;
         }
     }
 
@@ -238,6 +256,8 @@ public class RestCalls {
             return new ResponseEntity("Sheet is updated", HttpStatus.OK);
         }
     }
+
+
 
     @GetMapping(value = "/get_tv_news_feed", produces = MediaType.TEXT_HTML_VALUE)
     @ResponseBody
