@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.mashape.unirest.http.exceptions.UnirestException;
 import com.yarden.restServiceDemo.Logger;
 import com.yarden.restServiceDemo.reportService.WriteEntireSheetsPeriodically;
+import org.apache.commons.lang3.time.StopWatch;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -12,10 +13,10 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.concurrent.TimeUnit;
 
 @RestController
 public class KpisRestCalls {
-
 
     public void test() throws IOException {
         state_update("{\"team\":\"JS SDKs\",\"sub_project\":\"\",\"ticket_id\":\"ike58Acv\",\"ticket_title\":\"Storybook RFE | Add option to not fail the test suite when diffs are found\",\"created_by\":\"Rivka Beck\",\"ticket_url\":\"https://trello.com/c/ike58Acv\",\"state\":\"New\",\"current_trello_list\":\"New\",\"ticket_type\":\"\",\"workaround\":\"\",\"labels\":\"\"}");
@@ -23,31 +24,43 @@ public class KpisRestCalls {
 
     @RequestMapping(method = RequestMethod.POST, path = "/state_update")
     public ResponseEntity state_update(@RequestBody String json) {
+        StopWatch stopWatch = new StopWatch();
+        stopWatch.start();
         WriteEntireSheetsPeriodically.shouldStopSheetWritingTimer = false;
         WriteEntireSheetsPeriodically.start();
         newRequestPrint(json, "/state_update");
         TicketUpdateRequest ticketUpdateRequest = new Gson().fromJson(json, TicketUpdateRequest.class);
         TrelloUpdateRequestQueue.addStateUpdateRequestToQueue(ticketUpdateRequest);
+        stopWatch.stop();
+        Logger.info("/state_update took" + stopWatch.getTime(TimeUnit.MILLISECONDS));
         return new ResponseEntity(ticketUpdateRequest.toString(), HttpStatus.OK);
     }
 
     @RequestMapping(method = RequestMethod.POST, path = "/update_ticket_fields")
     public ResponseEntity update_ticket_fields(@RequestBody String json) {
+        StopWatch stopWatch = new StopWatch();
+        stopWatch.start();
         WriteEntireSheetsPeriodically.shouldStopSheetWritingTimer = false;
         WriteEntireSheetsPeriodically.start();
         newRequestPrint(json, "/update_ticket_fields");
         TicketUpdateRequest ticketUpdateRequest = new Gson().fromJson(json, TicketUpdateRequest.class);
         TrelloUpdateRequestQueue.addUpdateTicketFieldsRequestToQueue(ticketUpdateRequest);
+        stopWatch.stop();
+        Logger.info("/update_ticket_fields took" + stopWatch.getTime(TimeUnit.MILLISECONDS));
         return new ResponseEntity(ticketUpdateRequest.toString(), HttpStatus.OK);
     }
 
     @RequestMapping(method = RequestMethod.POST, path = "/archive_card")
     public ResponseEntity archive_card(@RequestBody String json) {
+        StopWatch stopWatch = new StopWatch();
+        stopWatch.start();
         WriteEntireSheetsPeriodically.shouldStopSheetWritingTimer = false;
         WriteEntireSheetsPeriodically.start();
         newRequestPrint(json, "/archive_card");
         TicketUpdateRequest ticketUpdateRequest = new Gson().fromJson(json, TicketUpdateRequest.class);
         TrelloUpdateRequestQueue.addArchiveTicketRequestToQueue(ticketUpdateRequest);
+        stopWatch.stop();
+        Logger.info("/archive_card took" + stopWatch.getTime(TimeUnit.MILLISECONDS));
         return new ResponseEntity(ticketUpdateRequest.toString(), HttpStatus.OK);
     }
 
