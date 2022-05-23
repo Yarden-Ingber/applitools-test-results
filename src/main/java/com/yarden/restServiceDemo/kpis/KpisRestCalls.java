@@ -32,7 +32,7 @@ public class KpisRestCalls {
         TicketUpdateRequest ticketUpdateRequest = new Gson().fromJson(json, TicketUpdateRequest.class);
         TrelloUpdateRequestQueue.addStateUpdateRequestToQueue(ticketUpdateRequest);
         stopWatch.stop();
-        Logger.info("/state_update took" + stopWatch.getTime(TimeUnit.MILLISECONDS));
+        Logger.info("/state_update took: " + stopWatch.getTime(TimeUnit.MILLISECONDS));
         return new ResponseEntity(ticketUpdateRequest.toString(), HttpStatus.OK);
     }
 
@@ -46,7 +46,7 @@ public class KpisRestCalls {
         TicketUpdateRequest ticketUpdateRequest = new Gson().fromJson(json, TicketUpdateRequest.class);
         TrelloUpdateRequestQueue.addUpdateTicketFieldsRequestToQueue(ticketUpdateRequest);
         stopWatch.stop();
-        Logger.info("/update_ticket_fields took" + stopWatch.getTime(TimeUnit.MILLISECONDS));
+        Logger.info("/update_ticket_fields took: " + stopWatch.getTime(TimeUnit.MILLISECONDS));
         return new ResponseEntity(ticketUpdateRequest.toString(), HttpStatus.OK);
     }
 
@@ -60,7 +60,7 @@ public class KpisRestCalls {
         TicketUpdateRequest ticketUpdateRequest = new Gson().fromJson(json, TicketUpdateRequest.class);
         TrelloUpdateRequestQueue.addArchiveTicketRequestToQueue(ticketUpdateRequest);
         stopWatch.stop();
-        Logger.info("/archive_card took" + stopWatch.getTime(TimeUnit.MILLISECONDS));
+        Logger.info("/archive_card took: " + stopWatch.getTime(TimeUnit.MILLISECONDS));
         return new ResponseEntity(ticketUpdateRequest.toString(), HttpStatus.OK);
     }
 
