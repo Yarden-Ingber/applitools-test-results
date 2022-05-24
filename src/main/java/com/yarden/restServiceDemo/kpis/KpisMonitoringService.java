@@ -8,6 +8,7 @@ import com.yarden.restServiceDemo.Logger;
 import com.yarden.restServiceDemo.reportService.SheetData;
 import com.yarden.restServiceDemo.reportService.SheetTabIdentifier;
 import javassist.NotFoundException;
+import org.apache.commons.lang3.StringUtils;
 
 public class KpisMonitoringService {
 
@@ -69,15 +70,23 @@ public class KpisMonitoringService {
     private void updateTicketFields(JsonElement ticket) {
         addTypeToTicket(ticket);
         addIsCrossBoards(ticket);
+        addTicketSubProject(ticket);
         ticket.getAsJsonObject().addProperty(Enums.KPIsSheetColumnNames.Workaround.value, ticketUpdateRequest.getWorkaround());
         ticket.getAsJsonObject().addProperty(Enums.KPIsSheetColumnNames.Team.value, ticketUpdateRequest.getTeam());
-        ticket.getAsJsonObject().addProperty(Enums.KPIsSheetColumnNames.SubProject.value, ticketUpdateRequest.getSubProject());
         ticket.getAsJsonObject().addProperty(Enums.KPIsSheetColumnNames.TicketID.value, ticketUpdateRequest.getTicketId());
         ticket.getAsJsonObject().addProperty(Enums.KPIsSheetColumnNames.TicketTitle.value, ticketUpdateRequest.getTicketTitle());
         ticket.getAsJsonObject().addProperty(Enums.KPIsSheetColumnNames.TicketUrl.value, ticketUpdateRequest.getTicketUrl());
         ticket.getAsJsonObject().addProperty(Enums.KPIsSheetColumnNames.CreatedBy.value, ticketUpdateRequest.getCreatedBy());
         ticket.getAsJsonObject().addProperty(Enums.KPIsSheetColumnNames.CurrentTrelloList.value, ticketUpdateRequest.getCurrent_trello_list());
         ticket.getAsJsonObject().addProperty(Enums.KPIsSheetColumnNames.Labels.value, ticketUpdateRequest.getLabels());
+    }
+
+    private void addTicketSubProject(JsonElement ticket) {
+        if (StringUtils.isEmpty(ticketUpdateRequest.getSubProject())) {
+            ticket.getAsJsonObject().addProperty(Enums.KPIsSheetColumnNames.SubProject.value, ticketUpdateRequest.getSdk());
+        } else {
+            ticket.getAsJsonObject().addProperty(Enums.KPIsSheetColumnNames.SubProject.value, ticketUpdateRequest.getSubProject());
+        }
     }
 
     private void addIsCrossBoards(JsonElement ticket) {

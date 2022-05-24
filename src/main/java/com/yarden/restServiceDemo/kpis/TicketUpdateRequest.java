@@ -38,6 +38,9 @@ public class TicketUpdateRequest {
     @SerializedName("labels")
     @Expose
     private String labels;
+    @SerializedName("sdk")
+    @Expose
+    private String sdk;
     @SerializedName("apiKey")
     @Expose
     private String apiKey;
@@ -136,5 +139,13 @@ public class TicketUpdateRequest {
 
     public void setApiKey(String apiKey) {
         this.apiKey = apiKey;
+    }
+
+    public String getSdk() {
+        return sdk;
+    }
+
+    public void setSdk(String sdk) {
+        this.sdk = sdk;
     }
 }
