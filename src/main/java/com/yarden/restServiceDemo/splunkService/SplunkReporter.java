@@ -22,7 +22,7 @@ public class SplunkReporter extends TimerTask {
 
     private static Receiver receiver = null;
     private static Service service = null;
-    private static AtomicReference<LinkedList<SplunkReportObject>> reportQueue = new AtomicReference<>();
+    private static LinkedList<SplunkReportObject> reportQueue = new LinkedList<>();
     private static final String lock = "lock";
     private static boolean isRunning = false;
     private static Timer timer;
@@ -31,9 +31,6 @@ public class SplunkReporter extends TimerTask {
     public static synchronized void start() {
         if (!isRunning) {
             timer = new Timer("SplunkReportQueue");
-            if (reportQueue.get() == null) {
-                reportQueue.set(new LinkedList<>());
-            }
             timer.scheduleAtFixedRate(new SplunkReporter(), 30, 50);
             isRunning = true;
             System.out.println("SplunkReportQueue started");
@@ -43,7 +40,7 @@ public class SplunkReporter extends TimerTask {
     public void report(Enums.SplunkSourceTypes sourcetype, String json){
         synchronized (lock) {
             try {
-                reportQueue.get().add(new SplunkReportObject(sourcetype, json));
+                reportQueue.addLast(new SplunkReportObject(sourcetype, json));
             } catch (NullPointerException e) {
             } catch (Throwable t) {
                 t.printStackTrace();
@@ -84,22 +81,31 @@ public class SplunkReporter extends TimerTask {
 
     @Override
     public void run() {
+        boolean shouldSendMessage = false;
+        SplunkReportObject reportObject = new SplunkReportObject(Enums.SplunkSourceTypes.RawServerLog, "");
         synchronized (lock) {
-            if (!reportQueue.get().isEmpty()) {
-                SplunkReportObject reportObject = reportQueue.get().removeFirst();
-                Args args = new Args();
-                args.add("sourcetype", reportObject.sourcetype.value);
-                try {
-                    getReceiver().log("qualityevents", args, reportObject.json);
-                } catch (Throwable t) {
-                    System.out.println("SplunkReporter: Retrying splunk log");
-                    try {
-                        resetSplunkConnection();
-                        getReceiver().log("qualityevents", args, reportObject.json);
-                    } catch (Throwable t2) {
-                        System.out.println("SplunkReporter: Failed logging to splunk: " + reportObject.json);
-                    }
-                }
+            if (!reportQueue.isEmpty()) {
+                reportObject = reportQueue.removeFirst();
+                shouldSendMessage = true;
+            }
+        }
+        if (shouldSendMessage) {
+            logToSplunk(reportObject);
+        }
+    }
+
+    private void logToSplunk(SplunkReportObject reportObject) {
+        Args args = new Args();
+        args.add("sourcetype", reportObject.sourcetype.value);
+        try {
+            getReceiver().log("qualityevents", args, reportObject.json);
+        } catch (Throwable t) {
+            System.out.println("SplunkReporter: Retrying splunk log");
+            try {
+                resetSplunkConnection();
+                getReceiver().log("qualityevents", args, reportObject.json);
+            } catch (Throwable t2) {
+                System.out.println("SplunkReporter: Failed logging to splunk: " + reportObject.json);
             }
         }
     }
