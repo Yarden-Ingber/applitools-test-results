@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
 @RestController
@@ -24,43 +25,58 @@ public class KpisRestCalls {
 
     @RequestMapping(method = RequestMethod.POST, path = "/state_update")
     public ResponseEntity state_update(@RequestBody String json) {
+        String requestID = UUID.randomUUID().toString().substring(0, 4);
         StopWatch stopWatch = new StopWatch();
         stopWatch.start();
+        Logger.info("timewatch tick " + requestID + ": " + stopWatch.getTime(TimeUnit.MILLISECONDS));
         WriteEntireSheetsPeriodically.shouldStopSheetWritingTimer = false;
         WriteEntireSheetsPeriodically.start();
         newRequestPrint(json, "/state_update");
+        Logger.info("timewatch tick " + requestID + ": " + stopWatch.getTime(TimeUnit.MILLISECONDS));
         TicketUpdateRequest ticketUpdateRequest = new Gson().fromJson(json, TicketUpdateRequest.class);
+        Logger.info("timewatch tick " + requestID + ": " + stopWatch.getTime(TimeUnit.MILLISECONDS));
         TrelloUpdateRequestQueue.addStateUpdateRequestToQueue(ticketUpdateRequest);
+        Logger.info("timewatch tick " + requestID + ": " + stopWatch.getTime(TimeUnit.MILLISECONDS));
         stopWatch.stop();
-        Logger.info("/state_update took: " + stopWatch.getTime(TimeUnit.MILLISECONDS));
+        Logger.info("/state_update " + requestID + " took: " + stopWatch.getTime(TimeUnit.MILLISECONDS));
         return new ResponseEntity(ticketUpdateRequest.toString(), HttpStatus.OK);
     }
 
     @RequestMapping(method = RequestMethod.POST, path = "/update_ticket_fields")
     public ResponseEntity update_ticket_fields(@RequestBody String json) {
+        String requestID = UUID.randomUUID().toString().substring(0, 4);
         StopWatch stopWatch = new StopWatch();
         stopWatch.start();
+        Logger.info("timewatch tick " + requestID + ": " + stopWatch.getTime(TimeUnit.MILLISECONDS));
         WriteEntireSheetsPeriodically.shouldStopSheetWritingTimer = false;
         WriteEntireSheetsPeriodically.start();
         newRequestPrint(json, "/update_ticket_fields");
+        Logger.info("timewatch tick " + requestID + ": " + stopWatch.getTime(TimeUnit.MILLISECONDS));
         TicketUpdateRequest ticketUpdateRequest = new Gson().fromJson(json, TicketUpdateRequest.class);
+        Logger.info("timewatch tick " + requestID + ": " + stopWatch.getTime(TimeUnit.MILLISECONDS));
         TrelloUpdateRequestQueue.addUpdateTicketFieldsRequestToQueue(ticketUpdateRequest);
+        Logger.info("timewatch tick " + requestID + ": " + stopWatch.getTime(TimeUnit.MILLISECONDS));
         stopWatch.stop();
-        Logger.info("/update_ticket_fields took: " + stopWatch.getTime(TimeUnit.MILLISECONDS));
+        Logger.info("/update_ticket_fields " + requestID + " took: " + stopWatch.getTime(TimeUnit.MILLISECONDS));
         return new ResponseEntity(ticketUpdateRequest.toString(), HttpStatus.OK);
     }
 
     @RequestMapping(method = RequestMethod.POST, path = "/archive_card")
     public ResponseEntity archive_card(@RequestBody String json) {
+        String requestID = UUID.randomUUID().toString().substring(0, 4);
         StopWatch stopWatch = new StopWatch();
         stopWatch.start();
+        Logger.info("timewatch tick " + requestID + ": " + stopWatch.getTime(TimeUnit.MILLISECONDS));
         WriteEntireSheetsPeriodically.shouldStopSheetWritingTimer = false;
         WriteEntireSheetsPeriodically.start();
         newRequestPrint(json, "/archive_card");
+        Logger.info("timewatch tick " + requestID + ": " + stopWatch.getTime(TimeUnit.MILLISECONDS));
         TicketUpdateRequest ticketUpdateRequest = new Gson().fromJson(json, TicketUpdateRequest.class);
+        Logger.info("timewatch tick " + requestID + ": " + stopWatch.getTime(TimeUnit.MILLISECONDS));
         TrelloUpdateRequestQueue.addArchiveTicketRequestToQueue(ticketUpdateRequest);
+        Logger.info("timewatch tick " + requestID + ": " + stopWatch.getTime(TimeUnit.MILLISECONDS));
         stopWatch.stop();
-        Logger.info("/archive_card took: " + stopWatch.getTime(TimeUnit.MILLISECONDS));
+        Logger.info("/archive_card " + requestID + " took: " + stopWatch.getTime(TimeUnit.MILLISECONDS));
         return new ResponseEntity(ticketUpdateRequest.toString(), HttpStatus.OK);
     }
 
