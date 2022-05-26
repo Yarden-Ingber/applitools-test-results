@@ -15,7 +15,6 @@ import java.util.Date;
 import java.util.LinkedList;
 import java.util.Timer;
 import java.util.TimerTask;
-import java.util.concurrent.atomic.AtomicReference;
 
 @Configuration
 public class SplunkReporter extends TimerTask {
@@ -23,7 +22,7 @@ public class SplunkReporter extends TimerTask {
     private static Receiver receiver = null;
     private static Service service = null;
     private static LinkedList<SplunkReportObject> reportQueue = new LinkedList<>();
-    private static final String lock = "lock";
+    private static final String privateLock = "lock";
     private static boolean isRunning = false;
     private static Timer timer;
 
@@ -38,7 +37,7 @@ public class SplunkReporter extends TimerTask {
     }
 
     public void report(Enums.SplunkSourceTypes sourcetype, String json){
-        synchronized (lock) {
+        synchronized (privateLock) {
             try {
                 reportQueue.addLast(new SplunkReportObject(sourcetype, json));
             } catch (NullPointerException e) {
@@ -83,7 +82,7 @@ public class SplunkReporter extends TimerTask {
     public void run() {
         boolean shouldSendMessage = false;
         SplunkReportObject reportObject = new SplunkReportObject(Enums.SplunkSourceTypes.RawServerLog, "");
-        synchronized (lock) {
+        synchronized (privateLock) {
             if (!reportQueue.isEmpty()) {
                 reportObject = reportQueue.removeFirst();
                 shouldSendMessage = true;

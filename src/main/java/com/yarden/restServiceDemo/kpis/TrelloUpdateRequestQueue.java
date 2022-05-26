@@ -18,7 +18,7 @@ public class TrelloUpdateRequestQueue extends TimerTask {
     private static LinkedList<TicketUpdateRequest> archiveTicketRequestQueue = new LinkedList<>();
     private static boolean isRunning = false;
     private static Timer timer;
-    private static final String lock = "LOCK";
+    private static final String privateLock = "LOCK";
 
     @EventListener(ApplicationReadyEvent.class)
     public static synchronized void start() {
@@ -38,19 +38,19 @@ public class TrelloUpdateRequestQueue extends TimerTask {
     }
 
     public synchronized static void addStateUpdateRequestToQueue(TicketUpdateRequest ticketUpdateRequest) {
-        synchronized (lock) {
+        synchronized (privateLock) {
             stateUpdateRequestQueue.addLast(ticketUpdateRequest);
         }
     }
 
     public synchronized static void addUpdateTicketFieldsRequestToQueue(TicketUpdateRequest ticketUpdateRequest) {
-        synchronized (lock) {
+        synchronized (privateLock) {
             updateTicketFieldsRequestQueue.addLast(ticketUpdateRequest);
         }
     }
 
     public synchronized static void addArchiveTicketRequestToQueue(TicketUpdateRequest ticketUpdateRequest) {
-        synchronized (lock) {
+        synchronized (privateLock) {
             archiveTicketRequestQueue.addLast(ticketUpdateRequest);
         }
     }
@@ -79,7 +79,7 @@ public class TrelloUpdateRequestQueue extends TimerTask {
     private TicketUpdateRequest getFirstRequestInQueue(LinkedList<TicketUpdateRequest> requestQueue) throws EmptyQueueException {
         TicketUpdateRequest ticketUpdateRequest = new TicketUpdateRequest();
         boolean isRequestExists = false;
-        synchronized (lock) {
+        synchronized (privateLock) {
             if (requestQueue.size() > 0) {
                 ticketUpdateRequest = requestQueue.removeFirst();
                 isRequestExists = true;
