@@ -25,7 +25,7 @@ public class KpisRestCalls {
 
     @RequestMapping(method = RequestMethod.POST, path = "/state_update")
     public ResponseEntity state_update(@RequestBody String json) {
-        String requestID = UUID.randomUUID().toString().substring(0, 4);
+        String requestID = UUID.randomUUID().toString().substring(0, 7);
         StopWatch stopWatch = new StopWatch();
         stopWatch.start();
         Logger.info("timewatch tick " + requestID + ": " + stopWatch.getTime(TimeUnit.MILLISECONDS));
@@ -44,7 +44,7 @@ public class KpisRestCalls {
 
     @RequestMapping(method = RequestMethod.POST, path = "/update_ticket_fields")
     public ResponseEntity update_ticket_fields(@RequestBody String json) {
-        String requestID = UUID.randomUUID().toString().substring(0, 4);
+        String requestID = UUID.randomUUID().toString().substring(0, 7);
         StopWatch stopWatch = new StopWatch();
         stopWatch.start();
         Logger.info("timewatch tick " + requestID + ": " + stopWatch.getTime(TimeUnit.MILLISECONDS));
@@ -63,7 +63,7 @@ public class KpisRestCalls {
 
     @RequestMapping(method = RequestMethod.POST, path = "/archive_card")
     public ResponseEntity archive_card(@RequestBody String json) {
-        String requestID = UUID.randomUUID().toString().substring(0, 4);
+        String requestID = UUID.randomUUID().toString().substring(0, 7);
         StopWatch stopWatch = new StopWatch();
         stopWatch.start();
         Logger.info("timewatch tick " + requestID + ": " + stopWatch.getTime(TimeUnit.MILLISECONDS));
