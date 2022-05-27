@@ -30,6 +30,9 @@ public class TestResultData {
     @SerializedName("isSkipped")
     @Expose
     private Boolean isSkipped;
+    @SerializedName("isTestRequiredForSdk")
+    @Expose
+    private Boolean isTestRequiredForSdk;
 
     public String getTestName() {
         return testName;
@@ -91,6 +94,22 @@ public class TestResultData {
         isGeneric = generic;
     }
 
+    public boolean isTestRequiredForSdk() {
+        return (isTestRequiredForSdk == null || isTestRequiredForSdk);
+    }
+
+    public void setIsTestRequiredForSdk(Boolean required) {
+        isTestRequiredForSdk = required;
+    }
+
+    public boolean isSkipped() {
+        return (isSkipped != null && isSkipped);
+    }
+
+    public void setSkipped(Boolean skipped) {
+        isSkipped = skipped;
+    }
+
     @Override
     public String toString() {
         return "TestResultData{" +
@@ -102,14 +121,7 @@ public class TestResultData {
                 ", resultUrl='" + resultUrl + '\'' +
                 ", isGeneric=" + isGeneric +
                 ", isSkipped=" + isSkipped +
+                ", isRequiredForSdk=" + isTestRequiredForSdk +
                 '}';
-    }
-
-    public boolean isSkipped() {
-        return (isSkipped != null && isSkipped);
-    }
-
-    public void setSkipped(Boolean skipped) {
-        isSkipped = skipped;
     }
 }

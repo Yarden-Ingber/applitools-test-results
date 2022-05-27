@@ -44,6 +44,8 @@ Send a `POST` to `/result` with the JSON payload (below) - returns a `200` and t
         "stitching":"css"
       },
       "isSkipped":false,
+      "isGeneric":false,
+      "isTestRequiredForSdk":false,
       "passed":true
     },
     {  
@@ -53,6 +55,8 @@ Send a `POST` to `/result` with the JSON payload (below) - returns a `200` and t
         "stitching":"scroll"
       },
       "isSkipped":false,
+      "isGeneric":false,
+      "isTestRequiredForSdk":false,
       "passed":false
     }
   ]

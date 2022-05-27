@@ -84,7 +84,7 @@ public class SdkReleaseEventHighLevelReportTableBuilder extends SdkHighLevelTabl
                     JsonArray resultsArray = sdkResultRequestJson.getResults();
                     for (JsonElement result : resultsArray) {
                         TestResultData testResult = new Gson().fromJson(result, TestResultData.class);
-                        if (testResult.isGeneric() && testResult.isSkipped()) {
+                        if (testResult.isGeneric() && testResult.isSkipped() && testResult.isTestRequiredForSdk()) {
                             missingGenericTestsSet.add(testResult.getTestName() + " " + testResult.getParameters().toString());
                         }
                     }
