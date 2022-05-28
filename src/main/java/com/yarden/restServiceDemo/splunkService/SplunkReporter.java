@@ -12,17 +12,16 @@ import java.io.InputStream;
 import java.nio.charset.Charset;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.LinkedList;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 @Configuration
 public class SplunkReporter extends TimerTask {
 
     private static Receiver receiver = null;
     private static Service service = null;
-    private static LinkedList<SplunkReportObject> reportQueue = new LinkedList<>();
-    private static final String privateLock = "lock";
+    private static ConcurrentLinkedQueue<SplunkReportObject> reportQueue = new ConcurrentLinkedQueue<>();
     private static boolean isRunning = false;
     private static Timer timer;
 
@@ -37,13 +36,11 @@ public class SplunkReporter extends TimerTask {
     }
 
     public void report(Enums.SplunkSourceTypes sourcetype, String json){
-        synchronized (privateLock) {
-            try {
-                reportQueue.addLast(new SplunkReportObject(sourcetype, json));
-            } catch (NullPointerException e) {
-            } catch (Throwable t) {
-                t.printStackTrace();
-            }
+        try {
+            reportQueue.add(new SplunkReportObject(sourcetype, json));
+        } catch (NullPointerException e) {
+        } catch (Throwable t) {
+            t.printStackTrace();
         }
     }
 
@@ -80,15 +77,8 @@ public class SplunkReporter extends TimerTask {
 
     @Override
     public void run() {
-        boolean shouldSendMessage = false;
-        SplunkReportObject reportObject = new SplunkReportObject(Enums.SplunkSourceTypes.RawServerLog, "");
-        synchronized (privateLock) {
-            if (!reportQueue.isEmpty()) {
-                reportObject = reportQueue.removeFirst();
-                shouldSendMessage = true;
-            }
-        }
-        if (shouldSendMessage) {
+        if (reportQueue.size() > 0) {
+            SplunkReportObject reportObject = reportQueue.poll();
             logToSplunk(reportObject);
         }
     }

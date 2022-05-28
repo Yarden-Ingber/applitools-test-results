@@ -6,19 +6,18 @@ import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.event.EventListener;
 
-import java.util.LinkedList;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 @Configuration
 public class TrelloUpdateRequestQueue extends TimerTask {
 
-    private static LinkedList<TicketUpdateRequest> stateUpdateRequestQueue = new LinkedList<>();
-    private static LinkedList<TicketUpdateRequest> updateTicketFieldsRequestQueue = new LinkedList<>();
-    private static LinkedList<TicketUpdateRequest> archiveTicketRequestQueue = new LinkedList<>();
+    private static ConcurrentLinkedQueue<TicketUpdateRequest> stateUpdateRequestQueue = new ConcurrentLinkedQueue<>();
+    private static ConcurrentLinkedQueue<TicketUpdateRequest> updateTicketFieldsRequestQueue = new ConcurrentLinkedQueue<>();
+    private static ConcurrentLinkedQueue<TicketUpdateRequest> archiveTicketRequestQueue = new ConcurrentLinkedQueue<>();
     private static boolean isRunning = false;
     private static Timer timer;
-    private static final String privateLock = "LOCK";
 
     @EventListener(ApplicationReadyEvent.class)
     public static synchronized void start() {
@@ -37,22 +36,16 @@ public class TrelloUpdateRequestQueue extends TimerTask {
         try {dumpArchiveTicketRequest();} catch (EmptyQueueException e) {}
     }
 
-    public synchronized static void addStateUpdateRequestToQueue(TicketUpdateRequest ticketUpdateRequest) {
-        synchronized (privateLock) {
-            stateUpdateRequestQueue.addLast(ticketUpdateRequest);
-        }
+    public static void addStateUpdateRequestToQueue(TicketUpdateRequest ticketUpdateRequest) {
+        stateUpdateRequestQueue.add(ticketUpdateRequest);
     }
 
-    public synchronized static void addUpdateTicketFieldsRequestToQueue(TicketUpdateRequest ticketUpdateRequest) {
-        synchronized (privateLock) {
-            updateTicketFieldsRequestQueue.addLast(ticketUpdateRequest);
-        }
+    public static void addUpdateTicketFieldsRequestToQueue(TicketUpdateRequest ticketUpdateRequest) {
+        updateTicketFieldsRequestQueue.add(ticketUpdateRequest);
     }
 
-    public synchronized static void addArchiveTicketRequestToQueue(TicketUpdateRequest ticketUpdateRequest) {
-        synchronized (privateLock) {
-            archiveTicketRequestQueue.addLast(ticketUpdateRequest);
-        }
+    public static void addArchiveTicketRequestToQueue(TicketUpdateRequest ticketUpdateRequest) {
+        archiveTicketRequestQueue.add(ticketUpdateRequest);
     }
 
     private void dumpStateUpdateRequest() throws EmptyQueueException {
@@ -76,16 +69,9 @@ public class TrelloUpdateRequestQueue extends TimerTask {
         }
     }
 
-    private TicketUpdateRequest getFirstRequestInQueue(LinkedList<TicketUpdateRequest> requestQueue) throws EmptyQueueException {
-        TicketUpdateRequest ticketUpdateRequest = new TicketUpdateRequest();
-        boolean isRequestExists = false;
-        synchronized (privateLock) {
-            if (requestQueue.size() > 0) {
-                ticketUpdateRequest = requestQueue.removeFirst();
-                isRequestExists = true;
-            }
-        }
-        if (isRequestExists) {
+    private TicketUpdateRequest getFirstRequestInQueue(ConcurrentLinkedQueue<TicketUpdateRequest> requestQueue) throws EmptyQueueException {
+        if (requestQueue.size() > 0) {
+            TicketUpdateRequest ticketUpdateRequest = requestQueue.poll();
             Logger.info("TrelloUpdateRequestQueue: Dumping request. ticket id: " + ticketUpdateRequest.getTicketId() + " queue size=" + requestQueue.size());
             return ticketUpdateRequest;
         } else {
