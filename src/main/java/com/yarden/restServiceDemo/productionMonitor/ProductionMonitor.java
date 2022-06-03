@@ -32,10 +32,11 @@ public class ProductionMonitor extends TimerTask {
     private static boolean isRunning = false;
     private static Timer timer;
     private static final String VERSION = "4";
+    private static final String FEATURE_FLAG_PRODUCTION_MONITOR = System.getenv("FEATURE_FLAG_PRODUCTION_MONITOR");
 
     @EventListener(ApplicationReadyEvent.class)
     public static synchronized void start() {
-        if (!isRunning) {
+        if (!isRunning && StringUtils.equals(FEATURE_FLAG_PRODUCTION_MONITOR, "true")) {
             timer = new Timer("ProductionMonitor");
             timer.scheduleAtFixedRate(new ProductionMonitor(), 30, 1000 * 60 * 20);
             isRunning = true;
