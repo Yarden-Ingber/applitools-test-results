@@ -90,8 +90,6 @@ isomorphic-fetch
 todomvc-app-for-testing
 bamboo-integration
 JS-Virtual-Grid-Crawler
-tutorial-selenium-java-ultrafastgrid
-tutorial-selenium-javascript-ultrafastgrid
 tutorial-selenium-javascript-basic
 tutorial-selenium-csharp-ultrafastgrid
 tutorial-selenium-csharp-basic
