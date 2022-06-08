@@ -198,3 +198,4 @@ workshop-cbt-storybook
 storybook-contexts-example
 webinar-cypress-vs-playwright
 example-cypress-javascript
+example-selenium-java-junit-classic
