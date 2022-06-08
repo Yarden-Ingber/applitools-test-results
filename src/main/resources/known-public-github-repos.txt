@@ -80,7 +80,6 @@ eyes-storybook-example
 tutorial-storybook-react
 tutorial-storybook-vue
 tutorial-storybook-angular
-tutorial-cypress
 visual-testing-at-speed
 applitools.github.io
 eyes-appium-alpha-bin
@@ -200,4 +199,3 @@ webinar-cypress-vs-playwright
 example-cypress-javascript
 example-selenium-java-junit-classic
 example-selenium-java-junit-ultrafastgrid
-tutorial-cypress
