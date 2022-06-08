@@ -199,3 +199,4 @@ storybook-contexts-example
 webinar-cypress-vs-playwright
 example-cypress-javascript
 example-selenium-java-junit-classic
+example-selenium-java-junit-ultrafastgrid
