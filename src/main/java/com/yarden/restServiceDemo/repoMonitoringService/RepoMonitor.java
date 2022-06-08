@@ -18,6 +18,7 @@ import com.yarden.restServiceDemo.repoMonitoringService.npmApiService.pojos.NpmP
 import com.yarden.restServiceDemo.repoMonitoringService.npmApiService.pojos.Object;
 import com.yarden.restServiceDemo.reportService.SdkReportService;
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.junit.Assert;
@@ -38,6 +39,7 @@ public class RepoMonitor extends TimerTask{
 
     private static boolean isRunning = false;
     private static Timer timer;
+    private static final String FEATURE_FLAG_REPO_MONITOR = System.getenv("FEATURE_FLAG_REPO_MONITOR");
 
     @EventListener(ApplicationReadyEvent.class)
     public static synchronized void start() {
@@ -107,39 +109,41 @@ public class RepoMonitor extends TimerTask{
 
     private void sendMailWarning(String codeManagerName, PackageDifference packageDifference) throws MailjetSocketTimeoutException, MailjetException {
         Logger.warn("RepoMonitor: A difference in repo\\package was discovered in " + codeManagerName + ": " + packageDifference.WarningMessage);
-        MailjetClient client;
-        MailjetRequest request;
-        MailjetResponse response;
-        client = new MailjetClient(Enums.EnvVariables.MailjetApiKeyPublic.value, Enums.EnvVariables.MailjetApiKeyPrivate.value, new ClientOptions("v3.1"));
-        request = new MailjetRequest(Emailv31.resource)
-                .property(Emailv31.MESSAGES, new JSONArray()
-                        .put(new JSONObject()
-                                .put(Emailv31.Message.FROM, new JSONObject()
-                                        .put("Email", "yarden.ingber@applitools.com")
-                                        .put("Name", "Yarden Ingber"))
-                                .put(Emailv31.Message.TO, new JSONArray()
-                                        .put(new JSONObject()
-                                                .put("Email", "yarden.ingber@applitools.com")
-                                                .put("Name", "Yarden Ingber"))
-                                        .put(new JSONObject()
-                                                .put("Email", "adam.carmi@applitools.com")
-                                                .put("Name", "Adam Carmi"))
-                                        .put(new JSONObject()
-                                                .put("Email", "daniel.puterman@applitools.com")
-                                                .put("Name", "Daniel Puterman"))
-                                        .put(new JSONObject()
-                                                .put("Email", "yotam.madem@applitools.com")
-                                                .put("Name", "Yotam Madem"))
-                                        .put(new JSONObject()
-                                                .put("Email", "amit.zur@applitools.com")
-                                                .put("Name", "Amit Zur"))
-                                )
-                                .put(Emailv31.Message.SUBJECT, "WARNING!! Public package difference found in " + codeManagerName + ": " + packageDifference.packageName)
-                                .put(Emailv31.Message.TEXTPART, "A difference in the expected public packages list found in " + codeManagerName + ". package name: " + packageDifference.WarningMessage)
-                                .put(Emailv31.Message.CUSTOMID, "RepoMonitor")));
-        response = client.post(request);
-        Logger.info("RepoMonitor: " + response.getStatus());
-        Logger.info("RepoMonitor: " + response.getData().toString());
+        if (StringUtils.equals(FEATURE_FLAG_REPO_MONITOR, "true")) {
+            MailjetClient client;
+            MailjetRequest request;
+            MailjetResponse response;
+            client = new MailjetClient(Enums.EnvVariables.MailjetApiKeyPublic.value, Enums.EnvVariables.MailjetApiKeyPrivate.value, new ClientOptions("v3.1"));
+            request = new MailjetRequest(Emailv31.resource)
+                    .property(Emailv31.MESSAGES, new JSONArray()
+                            .put(new JSONObject()
+                                    .put(Emailv31.Message.FROM, new JSONObject()
+                                            .put("Email", "yarden.ingber@applitools.com")
+                                            .put("Name", "Yarden Ingber"))
+                                    .put(Emailv31.Message.TO, new JSONArray()
+                                            .put(new JSONObject()
+                                                    .put("Email", "yarden.ingber@applitools.com")
+                                                    .put("Name", "Yarden Ingber"))
+                                            .put(new JSONObject()
+                                                    .put("Email", "adam.carmi@applitools.com")
+                                                    .put("Name", "Adam Carmi"))
+                                            .put(new JSONObject()
+                                                    .put("Email", "daniel.puterman@applitools.com")
+                                                    .put("Name", "Daniel Puterman"))
+                                            .put(new JSONObject()
+                                                    .put("Email", "yotam.madem@applitools.com")
+                                                    .put("Name", "Yotam Madem"))
+                                            .put(new JSONObject()
+                                                    .put("Email", "amit.zur@applitools.com")
+                                                    .put("Name", "Amit Zur"))
+                                    )
+                                    .put(Emailv31.Message.SUBJECT, "WARNING!! Public package difference found in " + codeManagerName + ": " + packageDifference.packageName)
+                                    .put(Emailv31.Message.TEXTPART, "A difference in the expected public packages list found in " + codeManagerName + ". package name: " + packageDifference.WarningMessage)
+                                    .put(Emailv31.Message.CUSTOMID, "RepoMonitor")));
+            response = client.post(request);
+            Logger.info("RepoMonitor: " + response.getStatus());
+            Logger.info("RepoMonitor: " + response.getData().toString());
+        }
     }
 
     private List<String> getPublicGithubRepoNames() throws IOException {
