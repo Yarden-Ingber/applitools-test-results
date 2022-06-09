@@ -93,10 +93,10 @@ public class HtmlReportGenerator {
             htmlReportStringBuilder.append("<h2>Test summary</h2><br/>");
             htmlReportStringBuilder.append(slackReportData.getHighLevelReportTable());
         }
-        if (slackReportData.getCoverageGap() != null && !slackReportData.getCoverageGap().isEmpty()) {
-            htmlReportStringBuilder.append("<br/><h2>Test coverage gap</h2>");
-            htmlReportStringBuilder.append(slackReportData.getCoverageGap() + "<br/><br/>");
-        }
+//        if (slackReportData.getCoverageGap() != null && !slackReportData.getCoverageGap().isEmpty()) {
+//            htmlReportStringBuilder.append("<br/><h2>Test coverage gap</h2>");
+//            htmlReportStringBuilder.append(slackReportData.getCoverageGap() + "<br/><br/>");
+//        }
         if (slackReportData.getDetailedPassedTestsTable() != null) {
             if (slackReportData.getPassedTestsCount() > 0) {
                 htmlReportStringBuilder.append("<br/><details><summary><b>Executed tests (Total: " + (slackReportData.getPassedTestsCount()+slackReportData.getFailedTestsCount())
