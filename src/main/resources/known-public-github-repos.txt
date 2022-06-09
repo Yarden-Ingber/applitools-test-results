@@ -197,3 +197,4 @@ example-cypress-javascript
 example-selenium-java-junit-classic
 example-selenium-java-junit-ultrafastgrid
 tutorial-selenium-javascript-ultrafastgrid
+example-playwright-typescript-ultrafastgrid
