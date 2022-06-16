@@ -72,7 +72,6 @@ visual-grid-client
 eyes-storybook
 wct-eyes
 wct-eyes-example
-tutorial-selenium-java
 tutorial-selenium3-javascript-basic
 tutorial-selenium-csharp
 eyes.sdk.python
@@ -193,11 +192,9 @@ troubleshoot
 workshop-cbt-storybook
 storybook-contexts-example
 webinar-cypress-vs-playwright
-example-cypress-javascript
 example-selenium-java-junit-classic
-example-selenium-java-junit-ultrafastgrid
 tutorial-selenium-javascript-ultrafastgrid
-example-playwright-typescript-ultrafastgrid
 example-cypress-javascript-ufg
 example-selenium-java-junit-ufg
 example-playwright-typescript-ufg
+example-playwright-typescript-classic
