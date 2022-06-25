@@ -2,12 +2,10 @@ package com.yarden.restServiceDemo.kpis;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
 import com.yarden.restServiceDemo.Enums;
 import com.yarden.restServiceDemo.Logger;
 import com.yarden.restServiceDemo.reportService.SheetData;
 import com.yarden.restServiceDemo.reportService.SheetTabIdentifier;
-import javassist.NotFoundException;
 import org.apache.commons.lang3.StringUtils;
 
 public class KpisMonitoringService {
@@ -140,7 +138,7 @@ public class KpisMonitoringService {
         return newEntry;
     }
 
-    private class TicketSearchResult {
+    private static class TicketSearchResult {
 
         final JsonElement ticket;
         final boolean isFound;
