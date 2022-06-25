@@ -22,14 +22,15 @@ public class KpisMonitoringService {
     }
 
     public void updateStateChange() {
-        try {
-            JsonElement ticket = findSheetEntry();
+        TicketSearchResult ticketSearchResult = findSheetEntry();
+        if (ticketSearchResult.isFound) {
+            archiveTicketIfMovedToEyesAppIssuesBoard();
             if (!newState.equals(TicketStates.NoState)) {
-                new TicketsStateChanger().updateExistingTicketState(ticket, newState);
-                ignoreTeamChangeForEyesOperationsBoard(ticket);
-                updateTicketFields(ticket);
+                new TicketsStateChanger().updateExistingTicketState(ticketSearchResult.ticket, newState);
+                ignoreTeamChangeForEyesOperationsBoard(ticketSearchResult.ticket);
+                updateTicketFields(ticketSearchResult.ticket);
             }
-        } catch (NotFoundException e) {
+        } else {
             if (newState.equals(TicketStates.New)) {
                 JsonElement ticket = addNewTicketEntry();
             } else {
@@ -40,22 +41,22 @@ public class KpisMonitoringService {
     }
 
     public void updateTicketFields() {
-        try {
-            JsonElement ticket = findSheetEntry();
-            ignoreTeamChangeForEyesOperationsBoard(ticket);
-            updateTicketFields(ticket);
-        } catch (NotFoundException e) {
+        TicketSearchResult ticketSearchResult = findSheetEntry();
+        if (ticketSearchResult.isFound) {
+            ignoreTeamChangeForEyesOperationsBoard(ticketSearchResult.ticket);
+            updateTicketFields(ticketSearchResult.ticket);
+        } else {
             Logger.info("KPIs: Ticket " + ticketUpdateRequest.getTicketId() + " wasn't found in the sheet");
         }
         new KpiSplunkReporter(rawDataSheetData, ticketUpdateRequest).reportStandAloneEvent(newState);
     }
 
     public void archiveCard() {
-        try {
-            ticketUpdateRequest.setTeam(Enums.Strings.Archived.value);
-            JsonElement ticket = findSheetEntry();
-            updateTicketFields(ticket);
-        } catch (NotFoundException e) {
+        ticketUpdateRequest.setTeam(Enums.Strings.Archived.value);
+        TicketSearchResult ticketSearchResult = findSheetEntry();
+        if (ticketSearchResult.isFound) {
+            updateTicketFields(ticketSearchResult.ticket);
+        } else {
             Logger.info("KPIs: Ticket " + ticketUpdateRequest.getTicketId() + " wasn't found in the sheet");
         }
         new KpiSplunkReporter(rawDataSheetData, ticketUpdateRequest).reportStandAloneEvent(newState);
@@ -64,6 +65,14 @@ public class KpisMonitoringService {
     private void ignoreTeamChangeForEyesOperationsBoard(JsonElement ticket) {
         if (ticketUpdateRequest.getTeam().equals(TicketsNewStateResolver.Boards.EyesOperations.value)) {
             ticketUpdateRequest.setTeam(ticket.getAsJsonObject().get(Enums.KPIsSheetColumnNames.Team.value).getAsString());
+        }
+    }
+
+    private void archiveTicketIfMovedToEyesAppIssuesBoard() {
+        if (ticketUpdateRequest.getTeam().equals(TicketsNewStateResolver.Boards.EyesAppIssues.value)) {
+            ticketUpdateRequest.setTeam(Enums.Strings.Archived.value);
+            newState = TicketStates.NoState;
+            archiveCard();
         }
     }
 
@@ -102,13 +111,13 @@ public class KpisMonitoringService {
         ticket.getAsJsonObject().addProperty(Enums.KPIsSheetColumnNames.TicketType.value, type);
     }
 
-    private JsonElement findSheetEntry() throws NotFoundException {
+    private TicketSearchResult findSheetEntry() {
         for (JsonElement sheetEntry: rawDataSheetData.getSheetData()){
             if (sheetEntry.getAsJsonObject().get(Enums.KPIsSheetColumnNames.TicketID.value).getAsString().equals(ticketUpdateRequest.getTicketId())){
-                return sheetEntry;
+                return new TicketSearchResult(sheetEntry);
             }
         }
-        throw new NotFoundException("");
+        return new TicketSearchResult(false);
     }
 
     private JsonElement addNewTicketEntry(){
@@ -129,6 +138,23 @@ public class KpisMonitoringService {
         Logger.info("KPIs: Adding a new ticket to the sheet: " + newEntry.toString());
         rawDataSheetData.getSheetData().add(newEntry);
         return newEntry;
+    }
+
+    private class TicketSearchResult {
+
+        final JsonElement ticket;
+        final boolean isFound;
+
+        public TicketSearchResult(JsonElement ticket) {
+            this.ticket = ticket;
+            this.isFound = true;
+        }
+
+        public TicketSearchResult(boolean isFound) {
+            this.ticket = null;
+            this.isFound = isFound;
+        }
+
     }
 
 }
