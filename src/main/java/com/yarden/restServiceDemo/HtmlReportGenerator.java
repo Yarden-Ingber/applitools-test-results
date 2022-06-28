@@ -24,16 +24,9 @@ public class HtmlReportGenerator {
         if (StringUtils.isNotEmpty(reportData.getChangeLog())) { addChangeLogSection(); }
         if (StringUtils.isNotEmpty(reportData.getFrameworkVersions())) { addFrameworkVersionsSection(); }
         if (reportData.getHighLevelReportTable() != null) { addHighLevelReportSection(); }
-//        if (slackReportData.getCoverageGap() != null && !slackReportData.getCoverageGap().isEmpty()) {
-//            htmlReportStringBuilder.append("<br/><h2>Test coverage gap</h2>");
-//            htmlReportStringBuilder.append(slackReportData.getCoverageGap() + "<br/><br/>");
-//        }
+//        if (StringUtils.isNotEmpty(reportData.getCoverageGap())) { addTestCoverageGapSection(); }
         if (reportData.getDetailedPassedTestsTable() != null) { addDetailedPassedTestsSection(); }
-//        if (slackReportData.getDetailedMissingTestsTable() != null){
-//            htmlReportStringBuilder.append("<br/><details><summary><b>Unexecuted tests</b></summary>");
-//            htmlReportStringBuilder.append(slackReportData.getDetailedMissingTestsTable());
-//            htmlReportStringBuilder.append("</details><br/>");
-//        }
+//        if (reportData.getDetailedMissingTestsTable() != null){ addDetailedMissingTestsSection(); }
         if (reportData.getDetailedMissingGenericTestsTable() != null){ addDetailedMissingGenericTestsSection(); }
         if (reportData.getDetailedFailedTestsTable() != null) { addDetailedFailedTestsSection(); }
         htmlReportStringBuilder.append("</div></div></body></html>");
@@ -92,6 +85,17 @@ public class HtmlReportGenerator {
     private void addDetailedFailedTestsSection() {
         htmlReportStringBuilder.append("<br/><details><summary><b>Failed tests</b></summary>");
         htmlReportStringBuilder.append(reportData.getDetailedFailedTestsTable());
+        htmlReportStringBuilder.append("</details><br/>");
+    }
+
+    private void addTestCoverageGapSection() {
+        htmlReportStringBuilder.append("<br/><h2>Test coverage gap</h2>");
+        htmlReportStringBuilder.append(reportData.getCoverageGap() + "<br/><br/>");
+    }
+
+    private void addDetailedMissingTestsSection() {
+        htmlReportStringBuilder.append("<br/><details><summary><b>Unexecuted tests</b></summary>");
+        htmlReportStringBuilder.append(reportData.getDetailedMissingTestsTable());
         htmlReportStringBuilder.append("</details><br/>");
     }
 

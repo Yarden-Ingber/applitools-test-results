@@ -24,7 +24,7 @@ public class HtmlReport {
         }
     }
 
-    private static String uploadReportToS3(ReportData reportData) throws FileNotFoundException, UnsupportedEncodingException {
+    private static String uploadReportToS3(ReportData reportData) {
         return new HtmlReportUploader(reportData).upload(reportData.getHtmlReportS3BucketName(), htmlReportFileName);
     }
 
