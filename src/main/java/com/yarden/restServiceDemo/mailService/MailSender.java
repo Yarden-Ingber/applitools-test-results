@@ -6,7 +6,7 @@ import com.mailjet.client.errors.MailjetSocketTimeoutException;
 import com.mailjet.client.resource.Emailv31;
 import com.yarden.restServiceDemo.Enums;
 import com.yarden.restServiceDemo.Logger;
-import com.yarden.restServiceDemo.pojos.SlackReportData;
+import com.yarden.restServiceDemo.pojos.ReportData;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.json.JSONArray;
@@ -17,10 +17,10 @@ import java.io.*;
 
 public class MailSender {
 
-    SlackReportData slackReportData;
+    ReportData reportData;
 
-    public void send(SlackReportData slackReportData) throws MailjetSocketTimeoutException, MailjetException {
-        this.slackReportData = slackReportData;
+    public void send(ReportData reportData) throws MailjetSocketTimeoutException, MailjetException {
+        this.reportData = reportData;
         MailjetClient client;
         MailjetRequest request;
         MailjetResponse response;
@@ -31,8 +31,8 @@ public class MailSender {
                                 .put(Emailv31.Message.FROM, new JSONObject()
                                         .put("Email", "yarden.ingber@applitools.com")
                                         .put("Name", "Yarden Ingber"))
-                                .put(Emailv31.Message.TO, slackReportData.getRecipientsJsonArray())
-                                .put(Emailv31.Message.SUBJECT, slackReportData.getMailSubject())
+                                .put(Emailv31.Message.TO, reportData.getRecipientsJsonArray())
+                                .put(Emailv31.Message.SUBJECT, reportData.getMailSubject())
                                 .put(Emailv31.Message.HTMLPART, getMailContent())
                                 .put(Emailv31.Message.CUSTOMID, "SdkRelease")));
         response = client.post(request);
@@ -42,12 +42,12 @@ public class MailSender {
 
     private String getMailContent () {
         String content = "";
-        if (StringUtils.isNotEmpty(slackReportData.getReportTextPart())) {
-            content = slackReportData.getReportTextPart().replace("\n", "<br/>") +
-                    "<br><br>HTML Report:<br>" + slackReportData.getHtmlReportUrl();
+        if (StringUtils.isNotEmpty(reportData.getReportTextPart())) {
+            content = reportData.getReportTextPart().replace("\n", "<br/>") +
+                    "<br><br>HTML Report:<br>" + reportData.getHtmlReportUrl();
         }
-        if (slackReportData.getMailingGroupId() != null) {
-            content = content + "<br><br>" + slackReportData.getMailingGroupId().id;
+        if (reportData.getMailingGroupId() != null) {
+            content = content + "<br><br>" + reportData.getMailingGroupId().id;
         }
         return  content;
     }

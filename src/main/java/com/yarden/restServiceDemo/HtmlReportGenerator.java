@@ -3,8 +3,7 @@ package com.yarden.restServiceDemo;
 import com.lowagie.text.DocumentException;
 import com.mailjet.client.Base64;
 import com.yarden.restServiceDemo.awsS3Service.AwsS3Provider;
-import com.yarden.restServiceDemo.pojos.SlackReportData;
-import com.yarden.restServiceDemo.slackService.SdkHighLevelTableBuilderBaseClass;
+import com.yarden.restServiceDemo.pojos.ReportData;
 import org.apache.commons.io.IOUtils;
 import org.xhtmlrenderer.pdf.ITextRenderer;
 
@@ -14,12 +13,12 @@ import java.time.LocalDate;
 public class HtmlReportGenerator {
 
     StringBuilder htmlReportStringBuilder = new StringBuilder();
-    SlackReportData slackReportData;
+    ReportData reportData;
     private final String htmlReportFileName = "test_report.html";
     private final String pdfReportFileName = "test_report.pdf";
 
-    public HtmlReportGenerator(SlackReportData slackReportData){
-        this.slackReportData = slackReportData;
+    public HtmlReportGenerator(ReportData reportData){
+        this.reportData = reportData;
     }
 
     public String getHtmlReportUrlInAwsS3(String bucketName) throws FileNotFoundException, UnsupportedEncodingException {
@@ -74,37 +73,37 @@ public class HtmlReportGenerator {
         htmlReportStringBuilder.append("</head><body><div class=\"wrapper\">\n" +
                 "    <div class=\"content\">\n" +
                 "        <div class=\"header\">applitools</div>");
-        htmlReportStringBuilder.append("<h1>" + slackReportData.getReportTitle() + "</h1>");
+        htmlReportStringBuilder.append("<h1>" + reportData.getReportTitle() + "</h1>");
         htmlReportStringBuilder.append("<h2>" + LocalDate.now().toString() + "</h2>");
-        if (slackReportData.getVersion() != null && !slackReportData.getVersion().isEmpty()) {
+        if (reportData.getVersion() != null && !reportData.getVersion().isEmpty()) {
             htmlReportStringBuilder.append("<h2>Version</h2>");
-            htmlReportStringBuilder.append(versionToList(slackReportData.getVersion()) + "<br/><br/>");
+            htmlReportStringBuilder.append(versionToList(reportData.getVersion()) + "<br/><br/>");
         }
-        if (slackReportData.getChangeLog() != null && !slackReportData.getChangeLog().isEmpty()) {
+        if (reportData.getChangeLog() != null && !reportData.getChangeLog().isEmpty()) {
             htmlReportStringBuilder.append("<details open><summary><b>Change log</b></summary>");
-            htmlReportStringBuilder.append(slackReportData.getChangeLog() + "<br/>");
+            htmlReportStringBuilder.append(reportData.getChangeLog() + "<br/>");
             htmlReportStringBuilder.append("</details><br/>");
         }
-        if (slackReportData.getFrameworkVersions() != null && !slackReportData.getFrameworkVersions().isEmpty()) {
+        if (reportData.getFrameworkVersions() != null && !reportData.getFrameworkVersions().isEmpty()) {
             htmlReportStringBuilder.append("<h2>Tested framework versions:</h2>");
-            htmlReportStringBuilder.append(versionToList(slackReportData.getFrameworkVersions()) + "<br/><br/>");
+            htmlReportStringBuilder.append(versionToList(reportData.getFrameworkVersions()) + "<br/><br/>");
         }
-        if (slackReportData.getHighLevelReportTable() != null) {
+        if (reportData.getHighLevelReportTable() != null) {
             htmlReportStringBuilder.append("<h2>Test summary</h2><br/>");
-            htmlReportStringBuilder.append(slackReportData.getHighLevelReportTable());
+            htmlReportStringBuilder.append(reportData.getHighLevelReportTable());
         }
 //        if (slackReportData.getCoverageGap() != null && !slackReportData.getCoverageGap().isEmpty()) {
 //            htmlReportStringBuilder.append("<br/><h2>Test coverage gap</h2>");
 //            htmlReportStringBuilder.append(slackReportData.getCoverageGap() + "<br/><br/>");
 //        }
-        if (slackReportData.getDetailedPassedTestsTable() != null) {
-            if (slackReportData.getPassedTestsCount() > 0) {
-                htmlReportStringBuilder.append("<br/><details><summary><b>Executed tests (Total: " + (slackReportData.getPassedTestsCount()+slackReportData.getFailedTestsCount())
-                        + " Passed: " + slackReportData.getPassedTestsCount() + " Failed: " + slackReportData.getFailedTestsCount() + ")</b></summary>");
+        if (reportData.getDetailedPassedTestsTable() != null) {
+            if (reportData.getPassedTestsCount() > 0) {
+                htmlReportStringBuilder.append("<br/><details><summary><b>Executed tests (Total: " + (reportData.getPassedTestsCount()+ reportData.getFailedTestsCount())
+                        + " Passed: " + reportData.getPassedTestsCount() + " Failed: " + reportData.getFailedTestsCount() + ")</b></summary>");
             } else {
                 htmlReportStringBuilder.append("<br/><details><summary><b>Passed tests</b></summary>");
             }
-            htmlReportStringBuilder.append(slackReportData.getDetailedPassedTestsTable());
+            htmlReportStringBuilder.append(reportData.getDetailedPassedTestsTable());
             htmlReportStringBuilder.append("</details>");
         }
 //        if (slackReportData.getDetailedMissingTestsTable() != null){
@@ -112,14 +111,14 @@ public class HtmlReportGenerator {
 //            htmlReportStringBuilder.append(slackReportData.getDetailedMissingTestsTable());
 //            htmlReportStringBuilder.append("</details><br/>");
 //        }
-        if (slackReportData.getDetailedMissingGenericTestsTable() != null){
+        if (reportData.getDetailedMissingGenericTestsTable() != null){
             htmlReportStringBuilder.append("<br/><details><summary><b>Unexecuted generic tests</b></summary>");
-            htmlReportStringBuilder.append(slackReportData.getDetailedMissingGenericTestsTable());
+            htmlReportStringBuilder.append(reportData.getDetailedMissingGenericTestsTable());
             htmlReportStringBuilder.append("</details><br/>");
         }
-        if (slackReportData.getDetailedFailedTestsTable() != null) {
+        if (reportData.getDetailedFailedTestsTable() != null) {
             htmlReportStringBuilder.append("<br/><details><summary><b>Failed tests</b></summary>");
-            htmlReportStringBuilder.append(slackReportData.getDetailedFailedTestsTable());
+            htmlReportStringBuilder.append(reportData.getDetailedFailedTestsTable());
             htmlReportStringBuilder.append("</details><br/>");
         }
         htmlReportStringBuilder.append("</div></div></body></html>");
@@ -187,9 +186,9 @@ public class HtmlReportGenerator {
     }
 
     private String getFileNameInBucket(){
-        if (slackReportData.getSdk() != null && !slackReportData.getSdk().isEmpty()
-            && slackReportData.getVersion() != null && !slackReportData.getVersion().isEmpty()) {
-            return "report" + "_" + slackReportData.getSdk() + "_" + slackReportData.getVersion();
+        if (reportData.getSdk() != null && !reportData.getSdk().isEmpty()
+            && reportData.getVersion() != null && !reportData.getVersion().isEmpty()) {
+            return "report" + "_" + reportData.getSdk() + "_" + reportData.getVersion();
         } else {
             return "report" + "_" + Logger.getTimaStamp().replaceAll(" ", "_").replace('.', ':');
         }

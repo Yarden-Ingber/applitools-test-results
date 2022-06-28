@@ -12,7 +12,7 @@ import com.yarden.restServiceDemo.Logger;
 import com.yarden.restServiceDemo.firebaseService.FirebaseResultsJsonsService;
 import com.yarden.restServiceDemo.mailService.MailSender;
 import com.yarden.restServiceDemo.pojos.SdkResultRequestJson;
-import com.yarden.restServiceDemo.pojos.SlackReportData;
+import com.yarden.restServiceDemo.pojos.ReportData;
 import com.yarden.restServiceDemo.pojos.SlackReportNotificationJson;
 import com.yarden.restServiceDemo.reportService.SdkReportService;
 import com.yarden.restServiceDemo.reportService.SdkVersionsReportService;
@@ -51,7 +51,7 @@ public class SdkSlackReportSender {
         testCoverageGap = requestJson.getTestCoverageGap();
         String newVersionInstructions = getNewVersionInstructions();
         SdkReleaseEventHighLevelReportTableBuilder sdkReleaseEventHighLevelReportTableBuilder = new SdkReleaseEventHighLevelReportTableBuilder(requestJson);
-        SlackReportData slackReportData = new SlackReportData()
+        ReportData reportData = new ReportData()
                 .setReportTextPart("A new SDK is about to be released.\n\nSDK: " + sdk + "\nVersion:\n* " + version.replaceAll(";", "\n* ") +
                         "\n\n" + newVersionInstructions + "\n\nID:" + getRequestIDs() + "\n")
                 .setReportTitle("Test report for SDK: " + sdk)
@@ -67,16 +67,16 @@ public class SdkSlackReportSender {
                 .setDetailedPassedTestsTable(getDetailedPassedTestsTable())
                 .setDetailedMissingGenericTestsTable(getDetailedMissingGenericTestsTable())
                 .setHtmlReportS3BucketName(Enums.EnvVariables.AwsS3SdkReportsBucketName.value);
-        slackReportData.setHtmlReportUrl(new HtmlReportGenerator(slackReportData).getHtmlReportUrlInAwsS3(slackReportData.getHtmlReportS3BucketName()));
-        slackReportData.setRecipientsJsonArray(getRecipientMail(ReleaseMail));
+        reportData.setHtmlReportUrl(new HtmlReportGenerator(reportData).getHtmlReportUrlInAwsS3(reportData.getHtmlReportS3BucketName()));
+        reportData.setRecipientsJsonArray(getRecipientMail(ReleaseMail));
         if (requestJson.getSpecificRecipient() == null || requestJson.getSpecificRecipient().isEmpty()){
-            new SlackReporter().report(slackReportData);
+            new SlackReporter().report(reportData);
             new SdkVersionsReportService().updateVersion(json);
-            slackReportData.setMailingGroupId(SlackReportData.MailingGroups.ReleaseReports);
+            reportData.setMailingGroupId(ReportData.MailingGroups.ReleaseReports);
         }
-        slackReportData.setReportTextPart(slackReportData.getReportTextPart() +
+        reportData.setReportTextPart(reportData.getReportTextPart() +
                 "<br>" + sdkReleaseEventHighLevelReportTableBuilder.getHighLevelReportTable());
-        new MailSender().send(slackReportData);
+        new MailSender().send(reportData);
         sendMissingRegressionTestsSplunkEvent(sdkReleaseEventHighLevelReportTableBuilder);
     }
 
@@ -90,7 +90,7 @@ public class SdkSlackReportSender {
             sdk = requestJson.getSdk();
         }
         SdkHighLevelFullRegressionReportTableBuilder sdkHighLevelFullRegressionReportTableBuilder = new SdkHighLevelFullRegressionReportTableBuilder(requestJson);
-        SlackReportData slackReportData = new SlackReportData()
+        ReportData reportData = new ReportData()
                 .setReportTextPart("Full regression test report.\n\nSDK: " + sdk)
                 .setReportTitle("Full regression test report for SDK: " + sdk)
                 .setMailSubject("Full regression test report for SDK: " + sdk)
@@ -100,11 +100,11 @@ public class SdkSlackReportSender {
                 .setDetailedPassedTestsTable(getDetailedPassedTestsTable())
                 .setDetailedFailedTestsTable(getDetailedFailedTestsTable())
                 .setHtmlReportS3BucketName(Enums.EnvVariables.AwsS3SdkReportsBucketName.value);
-        slackReportData.setHtmlReportUrl(new HtmlReportGenerator(slackReportData).getHtmlReportUrlInAwsS3(slackReportData.getHtmlReportS3BucketName()));
-        slackReportData.setRecipientsJsonArray(getRecipientMail(FullRegression));
-        slackReportData.setReportTextPart(slackReportData.getReportTextPart() +
+        reportData.setHtmlReportUrl(new HtmlReportGenerator(reportData).getHtmlReportUrlInAwsS3(reportData.getHtmlReportS3BucketName()));
+        reportData.setRecipientsJsonArray(getRecipientMail(FullRegression));
+        reportData.setReportTextPart(reportData.getReportTextPart() +
                 "<br><br>" + sdkHighLevelFullRegressionReportTableBuilder.getHighLevelReportTable());
-        new MailSender().send(slackReportData);
+        new MailSender().send(reportData);
         sendFullRegressionSplunkEvent(sdkHighLevelFullRegressionReportTableBuilder);
     }
 

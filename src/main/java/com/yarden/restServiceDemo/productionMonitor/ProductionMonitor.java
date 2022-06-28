@@ -10,7 +10,7 @@ import com.mailjet.client.resource.Emailv31;
 import com.splunk.JobExportArgs;
 import com.yarden.restServiceDemo.Enums;
 import com.yarden.restServiceDemo.Logger;
-import com.yarden.restServiceDemo.pojos.SlackReportData;
+import com.yarden.restServiceDemo.pojos.ReportData;
 import com.yarden.restServiceDemo.reportService.SheetData;
 import com.yarden.restServiceDemo.reportService.SheetTabIdentifier;
 import com.yarden.restServiceDemo.splunkService.SplunkReporter;
@@ -167,13 +167,13 @@ public class ProductionMonitor extends TimerTask {
     private void sendVGMailNotification(String uuid) throws MailjetSocketTimeoutException, MailjetException {
         JSONArray recipient = new JSONArray();
         recipient.put(new JSONObject().put("Email", "yarden.ingber@applitools.com").put("Name", "Yarden Ingber"));
-        sendMailNotification(recipient, "Production monitor alert", "Alert that more than 50% of the browsers in the VG failed \n\n uuid: " + uuid + "\n\n" + "Group ID: " + SlackReportData.MailingGroups.Ops.id);
+        sendMailNotification(recipient, "Production monitor alert", "Alert that more than 50% of the browsers in the VG failed \n\n uuid: " + uuid + "\n\n" + "Group ID: " + ReportData.MailingGroups.Ops.id);
     }
 
     private void sendEndpointMailNotification(String endpoint, String uuid) throws MailjetSocketTimeoutException, MailjetException {
         JSONArray recipient = new JSONArray();
         recipient.put(new JSONObject().put("Email", "yarden.ingber@applitools.com").put("Name", "Yarden Ingber"));
-        sendMailNotification(recipient, "Production monitor alert", "The GET request for endpoints: " + endpoint + " failed \n\n uuid: " + uuid + "\n\n" + "Group ID: " + SlackReportData.MailingGroups.Ops.id);
+        sendMailNotification(recipient, "Production monitor alert", "The GET request for endpoints: " + endpoint + " failed \n\n uuid: " + uuid + "\n\n" + "Group ID: " + ReportData.MailingGroups.Ops.id);
     }
 
     private void sendMailNotification(JSONArray recipient, String subject, String content) throws MailjetSocketTimeoutException, MailjetException {

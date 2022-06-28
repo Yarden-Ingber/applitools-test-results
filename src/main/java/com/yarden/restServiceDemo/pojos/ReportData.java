@@ -7,7 +7,7 @@ import org.commonmark.parser.Parser;
 import org.commonmark.renderer.html.HtmlRenderer;
 import org.json.JSONArray;
 
-public class SlackReportData {
+public class ReportData {
 
     private String sdk;
     private String reportTextPart;
@@ -34,7 +34,7 @@ public class SlackReportData {
         return reportTitle;
     }
 
-    public SlackReportData setReportTitle(String reportTitle) {
+    public ReportData setReportTitle(String reportTitle) {
         this.reportTitle = fixNewLineForHtml(reportTitle);
         return this;
     }
@@ -43,7 +43,7 @@ public class SlackReportData {
         return mailSubject;
     }
 
-    public SlackReportData setMailSubject(String mailSubject) {
+    public ReportData setMailSubject(String mailSubject) {
         this.mailSubject = mailSubject;
         return this;
     }
@@ -52,7 +52,7 @@ public class SlackReportData {
         return changeLog;
     }
 
-    public SlackReportData setChangeLog(String changeLog) {
+    public ReportData setChangeLog(String changeLog) {
         if (changeLog == null) {
             throw new NullPointerException("Change log value is null");
         }
@@ -67,7 +67,7 @@ public class SlackReportData {
         return version;
     }
 
-    public SlackReportData setVersion(String version) {
+    public ReportData setVersion(String version) {
         this.version = version.replaceAll("RELEASE_CANDIDATE-", "").replaceAll("RELEASE_CANDIDATE", "");
         return this;
     }
@@ -76,7 +76,7 @@ public class SlackReportData {
         return coverageGap;
     }
 
-    public SlackReportData setCoverageGap(String coverageGap) {
+    public ReportData setCoverageGap(String coverageGap) {
         this.coverageGap = fixNewLineForHtml(multilineCapitalize(coverageGap));
         return this;
     }
@@ -85,7 +85,7 @@ public class SlackReportData {
         return reportTextPart;
     }
 
-    public SlackReportData setReportTextPart(String reportTextPart) {
+    public ReportData setReportTextPart(String reportTextPart) {
         this.reportTextPart = reportTextPart;
         return this;
     }
@@ -94,7 +94,7 @@ public class SlackReportData {
         return detailedMissingTestsTable;
     }
 
-    public SlackReportData setDetailedMissingTestsTable(HTMLTableBuilder detailedMissingTestsTable) {
+    public ReportData setDetailedMissingTestsTable(HTMLTableBuilder detailedMissingTestsTable) {
         this.detailedMissingTestsTable = detailedMissingTestsTable;
         return this;
     }
@@ -103,7 +103,7 @@ public class SlackReportData {
         return detailedMissingGenericTestsTable;
     }
 
-    public SlackReportData setDetailedMissingGenericTestsTable(HTMLTableBuilder detailedMissingGenericTestsTable) {
+    public ReportData setDetailedMissingGenericTestsTable(HTMLTableBuilder detailedMissingGenericTestsTable) {
         this.detailedMissingGenericTestsTable = detailedMissingGenericTestsTable;
         return this;
     }
@@ -112,7 +112,7 @@ public class SlackReportData {
         return highLevelReportTable;
     }
 
-    public SlackReportData setHighLevelReportTable(HTMLTableBuilder highLevelReportTable) {
+    public ReportData setHighLevelReportTable(HTMLTableBuilder highLevelReportTable) {
         this.highLevelReportTable = highLevelReportTable;
         return this;
     }
@@ -121,7 +121,7 @@ public class SlackReportData {
         return detailedPassedTestsTable;
     }
 
-    public SlackReportData setDetailedPassedTestsTable(HTMLTableBuilder detailedPassedTestsTable) {
+    public ReportData setDetailedPassedTestsTable(HTMLTableBuilder detailedPassedTestsTable) {
         this.detailedPassedTestsTable = detailedPassedTestsTable;
         return this;
     }
@@ -130,7 +130,7 @@ public class SlackReportData {
         return recipientsJsonArray;
     }
 
-    public SlackReportData setRecipientsJsonArray(JSONArray recipientsJsonArray) {
+    public ReportData setRecipientsJsonArray(JSONArray recipientsJsonArray) {
         this.recipientsJsonArray = recipientsJsonArray;
         return this;
     }
@@ -152,7 +152,7 @@ public class SlackReportData {
         return htmlReportS3BucketName;
     }
 
-    public SlackReportData setHtmlReportS3BucketName(String htmlReportS3BucketName) {
+    public ReportData setHtmlReportS3BucketName(String htmlReportS3BucketName) {
         this.htmlReportS3BucketName = htmlReportS3BucketName;
         return this;
     }
@@ -161,7 +161,7 @@ public class SlackReportData {
         return htmlReportUrl;
     }
 
-    public SlackReportData setHtmlReportUrl(String htmlReportUrl) {
+    public ReportData setHtmlReportUrl(String htmlReportUrl) {
         this.htmlReportUrl = htmlReportUrl;
         return this;
     }
@@ -170,7 +170,7 @@ public class SlackReportData {
         return detailedFailedTestsTable;
     }
 
-    public SlackReportData setDetailedFailedTestsTable(HTMLTableBuilder detailedFailedTestsTable) {
+    public ReportData setDetailedFailedTestsTable(HTMLTableBuilder detailedFailedTestsTable) {
         this.detailedFailedTestsTable = detailedFailedTestsTable;
         return this;
     }
@@ -179,7 +179,7 @@ public class SlackReportData {
         return sdk;
     }
 
-    public SlackReportData setSdk(String sdk) {
+    public ReportData setSdk(String sdk) {
         this.sdk = sdk;
         return this;
     }
@@ -188,7 +188,7 @@ public class SlackReportData {
         return passedTestsCount;
     }
 
-    public SlackReportData setPassedTestsCount(int passedTestsCount) {
+    public ReportData setPassedTestsCount(int passedTestsCount) {
         this.passedTestsCount = passedTestsCount;
         return this;
     }
@@ -197,7 +197,7 @@ public class SlackReportData {
         return failedTestsCount;
     }
 
-    public SlackReportData setFailedTestsCount(int failedTestsCount) {
+    public ReportData setFailedTestsCount(int failedTestsCount) {
         this.failedTestsCount = failedTestsCount;
         return this;
     }
@@ -206,7 +206,7 @@ public class SlackReportData {
         return missingTestsCount;
     }
 
-    public SlackReportData setMissingTestsCount(int missingTestsCount) {
+    public ReportData setMissingTestsCount(int missingTestsCount) {
         this.missingTestsCount = missingTestsCount;
         return this;
     }
@@ -215,12 +215,12 @@ public class SlackReportData {
         return frameworkVersions;
     }
 
-    public SlackReportData setFrameworkVersions(String frameworkVersions) {
+    public ReportData setFrameworkVersions(String frameworkVersions) {
         this.frameworkVersions = frameworkVersions;
         return this;
     }
 
-    public SlackReportData setMailingGroupId (MailingGroups mailingGroup) {
+    public ReportData setMailingGroupId (MailingGroups mailingGroup) {
         this.mailingGroupId = mailingGroup;
         return this;
     }

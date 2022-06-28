@@ -11,7 +11,7 @@ import com.yarden.restServiceDemo.Logger;
 import com.yarden.restServiceDemo.awsS3Service.AwsS3Provider;
 import com.yarden.restServiceDemo.firebaseService.FirebaseResultsJsonsService;
 import com.yarden.restServiceDemo.mailService.MailSender;
-import com.yarden.restServiceDemo.pojos.SlackReportData;
+import com.yarden.restServiceDemo.pojos.ReportData;
 import com.yarden.restServiceDemo.pojos.SlackReportNotificationJson;
 import com.yarden.restServiceDemo.reportService.EyesReportService;
 import com.yarden.restServiceDemo.reportService.SheetData;
@@ -60,7 +60,7 @@ public class EyesSlackReporterSender {
 
     private void sendReport() throws IOException, MailjetSocketTimeoutException, MailjetException{
         HTMLTableBuilder highLevelReportTable = getHighLevelReportTable();
-        SlackReportData slackReportData = new SlackReportData()
+        ReportData reportData = new ReportData()
                 .setReportTextPart("A new version of Eyes is about to be released.")
                 .setReportTitle("Test report for Eyes")
                 .setMailSubject("Test report for Eyes")
@@ -69,14 +69,14 @@ public class EyesSlackReporterSender {
                 .setHighLevelReportTable(highLevelReportTable)
                 .setDetailedPassedTestsTable(getDetailedPassedTestsTable())
                 .setHtmlReportS3BucketName(Enums.EnvVariables.AwsS3EyesReportsBucketName.value);
-        slackReportData.setHtmlReportUrl(new HtmlReportGenerator(slackReportData).getHtmlReportUrlInAwsS3(slackReportData.getHtmlReportS3BucketName()));
-        setRecipientMail(slackReportData);
+        reportData.setHtmlReportUrl(new HtmlReportGenerator(reportData).getHtmlReportUrlInAwsS3(reportData.getHtmlReportS3BucketName()));
+        setRecipientMail(reportData);
 //        if (requestJson.getSpecificRecipient() == null || requestJson.getSpecificRecipient().isEmpty()){
 //            new SlackReporter().report(slackReportData);
 //        }
-        slackReportData.setReportTextPart(slackReportData.getReportTextPart() +
+        reportData.setReportTextPart(reportData.getReportTextPart() +
                 "<br>" + highLevelReportTable);
-        new MailSender().send(slackReportData);
+        new MailSender().send(reportData);
     }
 
     private synchronized boolean isAllTestsEnded() throws IOException {
@@ -194,13 +194,13 @@ public class EyesSlackReporterSender {
         return passedAmount;
     }
 
-    private void setRecipientMail(SlackReportData slackReportData) {
+    private void setRecipientMail(ReportData reportData) {
         String recipientMail = "";
         if (requestJson.getSpecificRecipient() != null && !requestJson.getSpecificRecipient().isEmpty()) {
             recipientMail = requestJson.getSpecificRecipient();
         } else {
             recipientMail = "yarden.ingber@applitools.com";
         }
-        slackReportData.setRecipientsJsonArray(new JSONArray().put(new JSONObject().put("Email", recipientMail).put("Name", "Release_Report")));
+        reportData.setRecipientsJsonArray(new JSONArray().put(new JSONObject().put("Email", recipientMail).put("Name", "Release_Report")));
     }
 }
