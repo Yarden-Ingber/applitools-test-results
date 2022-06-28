@@ -1,5 +1,6 @@
-package com.yarden.restServiceDemo;
+package com.yarden.restServiceDemo.htmlReportService;
 
+import com.yarden.restServiceDemo.Logger;
 import com.yarden.restServiceDemo.awsS3Service.AwsS3Provider;
 import com.yarden.restServiceDemo.pojos.ReportData;
 

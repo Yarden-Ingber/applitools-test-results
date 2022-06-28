@@ -1,4 +1,4 @@
-package com.yarden.restServiceDemo;
+package com.yarden.restServiceDemo.htmlReportService;
 
 import com.yarden.restServiceDemo.pojos.ReportData;
 
