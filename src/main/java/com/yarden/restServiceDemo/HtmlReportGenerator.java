@@ -1,128 +1,98 @@
 package com.yarden.restServiceDemo;
 
-import com.lowagie.text.DocumentException;
-import com.mailjet.client.Base64;
-import com.yarden.restServiceDemo.awsS3Service.AwsS3Provider;
 import com.yarden.restServiceDemo.pojos.ReportData;
-import org.apache.commons.io.IOUtils;
-import org.xhtmlrenderer.pdf.ITextRenderer;
+import org.apache.commons.lang3.StringUtils;
 
-import java.io.*;
 import java.time.LocalDate;
 
 public class HtmlReportGenerator {
 
     StringBuilder htmlReportStringBuilder = new StringBuilder();
     ReportData reportData;
-    private final String htmlReportFileName = "test_report.html";
-    private final String pdfReportFileName = "test_report.pdf";
 
-    public HtmlReportGenerator(ReportData reportData){
+    HtmlReportGenerator(ReportData reportData){
         this.reportData = reportData;
     }
 
-    public String getHtmlReportUrlInAwsS3(String bucketName) throws FileNotFoundException, UnsupportedEncodingException {
-        generateHtmlReportFile();
-        String fileNameInBucket = getFileNameInBucket();
-        AwsS3Provider.uploadFileToS3(bucketName, fileNameInBucket, htmlReportFileName);
-        String fileUrl = AwsS3Provider.getUrlToFileInS3(bucketName, fileNameInBucket);
-        try {
-            new File(htmlReportFileName).delete();
-        } catch (Throwable t) {t.printStackTrace();}
-        return fileUrl;
-    }
-
-    public String getPdfReportAsBase64() throws IOException, DocumentException {
-        generateHtmlReportFile();
-        convertHtmlToPdfFile();
-        String result = Base64.encode(IOUtils.toByteArray(new FileInputStream(pdfReportFileName)));
-        try {
-            new File(htmlReportFileName).delete();
-            new File(pdfReportFileName).delete();
-        } catch (Throwable t) {t.printStackTrace();}
-        return result;
-    }
-
-    private void generateHtmlReportFile() throws FileNotFoundException, UnsupportedEncodingException {
-        PrintWriter writer = new PrintWriter(htmlReportFileName, "UTF-8");
-        try {
-            writer.println(getHtmlReportAsPlainSting());
-        } finally {
-            writer.close();
-        }
-    }
-
-    private void convertHtmlToPdfFile() throws IOException, DocumentException{
-        String inputFile = htmlReportFileName;
-        String url = new File(inputFile).toURI().toURL().toString();
-        String outputFile = pdfReportFileName;
-        OutputStream os = new FileOutputStream(outputFile);
-        try {
-            ITextRenderer renderer = new ITextRenderer();
-            renderer.setDocument(url);
-            renderer.layout();
-            renderer.createPDF(os);
-        } finally {
-            os.close();
-        }
-    }
-
-    private String getHtmlReportAsPlainSting(){
-        htmlReportStringBuilder.append("<!DOCTYPE html><html><head>");
-        htmlReportStringBuilder.append(getCSS());
-        htmlReportStringBuilder.append("</head><body><div class=\"wrapper\">\n" +
+    String getHtmlReportAsPlainSting(){
+        addHeadElement();
+        htmlReportStringBuilder.append("<body><div class=\"wrapper\">\n" +
                 "    <div class=\"content\">\n" +
                 "        <div class=\"header\">applitools</div>");
-        htmlReportStringBuilder.append("<h1>" + reportData.getReportTitle() + "</h1>");
-        htmlReportStringBuilder.append("<h2>" + LocalDate.now().toString() + "</h2>");
-        if (reportData.getVersion() != null && !reportData.getVersion().isEmpty()) {
-            htmlReportStringBuilder.append("<h2>Version</h2>");
-            htmlReportStringBuilder.append(versionToList(reportData.getVersion()) + "<br/><br/>");
-        }
-        if (reportData.getChangeLog() != null && !reportData.getChangeLog().isEmpty()) {
-            htmlReportStringBuilder.append("<details open><summary><b>Change log</b></summary>");
-            htmlReportStringBuilder.append(reportData.getChangeLog() + "<br/>");
-            htmlReportStringBuilder.append("</details><br/>");
-        }
-        if (reportData.getFrameworkVersions() != null && !reportData.getFrameworkVersions().isEmpty()) {
-            htmlReportStringBuilder.append("<h2>Tested framework versions:</h2>");
-            htmlReportStringBuilder.append(versionToList(reportData.getFrameworkVersions()) + "<br/><br/>");
-        }
-        if (reportData.getHighLevelReportTable() != null) {
-            htmlReportStringBuilder.append("<h2>Test summary</h2><br/>");
-            htmlReportStringBuilder.append(reportData.getHighLevelReportTable());
-        }
+        addPageTitle();
+        if (StringUtils.isNotEmpty(reportData.getVersion())) { addVersionSection(); }
+        if (StringUtils.isNotEmpty(reportData.getChangeLog())) { addChangeLogSection(); }
+        if (StringUtils.isNotEmpty(reportData.getFrameworkVersions())) { addFrameworkVersionsSection(); }
+        if (reportData.getHighLevelReportTable() != null) { addHighLevelReportSection(); }
 //        if (slackReportData.getCoverageGap() != null && !slackReportData.getCoverageGap().isEmpty()) {
 //            htmlReportStringBuilder.append("<br/><h2>Test coverage gap</h2>");
 //            htmlReportStringBuilder.append(slackReportData.getCoverageGap() + "<br/><br/>");
 //        }
-        if (reportData.getDetailedPassedTestsTable() != null) {
-            if (reportData.getPassedTestsCount() > 0) {
-                htmlReportStringBuilder.append("<br/><details><summary><b>Executed tests (Total: " + (reportData.getPassedTestsCount()+ reportData.getFailedTestsCount())
-                        + " Passed: " + reportData.getPassedTestsCount() + " Failed: " + reportData.getFailedTestsCount() + ")</b></summary>");
-            } else {
-                htmlReportStringBuilder.append("<br/><details><summary><b>Passed tests</b></summary>");
-            }
-            htmlReportStringBuilder.append(reportData.getDetailedPassedTestsTable());
-            htmlReportStringBuilder.append("</details>");
-        }
+        if (reportData.getDetailedPassedTestsTable() != null) { addDetailedPassedTestsSection(); }
 //        if (slackReportData.getDetailedMissingTestsTable() != null){
 //            htmlReportStringBuilder.append("<br/><details><summary><b>Unexecuted tests</b></summary>");
 //            htmlReportStringBuilder.append(slackReportData.getDetailedMissingTestsTable());
 //            htmlReportStringBuilder.append("</details><br/>");
 //        }
-        if (reportData.getDetailedMissingGenericTestsTable() != null){
-            htmlReportStringBuilder.append("<br/><details><summary><b>Unexecuted generic tests</b></summary>");
-            htmlReportStringBuilder.append(reportData.getDetailedMissingGenericTestsTable());
-            htmlReportStringBuilder.append("</details><br/>");
-        }
-        if (reportData.getDetailedFailedTestsTable() != null) {
-            htmlReportStringBuilder.append("<br/><details><summary><b>Failed tests</b></summary>");
-            htmlReportStringBuilder.append(reportData.getDetailedFailedTestsTable());
-            htmlReportStringBuilder.append("</details><br/>");
-        }
+        if (reportData.getDetailedMissingGenericTestsTable() != null){ addDetailedMissingGenericTestsSection(); }
+        if (reportData.getDetailedFailedTestsTable() != null) { addDetailedFailedTestsSection(); }
         htmlReportStringBuilder.append("</div></div></body></html>");
         return htmlReportStringBuilder.toString();
+    }
+
+    private void addHeadElement() {
+        htmlReportStringBuilder.append("<!DOCTYPE html><html><head>");
+        htmlReportStringBuilder.append(getCSS());
+        htmlReportStringBuilder.append("</head>");
+    }
+
+    private void addPageTitle() {
+        htmlReportStringBuilder.append("<h1>" + reportData.getReportTitle() + "</h1>");
+        htmlReportStringBuilder.append("<h2>" + LocalDate.now().toString() + "</h2>");
+    }
+
+    private void addVersionSection() {
+        htmlReportStringBuilder.append("<h2>Version</h2>");
+        htmlReportStringBuilder.append(versionToList(reportData.getVersion()) + "<br/><br/>");
+    }
+
+    private void addChangeLogSection() {
+        htmlReportStringBuilder.append("<details open><summary><b>Change log</b></summary>");
+        htmlReportStringBuilder.append(reportData.getChangeLog() + "<br/>");
+        htmlReportStringBuilder.append("</details><br/>");
+    }
+
+    private void addFrameworkVersionsSection() {
+        htmlReportStringBuilder.append("<h2>Tested framework versions:</h2>");
+        htmlReportStringBuilder.append(versionToList(reportData.getFrameworkVersions()) + "<br/><br/>");
+    }
+
+    private void addHighLevelReportSection() {
+        htmlReportStringBuilder.append("<h2>Test summary</h2><br/>");
+        htmlReportStringBuilder.append(reportData.getHighLevelReportTable());
+    }
+
+    private void addDetailedPassedTestsSection() {
+        if (reportData.getPassedTestsCount() > 0) {
+            htmlReportStringBuilder.append("<br/><details><summary><b>Executed tests (Total: " + (reportData.getPassedTestsCount()+ reportData.getFailedTestsCount())
+                    + " Passed: " + reportData.getPassedTestsCount() + " Failed: " + reportData.getFailedTestsCount() + ")</b></summary>");
+        } else {
+            htmlReportStringBuilder.append("<br/><details><summary><b>Passed tests</b></summary>");
+        }
+        htmlReportStringBuilder.append(reportData.getDetailedPassedTestsTable());
+        htmlReportStringBuilder.append("</details>");
+    }
+
+    private void addDetailedMissingGenericTestsSection() {
+        htmlReportStringBuilder.append("<br/><details><summary><b>Unexecuted generic tests</b></summary>");
+        htmlReportStringBuilder.append(reportData.getDetailedMissingGenericTestsTable());
+        htmlReportStringBuilder.append("</details><br/>");
+    }
+
+    private void addDetailedFailedTestsSection() {
+        htmlReportStringBuilder.append("<br/><details><summary><b>Failed tests</b></summary>");
+        htmlReportStringBuilder.append(reportData.getDetailedFailedTestsTable());
+        htmlReportStringBuilder.append("</details><br/>");
     }
 
     private String getCSS(){
@@ -185,14 +155,7 @@ public class HtmlReportGenerator {
                 "</style>";
     }
 
-    private String getFileNameInBucket(){
-        if (reportData.getSdk() != null && !reportData.getSdk().isEmpty()
-            && reportData.getVersion() != null && !reportData.getVersion().isEmpty()) {
-            return "report" + "_" + reportData.getSdk() + "_" + reportData.getVersion();
-        } else {
-            return "report" + "_" + Logger.getTimaStamp().replaceAll(" ", "_").replace('.', ':');
-        }
-    }
+
 
     private String versionToList(String version){
         String result = "<ul>";

@@ -6,6 +6,7 @@ import com.google.gson.JsonElement;
 import com.mailjet.client.errors.MailjetException;
 import com.mailjet.client.errors.MailjetSocketTimeoutException;
 import com.yarden.restServiceDemo.Enums;
+import com.yarden.restServiceDemo.HtmlReport;
 import com.yarden.restServiceDemo.HtmlReportGenerator;
 import com.yarden.restServiceDemo.Logger;
 import com.yarden.restServiceDemo.awsS3Service.AwsS3Provider;
@@ -69,7 +70,7 @@ public class EyesSlackReporterSender {
                 .setHighLevelReportTable(highLevelReportTable)
                 .setDetailedPassedTestsTable(getDetailedPassedTestsTable())
                 .setHtmlReportS3BucketName(Enums.EnvVariables.AwsS3EyesReportsBucketName.value);
-        reportData.setHtmlReportUrl(new HtmlReportGenerator(reportData).getHtmlReportUrlInAwsS3(reportData.getHtmlReportS3BucketName()));
+        reportData.setHtmlReportUrl(HtmlReport.generate(reportData));
         setRecipientMail(reportData);
 //        if (requestJson.getSpecificRecipient() == null || requestJson.getSpecificRecipient().isEmpty()){
 //            new SlackReporter().report(slackReportData);

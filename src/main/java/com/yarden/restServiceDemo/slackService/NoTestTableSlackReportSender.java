@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.mailjet.client.errors.MailjetException;
 import com.mailjet.client.errors.MailjetSocketTimeoutException;
 import com.yarden.restServiceDemo.Enums;
+import com.yarden.restServiceDemo.HtmlReport;
 import com.yarden.restServiceDemo.HtmlReportGenerator;
 import com.yarden.restServiceDemo.mailService.MailSender;
 import com.yarden.restServiceDemo.pojos.ReportData;
@@ -33,7 +34,7 @@ public class NoTestTableSlackReportSender {
                                 .put("Email", recipient)
                                 .put("Name", "Release_Report")))
                 .setHtmlReportS3BucketName(Enums.EnvVariables.AwsS3SdkReportsBucketName.value);
-        reportData.setHtmlReportUrl(new HtmlReportGenerator(reportData).getHtmlReportUrlInAwsS3(reportData.getHtmlReportS3BucketName()));
+        reportData.setHtmlReportUrl(HtmlReport.generate(reportData));
         if (requestJson.getSpecificRecipient() == null || requestJson.getSpecificRecipient().isEmpty()){
             reportData.setMailingGroupId(ReportData.MailingGroups.ReleaseReports);
         }

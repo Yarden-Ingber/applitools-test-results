@@ -7,6 +7,7 @@ import com.google.gson.JsonParseException;
 import com.mailjet.client.errors.MailjetException;
 import com.mailjet.client.errors.MailjetSocketTimeoutException;
 import com.yarden.restServiceDemo.Enums;
+import com.yarden.restServiceDemo.HtmlReport;
 import com.yarden.restServiceDemo.HtmlReportGenerator;
 import com.yarden.restServiceDemo.Logger;
 import com.yarden.restServiceDemo.firebaseService.FirebaseResultsJsonsService;
@@ -67,7 +68,7 @@ public class SdkSlackReportSender {
                 .setDetailedPassedTestsTable(getDetailedPassedTestsTable())
                 .setDetailedMissingGenericTestsTable(getDetailedMissingGenericTestsTable())
                 .setHtmlReportS3BucketName(Enums.EnvVariables.AwsS3SdkReportsBucketName.value);
-        reportData.setHtmlReportUrl(new HtmlReportGenerator(reportData).getHtmlReportUrlInAwsS3(reportData.getHtmlReportS3BucketName()));
+        reportData.setHtmlReportUrl(HtmlReport.generate(reportData));
         reportData.setRecipientsJsonArray(getRecipientMail(ReleaseMail));
         if (requestJson.getSpecificRecipient() == null || requestJson.getSpecificRecipient().isEmpty()){
             new SlackReporter().report(reportData);
@@ -100,7 +101,7 @@ public class SdkSlackReportSender {
                 .setDetailedPassedTestsTable(getDetailedPassedTestsTable())
                 .setDetailedFailedTestsTable(getDetailedFailedTestsTable())
                 .setHtmlReportS3BucketName(Enums.EnvVariables.AwsS3SdkReportsBucketName.value);
-        reportData.setHtmlReportUrl(new HtmlReportGenerator(reportData).getHtmlReportUrlInAwsS3(reportData.getHtmlReportS3BucketName()));
+        reportData.setHtmlReportUrl(HtmlReport.generate(reportData));
         reportData.setRecipientsJsonArray(getRecipientMail(FullRegression));
         reportData.setReportTextPart(reportData.getReportTextPart() +
                 "<br><br>" + sdkHighLevelFullRegressionReportTableBuilder.getHighLevelReportTable());
