@@ -198,4 +198,3 @@ example-cypress-javascript-ufg
 example-selenium-java-junit-ufg
 example-playwright-typescript-ufg
 example-playwright-typescript-classic
-docusaurus_documentation
