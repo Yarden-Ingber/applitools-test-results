@@ -4,9 +4,12 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.yarden.restServiceDemo.Enums;
 import com.yarden.restServiceDemo.Logger;
+import org.apache.commons.lang3.StringUtils;
 
 import java.io.IOException;
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.atomic.AtomicReference;
 
 public class SheetData {
@@ -43,6 +46,26 @@ public class SheetData {
             }
             return sheetDataPerTabMap.get(sheetTabIdentifier);
         }
+    }
+
+    public String getSheetDataAsCsvString() {
+        StringBuilder resultCsv = new StringBuilder();
+        final List<String> columns = this.getColumnNames();
+        for (String column : columns) {
+            resultCsv.append(column);
+            resultCsv.append(",");
+        }
+        resultCsv.append("\n");
+        JsonArray sheetData = this.getSheetData();
+        for (JsonElement sheetEntry : sheetData) {
+            for (String column : columns) {
+                String cellValue = sheetEntry.getAsJsonObject().get(column).getAsString();
+                resultCsv.append(StringUtils.isEmpty(cellValue) ? "" : cellValue);
+                resultCsv.append(",");
+            }
+            resultCsv.append("\n");
+        }
+        return resultCsv.toString();
     }
 
     public void writeSheet() throws IOException {
