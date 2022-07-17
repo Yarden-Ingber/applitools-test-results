@@ -16,7 +16,7 @@ import java.io.*;
 
 public class SdkDailyRegressionReport {
 
-    final String sdkResultsCsvFilePath = "sdk_test_results.csv";
+    static final String sdkResultsCsvFilePath = "sdk_test_results.csv";
     final String sdkDailyRegressionResultFileName = "sdk_test_results_" + Logger.getTimaStamp().replaceAll(" ", "_").replace('.', ':') + ".csv";
 
     public void send() throws IOException, MailjetSocketTimeoutException, MailjetException {

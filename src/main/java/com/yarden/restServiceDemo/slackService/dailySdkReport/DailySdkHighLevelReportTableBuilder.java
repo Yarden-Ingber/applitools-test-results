@@ -17,9 +17,9 @@ public class DailySdkHighLevelReportTableBuilder {
     final List<String> sdks;
     final SheetData reportSheet;
     final Table<String, String, String> highLevelReportTable;
-    final String PASSED = "Passed";
-    final String FAILED = "Failed";
-    final String MISSING = "Missing";
+    static final String PASSED = "Passed";
+    static final String FAILED = "Failed";
+    static final String MISSING = "Missing";
 
     public DailySdkHighLevelReportTableBuilder() {
         this.reportSheet = new SheetData(new SheetTabIdentifier(Enums.SpreadsheetIDs.SDK.value, Enums.SdkGroupsSheetTabNames.Selenium.value));
