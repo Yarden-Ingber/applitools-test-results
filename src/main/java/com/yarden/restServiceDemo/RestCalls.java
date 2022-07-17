@@ -233,7 +233,7 @@ public class RestCalls {
     @RequestMapping(method = RequestMethod.POST, path = "/send_mail/daily_sdk_regression")
     public ResponseEntity sendDailySDKRegression() {
         synchronized (lock) {
-            newRequestPrint(null, "/send_mail/daily_sdk_regression", DontPrintPayload);
+            newRequestPrint("", "/send_mail/daily_sdk_regression", DontPrintPayload);
             try {
                 new SdkDailyRegressionReport().send();
             } catch (Throwable throwable) {
