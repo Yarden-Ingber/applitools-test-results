@@ -69,13 +69,14 @@ public class EyesSlackReporterSender {
                 .setHighLevelReportTable(highLevelReportTable)
                 .setDetailedPassedTestsTable(getDetailedPassedTestsTable())
                 .setHtmlReportS3BucketName(Enums.EnvVariables.AwsS3EyesReportsBucketName.value);
-        reportData.setHtmlReportUrl(HtmlReport.generate(reportData));
+        reportData.setReportTextPart(reportData.getReportTextPart() +
+                "<br>" + highLevelReportTable);
+        reportData.setReportTextPart(reportData.getReportTextPart().replace("\n", "<br/>") +
+                "<br><br>HTML Report:<br>" + HtmlReport.generate(reportData));
         setRecipientMail(reportData);
 //        if (requestJson.getSpecificRecipient() == null || requestJson.getSpecificRecipient().isEmpty()){
 //            new SlackReporter().report(slackReportData);
 //        }
-        reportData.setReportTextPart(reportData.getReportTextPart() +
-                "<br>" + highLevelReportTable);
         new MailSender().send(reportData);
     }
 

@@ -8,8 +8,8 @@ import java.io.IOException;
 
 public class SlackReporter {
 
-    public void report(ReportData reportData) throws IOException {
-        SdkReportMessage message = new SdkReportMessage(reportData.getReportTextPart() + "\n\nHTML Report:\n" + reportData.getHtmlReportUrl());
+    public void report(ReportData reportData, String htmlReportUrl) throws IOException {
+        SdkReportMessage message = new SdkReportMessage(reportData.getReportTextPart() + "\n\nHTML Report:\n" + htmlReportUrl);
         SlackRetrofitClient.getAPIService().sendReport(Enums.EnvVariables.SlackSdkReleaseChannelEndpoint.value, message).execute();
     }
 

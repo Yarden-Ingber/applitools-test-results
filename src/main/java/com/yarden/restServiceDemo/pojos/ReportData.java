@@ -24,7 +24,6 @@ public class ReportData {
     private String coverageGap = "";
     private JSONArray recipientsJsonArray = null;
     private String htmlReportS3BucketName = "";
-    private String htmlReportUrl = "";
     private int passedTestsCount = 0;
     private int failedTestsCount = 0;
     private int missingTestsCount = 0;
@@ -154,15 +153,6 @@ public class ReportData {
 
     public ReportData setHtmlReportS3BucketName(String htmlReportS3BucketName) {
         this.htmlReportS3BucketName = htmlReportS3BucketName;
-        return this;
-    }
-
-    public String getHtmlReportUrl() {
-        return htmlReportUrl;
-    }
-
-    public ReportData setHtmlReportUrl(String htmlReportUrl) {
-        this.htmlReportUrl = htmlReportUrl;
         return this;
     }
 

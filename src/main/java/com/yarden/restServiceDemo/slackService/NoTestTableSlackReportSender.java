@@ -33,7 +33,8 @@ public class NoTestTableSlackReportSender {
                                 .put("Email", recipient)
                                 .put("Name", "Release_Report")))
                 .setHtmlReportS3BucketName(Enums.EnvVariables.AwsS3SdkReportsBucketName.value);
-        reportData.setHtmlReportUrl(HtmlReport.generate(reportData));
+        reportData.setReportTextPart(reportData.getReportTextPart().replace("\n", "<br/>") +
+                "<br><br>HTML Report:<br>" + HtmlReport.generate(reportData));
         if (requestJson.getSpecificRecipient() == null || requestJson.getSpecificRecipient().isEmpty()){
             reportData.setMailingGroupId(ReportData.MailingGroups.ReleaseReports);
         }

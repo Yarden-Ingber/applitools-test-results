@@ -8,6 +8,7 @@ import com.yarden.restServiceDemo.reportService.*;
 import com.yarden.restServiceDemo.slackService.EyesSlackReporterSender;
 import com.yarden.restServiceDemo.slackService.NoTestTableSlackReportSender;
 import com.yarden.restServiceDemo.slackService.SdkSlackReportSender;
+import com.yarden.restServiceDemo.slackService.dailySdkReport.SdkDailyRegressionReport;
 import com.yarden.restServiceDemo.splunkService.SplunkReporter;
 import javassist.NotFoundException;
 import org.apache.commons.io.IOUtils;
@@ -222,6 +223,19 @@ public class RestCalls {
             newRequestPrint(json, "/send_mail/no_tests", PrintPayload);
             try {
                 new NoTestTableSlackReportSender().send(json);
+            } catch (Throwable throwable) {
+                return new ResponseEntity("Failed sending email: " + throwable.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+            }
+            return new ResponseEntity("Mail sent", HttpStatus.OK);
+        }
+    }
+
+    @RequestMapping(method = RequestMethod.POST, path = "/send_mail/daily_sdk_regression")
+    public ResponseEntity sendDailySDKRegression() {
+        synchronized (lock) {
+            newRequestPrint(null, "/send_mail/daily_sdk_regression", DontPrintPayload);
+            try {
+                new SdkDailyRegressionReport().send();
             } catch (Throwable throwable) {
                 return new ResponseEntity("Failed sending email: " + throwable.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
             }

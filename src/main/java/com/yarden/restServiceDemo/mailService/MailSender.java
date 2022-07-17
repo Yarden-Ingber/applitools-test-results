@@ -41,13 +41,9 @@ public class MailSender {
     }
 
     private String getMailContent () {
-        String content = "";
-        if (StringUtils.isNotEmpty(reportData.getReportTextPart())) {
-            content = reportData.getReportTextPart().replace("\n", "<br/>") +
-                    "<br><br>HTML Report:<br>" + reportData.getHtmlReportUrl();
-        }
+        String content = reportData.getReportTextPart();
         if (reportData.getMailingGroupId() != null) {
-            content = content + "<br><br>" + reportData.getMailingGroupId().id;
+            content = reportData.getReportTextPart() + "<br><br>" + reportData.getMailingGroupId().id;
         }
         return  content;
     }

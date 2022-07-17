@@ -67,15 +67,17 @@ public class SdkSlackReportSender {
                 .setDetailedPassedTestsTable(getDetailedPassedTestsTable())
                 .setDetailedMissingGenericTestsTable(getDetailedMissingGenericTestsTable())
                 .setHtmlReportS3BucketName(Enums.EnvVariables.AwsS3SdkReportsBucketName.value);
-        reportData.setHtmlReportUrl(HtmlReport.generate(reportData));
         reportData.setRecipientsJsonArray(getRecipientMail(ReleaseMail));
+        String htmlReportUrl = HtmlReport.generate(reportData);
         if (requestJson.getSpecificRecipient() == null || requestJson.getSpecificRecipient().isEmpty()){
-            new SlackReporter().report(reportData);
+            new SlackReporter().report(reportData, htmlReportUrl);
             new SdkVersionsReportService().updateVersion(json);
             reportData.setMailingGroupId(ReportData.MailingGroups.ReleaseReports);
         }
         reportData.setReportTextPart(reportData.getReportTextPart() +
                 "<br>" + sdkReleaseEventHighLevelReportTableBuilder.getHighLevelReportTable());
+        reportData.setReportTextPart(reportData.getReportTextPart().replace("\n", "<br/>") +
+                "<br><br>HTML Report:<br>" + htmlReportUrl);
         new MailSender().send(reportData);
         sendMissingRegressionTestsSplunkEvent(sdkReleaseEventHighLevelReportTableBuilder);
     }
@@ -100,10 +102,11 @@ public class SdkSlackReportSender {
                 .setDetailedPassedTestsTable(getDetailedPassedTestsTable())
                 .setDetailedFailedTestsTable(getDetailedFailedTestsTable())
                 .setHtmlReportS3BucketName(Enums.EnvVariables.AwsS3SdkReportsBucketName.value);
-        reportData.setHtmlReportUrl(HtmlReport.generate(reportData));
         reportData.setRecipientsJsonArray(getRecipientMail(FullRegression));
         reportData.setReportTextPart(reportData.getReportTextPart() +
                 "<br><br>" + sdkHighLevelFullRegressionReportTableBuilder.getHighLevelReportTable());
+        reportData.setReportTextPart(reportData.getReportTextPart().replace("\n", "<br/>") +
+                "<br><br>HTML Report:<br>" + HtmlReport.generate(reportData));
         new MailSender().send(reportData);
         sendFullRegressionSplunkEvent(sdkHighLevelFullRegressionReportTableBuilder);
     }
