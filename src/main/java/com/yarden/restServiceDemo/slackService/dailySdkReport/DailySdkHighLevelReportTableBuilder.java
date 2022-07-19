@@ -20,6 +20,7 @@ public class DailySdkHighLevelReportTableBuilder {
     static final String PASSED = "Passed";
     static final String FAILED = "Failed";
     static final String MISSING = "Missing";
+    static final String STATUS = "Status";
 
     public DailySdkHighLevelReportTableBuilder() {
         this.reportSheet = new SheetData(new SheetTabIdentifier(Enums.SpreadsheetIDs.SDK.value, Enums.SdkGroupsSheetTabNames.Selenium.value));
@@ -32,12 +33,30 @@ public class DailySdkHighLevelReportTableBuilder {
     public HTMLTableBuilder getHighLevelReportTable() {
         HTMLTableBuilder tableBuilder = new HTMLTableBuilder(false, 3, sdks.size() + 1);
         List<String> tableHeader = new ArrayList<>();
-        tableHeader.add("Status");
+        tableHeader.add(STATUS);
         tableHeader.addAll(highLevelReportTable.columnKeySet());
         tableBuilder.addTableHeader(tableHeader.toArray(new String[0]));
         addPassedResultsToHtmlTable(tableBuilder);
         addFailedResultsToHtmlTable(tableBuilder);
         return tableBuilder;
+    }
+
+    public String getFailedSdksHtml() {
+        StringBuilder failedSdksHtml = new StringBuilder("");
+        for (String sdk : highLevelReportTable.columnKeySet()) {
+            if (!sdk.equals(STATUS)) {
+                if (Integer.parseInt(highLevelReportTable.get(FAILED, sdk)) > 0) {
+                    failedSdksHtml.append(sdk);
+                    failedSdksHtml.append("<br>");
+                }
+            }
+        }
+        String title = "Failed SDKs:<br>";
+        if (!failedSdksHtml.toString().isEmpty()) {
+            return title + failedSdksHtml.toString() + "<br>";
+        } else {
+            return title + "None<br><br>";
+        }
     }
 
     private void addPassedResultsToHtmlTable(HTMLTableBuilder tableBuilder) {

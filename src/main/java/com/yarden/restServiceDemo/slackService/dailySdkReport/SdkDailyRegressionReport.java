@@ -42,7 +42,7 @@ public class SdkDailyRegressionReport {
 //                                .put("Name", "Release_Report"))
                 );
         DailySdkHighLevelReportTableBuilder dailySdkHighLevelReportTableBuilder = new DailySdkHighLevelReportTableBuilder();
-        reportData.setReportTextPart(reportData.getReportTextPart() +
+        reportData.setReportTextPart(reportData.getReportTextPart() + dailySdkHighLevelReportTableBuilder.getFailedSdksHtml() +
                 "<br>" + dailySdkHighLevelReportTableBuilder.getHighLevelReportTable());
         reportData.setReportTextPart(reportData.getReportTextPart().replace("\n", "<br/>") +
                 "<br><br>Results CSV file:<br>" + uplodaReportCsvToS3());
