@@ -20,10 +20,11 @@ public class SdkDailyRegressionReport {
     final String sdkDailyRegressionResultFileName = "sdk_test_results_" + Logger.getTimaStamp().replaceAll(" ", "_").replace('.', ':') + ".csv";
 
     public void send() throws IOException, MailjetSocketTimeoutException, MailjetException {
+        DailySdkHighLevelReportTableBuilder dailySdkHighLevelReportTableBuilder = new DailySdkHighLevelReportTableBuilder();
         ReportData reportData = new ReportData()
                 .setReportTextPart("The daily SDK regression has finished.\n\n")
-                .setReportTitle("Daily SDK regression report")
-                .setMailSubject("Daily SDK regression report")
+                .setReportTitle("Daily SDK regression report - " + dailySdkHighLevelReportTableBuilder.suiteResultString)
+                .setMailSubject("Daily SDK regression report - " + dailySdkHighLevelReportTableBuilder.suiteResultString)
                 .setRecipientsJsonArray(new JSONArray()
                         .put(new JSONObject()
                                 .put("Email", "yarden.ingber@applitools.com")
@@ -41,7 +42,6 @@ public class SdkDailyRegressionReport {
 //                                .put("Email", "kyrylo.onufriiev@applitools.com")
 //                                .put("Name", "Release_Report"))
                 );
-        DailySdkHighLevelReportTableBuilder dailySdkHighLevelReportTableBuilder = new DailySdkHighLevelReportTableBuilder();
         reportData.setReportTextPart(reportData.getReportTextPart() + dailySdkHighLevelReportTableBuilder.getFailedSdksHtml() +
                 "<br>" + dailySdkHighLevelReportTableBuilder.getHighLevelReportTable());
         reportData.setReportTextPart(reportData.getReportTextPart().replace("\n", "<br/>") +
