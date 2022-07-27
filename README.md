@@ -229,7 +229,7 @@ This endpoint allows Eyes report service to reset the state of the spreadsheet a
 
 By default the mail will be sent to a mail report group release.reports@applitools.com. To test this endpoint add a specific recipient and it will overwrite the default value.
   
-### Send a `GET` to `/get_sdk_results_by_id?id={id}&group={group}`.
+### Send a `GET` to `/get_sdk_results?id={id}&group={group}&sdk={sdk}`.
 
 <u>`id` - String<u>
   
