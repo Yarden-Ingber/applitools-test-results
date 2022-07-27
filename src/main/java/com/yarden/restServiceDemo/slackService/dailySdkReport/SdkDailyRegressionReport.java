@@ -83,18 +83,19 @@ public class SdkDailyRegressionReport {
         if (StringUtils.isNotEmpty(request.getId()) && !request.getId().equals("null")) {
             SheetData reportSheet = new SheetData(new SheetTabIdentifier(Enums.SpreadsheetIDs.SDK.value, Enums.SdkGroupsSheetTabNames.Selenium.value));
             List<String> sdks = reportSheet.getColumnNames();
-            sdks.remove(Enums.SdkSheetColumnNames.TestName.value);
             for (String sdk : sdks) {
-                try {
-                    FirebaseResultsJsonsService.dumpMappedRequestsToFirebase();
-                    request.setSdk(sdk);
-                    request.setGroup(Enums.SdkGroupsSheetTabNames.Selenium.value);
-                    String json = FirebaseResultsJsonsService.getCurrentSdkRequestFromFirebase(request);
-                    SdkResultRequestJson sdkResultRequestJson = new Gson().fromJson(json, SdkResultRequestJson.class);
-                    Logger.info("SdkDailyRegressionReport: Dumping request from firebase for: " + request.getSdk() + "-" + request.getId());
-                    new SdkReportService().postResults(sdkResultRequestJson);
-                } catch (NotFoundException e) {
-                    Logger.warn("SdkDailyRegressionReport: Failed to dump request from firebase to sheet for sdk: " + request.getSdk() + " group: " + request.getGroup() + " id: " + request.getId());
+                if (!sdk.equals(Enums.SdkSheetColumnNames.TestName.value)) {
+                    try {
+                        FirebaseResultsJsonsService.dumpMappedRequestsToFirebase();
+                        request.setSdk(sdk);
+                        request.setGroup(Enums.SdkGroupsSheetTabNames.Selenium.value);
+                        String json = FirebaseResultsJsonsService.getCurrentSdkRequestFromFirebase(request);
+                        SdkResultRequestJson sdkResultRequestJson = new Gson().fromJson(json, SdkResultRequestJson.class);
+                        Logger.info("SdkDailyRegressionReport: Dumping request from firebase for: " + request.getSdk() + "-" + request.getId());
+                        new SdkReportService().postResults(sdkResultRequestJson);
+                    } catch (NotFoundException e) {
+                        Logger.warn("SdkDailyRegressionReport: Failed to dump request from firebase to sheet for sdk: " + request.getSdk() + " group: " + request.getGroup() + " id: " + request.getId());
+                    }
                 }
             }
             SheetData.writeAllTabsToSheet();

@@ -26,8 +26,12 @@ public class DailySdkHighLevelReportTableBuilder {
 
     public DailySdkHighLevelReportTableBuilder() {
         this.reportSheet = new SheetData(new SheetTabIdentifier(Enums.SpreadsheetIDs.SDK.value, Enums.SdkGroupsSheetTabNames.Selenium.value));
-        this.sdks = reportSheet.getColumnNames();
-        sdks.remove(Enums.SdkSheetColumnNames.TestName.value);
+        this.sdks = new ArrayList<>();
+        for (String sdk: reportSheet.getColumnNames()) {
+            if (sdk.equals(Enums.SdkSheetColumnNames.TestName.value)) {
+                this.sdks.add(sdk);
+            }
+        }
         this.highLevelReportTable = HashBasedTable.create();
         calculateTableForAllSdks();
     }
