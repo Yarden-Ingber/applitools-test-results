@@ -235,11 +235,11 @@ public class RestCalls {
     }
 
     @RequestMapping(method = RequestMethod.POST, path = "/send_mail/daily_sdk_regression")
-    public ResponseEntity sendDailySDKRegression() {
+    public ResponseEntity sendDailySDKRegression(@RequestBody String json) {
         synchronized (lock) {
             newRequestPrint("", "/send_mail/daily_sdk_regression", DontPrintPayload);
             try {
-                new SdkDailyRegressionReport().send();
+                new SdkDailyRegressionReport().send(json);
             } catch (Throwable throwable) {
                 return new ResponseEntity("Failed sending email: " + throwable.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
             }
