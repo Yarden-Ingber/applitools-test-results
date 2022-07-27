@@ -118,7 +118,7 @@ public class FirebaseResultsJsonsService extends TimerTask {
                 if (requestMap.get().containsKey(requestMapKey)) {
                     request = joinRequests(requestMap.get().get(requestMapKey), request);
                 }
-                Logger.info("FirebaseResultsJsonsService: adding request to queue: " + request.getId());
+                Logger.info("FirebaseResultsJsonsService: adding request to queue: " + request.getSdk() + "-" + request.getId());
                 requestMap.get().put(requestMapKey, request);
             } catch (NullPointerException e) {
             } catch (Throwable t) {
