@@ -133,7 +133,7 @@ public class SheetData {
     public List<String> getColumnNames(){
         List<String> result = columnsNamesMap.get(sheetTabIdentifier);
         if (result == null) {
-            Logger.error("No columns for tab identifier: " + sheetTabIdentifier);
+            Logger.warn("No columns for tab identifier: " + sheetTabIdentifier);
             List<List<Object>> sheet = SheetDBApiService.getAllSheet(sheetTabIdentifier);
             columnsNamesMap.put(sheetTabIdentifier, SheetDBApiService.getKeyList(sheet));
             result = columnsNamesMap.get(sheetTabIdentifier);
