@@ -74,14 +74,18 @@ public class RestCalls {
         }
     }
 
-    @RequestMapping(method = RequestMethod.GET, path = "/get_sdk_results_by_id")
-    public String getSdkResultsById(@RequestParam String id, @RequestParam String group) {
+    @RequestMapping(method = RequestMethod.GET, path = "/get_sdk_results")
+    public String getSdkResultsById(@RequestParam String id, @RequestParam String sdk, @RequestParam String group) {
         newRequestPrint(id, "/get_sdk_results_by_id", PrintPayload);
         if (group.equalsIgnoreCase(Enums.SdkGroupsSheetTabNames.Selenium.value)) {
             group = group.toLowerCase();
         }
         try {
-            return FirebaseResultsJsonsService.getCurrentSdkRequestFromFirebase(id, group);
+            SdkResultRequestJson request = new SdkResultRequestJson();
+            request.setSdk(sdk);
+            request.setGroup(group);
+            request.setId(id);
+            return FirebaseResultsJsonsService.getCurrentSdkRequestFromFirebase(request);
         } catch (NotFoundException e) {
             Logger.warn("No results for id: " + id + " group: " + group);
             return "No results for id: " + id + " group: " + group;

@@ -12,6 +12,7 @@ import com.yarden.restServiceDemo.awsS3Service.AwsS3Provider;
 import com.yarden.restServiceDemo.firebaseService.FirebaseResultsJsonsService;
 import com.yarden.restServiceDemo.mailService.MailSender;
 import com.yarden.restServiceDemo.pojos.ReportData;
+import com.yarden.restServiceDemo.pojos.SdkResultRequestJson;
 import com.yarden.restServiceDemo.pojos.SlackReportNotificationJson;
 import com.yarden.restServiceDemo.reportService.EyesReportService;
 import com.yarden.restServiceDemo.reportService.SheetData;
@@ -50,7 +51,9 @@ public class EyesSlackReporterSender {
         for (Enums.EyesSheetTabsNames group : Enums.EyesSheetTabsNames.values()) {
             try {
                 FirebaseResultsJsonsService.dumpMappedRequestsToFirebase();
-                new EyesReportService().postResults(FirebaseResultsJsonsService.getCurrentEyesRequestFromFirebase(requestJson.getId(), group.value));
+                SdkResultRequestJson requestForFirebase = requestJson.convert();
+                requestForFirebase.setGroup(group.value);
+                new EyesReportService().postResults(FirebaseResultsJsonsService.getCurrentEyesRequestFromFirebase(requestForFirebase));
             } catch (NotFoundException e) {
                 Logger.error("EyesSlackReporterSender: Failed to dump request from firebase to sheet for group: " + group + " id: " + requestJson.getId());
             }

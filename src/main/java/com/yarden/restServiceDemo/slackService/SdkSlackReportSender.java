@@ -116,7 +116,9 @@ public class SdkSlackReportSender {
             for (Enums.SdkGroupsSheetTabNames group : Enums.SdkGroupsSheetTabNames.values()) {
                 try {
                     FirebaseResultsJsonsService.dumpMappedRequestsToFirebase();
-                    String json = FirebaseResultsJsonsService.getCurrentSdkRequestFromFirebase(requestJson.getId(), group.value);
+                    SdkResultRequestJson requestForFirebase = requestJson.convert();
+                    requestForFirebase.setGroup(group.value);
+                    String json = FirebaseResultsJsonsService.getCurrentSdkRequestFromFirebase(requestForFirebase);
                     SdkResultRequestJson sdkResultRequestJson = new Gson().fromJson(json, SdkResultRequestJson.class);
                     new SdkReportService().postResults(sdkResultRequestJson);
                 } catch (NotFoundException e) {

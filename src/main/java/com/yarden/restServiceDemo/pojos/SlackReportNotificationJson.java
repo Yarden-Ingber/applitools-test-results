@@ -112,4 +112,11 @@ public class SlackReportNotificationJson {
     public void setFrameworkVersions(String frameworkVersions) {
         this.frameworkVersions = frameworkVersions;
     }
+
+    public SdkResultRequestJson convert() {
+        SdkResultRequestJson request = new SdkResultRequestJson();
+        request.setId(this.id);
+        request.setSdk(this.sdk);
+        return request;
+    }
 }

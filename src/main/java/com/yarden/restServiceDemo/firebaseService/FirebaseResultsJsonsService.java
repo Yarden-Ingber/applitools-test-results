@@ -67,6 +67,31 @@ public class FirebaseResultsJsonsService extends TimerTask {
         System.gc();
     }
 
+    public static void addSdkRequestToFirebase(SdkResultRequestJson request) {
+        addRequestToMap(request, sdkRequestMap, FirebasePrefixStrings.Sdk);
+    }
+
+    public static void addEyesRequestToFirebase(String json) {
+        EyesResultRequestJson request = new Gson().fromJson(json, EyesResultRequestJson.class);
+        addRequestToMap(request, eyesRequestMap, FirebasePrefixStrings.Eyes);
+    }
+
+    public static String getCurrentSdkRequestFromFirebase(RequestInterface request) throws NotFoundException {
+        try {
+            return getCurrentRequestFromFirebase(request, FirebasePrefixStrings.Sdk);
+        } catch (Throwable t) {
+            throw new NotFoundException("");
+        }
+    }
+
+    public static String getCurrentEyesRequestFromFirebase(RequestInterface request) throws NotFoundException {
+        try {
+            return getCurrentRequestFromFirebase(request, FirebasePrefixStrings.Eyes);
+        } catch (Throwable t) {
+            throw new NotFoundException("");
+        }
+    }
+
     private static synchronized void synchronizedDumpRequests(AtomicReference<HashMap<String, RequestInterface>> queue, FirebasePrefixStrings prefix){
         synchronized (lockFirebaseConnection) {
             Set<String> queueKeys = new HashSet<>();
@@ -87,7 +112,7 @@ public class FirebaseResultsJsonsService extends TimerTask {
         if (isSandbox(request)) {
             return;
         }
-        String requestMapKey = getResultRequestJsonFileName(request.getId(), request.getGroup(), fileNamePrefixInFirebase.value);
+        String requestMapKey = getResultRequestJsonFileName(request, fileNamePrefixInFirebase.value);
         synchronized (lockQueue) {
             try {
                 if (requestMap.get().containsKey(requestMapKey)) {
@@ -102,38 +127,13 @@ public class FirebaseResultsJsonsService extends TimerTask {
         }
     }
 
-    public static void addSdkRequestToFirebase(SdkResultRequestJson request) {
-        addRequestToMap(request, sdkRequestMap, FirebasePrefixStrings.Sdk);
-    }
-
-    public static void addEyesRequestToFirebase(String json) {
-        EyesResultRequestJson request = new Gson().fromJson(json, EyesResultRequestJson.class);
-        addRequestToMap(request, eyesRequestMap, FirebasePrefixStrings.Eyes);
-    }
-
-    public static String getCurrentSdkRequestFromFirebase(String id, String group) throws NotFoundException {
-        try {
-            return getCurrentRequestFromFirebase(id, group, FirebasePrefixStrings.Sdk);
-        } catch (Throwable t) {
-            throw new NotFoundException("");
-        }
-    }
-
-    public static String getCurrentEyesRequestFromFirebase(String id, String group) throws NotFoundException {
-        try {
-            return getCurrentRequestFromFirebase(id, group, FirebasePrefixStrings.Eyes);
-        } catch (Throwable t) {
-            throw new NotFoundException("");
-        }
-    }
-
     private static void addRequestToFirebase(RequestInterface request, FirebasePrefixStrings fileNamePrefixInFirebase) {
         if (isSandbox(request)) {
             return;
         }
         RequestInterface resultRequestJsonFromFirebase = null;
         try {
-            String currentRequestFromFirebase = getCurrentRequestFromFirebase(request.getId(), request.getGroup(), fileNamePrefixInFirebase);
+            String currentRequestFromFirebase = getCurrentRequestFromFirebase(request, fileNamePrefixInFirebase);
             resultRequestJsonFromFirebase = joinRequests(request, new Gson().fromJson(currentRequestFromFirebase, request.getClass()));
         } catch (Throwable t) {
             resultRequestJsonFromFirebase = request;
@@ -141,7 +141,7 @@ public class FirebaseResultsJsonsService extends TimerTask {
         try {
             logRequestSentToFirebase(request, fileNamePrefixInFirebase);
             resultRequestJsonFromFirebase.setTimestamp(Logger.getTimaStamp());
-            String jsonUrlInFirebase = getFirebaseUrl(request.getId(), request.getGroup(), fileNamePrefixInFirebase);
+            String jsonUrlInFirebase = getFirebaseUrl(request, fileNamePrefixInFirebase);
             patchFirebaseRequest(jsonUrlInFirebase, new Gson().toJson(resultRequestJsonFromFirebase));
         } catch (IOException | InterruptedException e) {
             Logger.error("FirebaseResultsJsonsService: Failed to add result to firebase");
@@ -164,28 +164,17 @@ public class FirebaseResultsJsonsService extends TimerTask {
         return resultRequest;
     }
 
-    private static String getResultRequestJsonFileName(String id, String group, String requestFileNamePrefix){
-        return requestFileNamePrefix + "-" + id + "-" + group.toLowerCase();
+    private static String getResultRequestJsonFileName(RequestInterface request, String requestFileNamePrefix){
+        return requestFileNamePrefix + "-" + request.getSdk() + "-" + request.getId() + "-" + request.getGroup().toLowerCase();
     }
 
-    public enum FirebasePrefixStrings {
-        Sdk("Sdk"), Eyes("Eyes");
-
-        public final String value;
-
-        FirebasePrefixStrings(String value) {
-            this.value = value;
-        }
-
-    }
-
-    private static String getCurrentRequestFromFirebase(String id, String group, FirebasePrefixStrings fileNamePrefixInFirebase) throws IOException, InterruptedException, NotFoundException {
-        String url = getFirebaseUrl(id, group, fileNamePrefixInFirebase);
+    private static String getCurrentRequestFromFirebase(RequestInterface request, FirebasePrefixStrings fileNamePrefixInFirebase) throws IOException, InterruptedException, NotFoundException {
+        String url = getFirebaseUrl(request, fileNamePrefixInFirebase);
         HttpClient client = HttpClient.newHttpClient();
-        HttpRequest request = HttpRequest.newBuilder()
+        HttpRequest httpRequest = HttpRequest.newBuilder()
                 .uri(URI.create(url))
                 .build();
-        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+        HttpResponse<String> response = client.send(httpRequest, HttpResponse.BodyHandlers.ofString());
         String result = response.body();
         if (result.equals("null")) {
             throw new NotFoundException("");
@@ -206,8 +195,8 @@ public class FirebaseResultsJsonsService extends TimerTask {
         Logger.info("FirebaseResultsJsonsService: response from firebase: " + response.statusCode());
     }
 
-    private static String getFirebaseUrl(String id, String group, FirebasePrefixStrings fileNamePrefixInFirebase){
-        String url = "https://sdk-reports.firebaseio.com/" + getResultRequestJsonFileName(id, group, fileNamePrefixInFirebase.value) + ".json";
+    private static String getFirebaseUrl(RequestInterface request, FirebasePrefixStrings fileNamePrefixInFirebase){
+        String url = "https://sdk-reports.firebaseio.com/" + getResultRequestJsonFileName(request, fileNamePrefixInFirebase.value) + ".json";
         return url.replace(" ", "_");
     }
 
@@ -259,6 +248,17 @@ public class FirebaseResultsJsonsService extends TimerTask {
         json = IOUtils.toString(inputStream, StandardCharsets.UTF_8.name());
         Assert.assertEquals(json, new Gson().toJson(sdkRequestMap.get().get(key)));
         sdkRequestMap.get().clear();
+    }
+
+    public enum FirebasePrefixStrings {
+        Sdk("sdk"), Eyes("Eyes");
+
+        public final String value;
+
+        FirebasePrefixStrings(String value) {
+            this.value = value;
+        }
+
     }
 
 }

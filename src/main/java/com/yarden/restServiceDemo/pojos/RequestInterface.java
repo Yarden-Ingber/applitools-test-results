@@ -12,6 +12,8 @@ public interface RequestInterface {
 
     String getGroup();
 
+    String getSdk();
+
     void setResults(JsonArray results);
 
     void setTimestamp(String timestamp);

@@ -64,6 +64,8 @@ public class EyesResultRequestJson implements RequestInterface{
         return timestamp;
     }
 
+    public String getSdk() { return ""; }
+
     @Override
     public void setTimestamp(String timestamp) {
         this.timestamp = timestamp;

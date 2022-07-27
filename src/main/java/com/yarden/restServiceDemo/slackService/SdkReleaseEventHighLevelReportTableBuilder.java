@@ -80,7 +80,9 @@ public class SdkReleaseEventHighLevelReportTableBuilder extends SdkHighLevelTabl
             String id = getIdForSdkByGroup(group, requestJson);
             if (StringUtils.isNotEmpty(id) && !id.equals("null")) {
                 try {
-                    SdkResultRequestJson sdkResultRequestJson = new Gson().fromJson(FirebaseResultsJsonsService.getCurrentSdkRequestFromFirebase(id, group.value), SdkResultRequestJson.class);
+                    SdkResultRequestJson requestForFirebase = requestJson.convert();
+                    requestForFirebase.setGroup(group.value);
+                    SdkResultRequestJson sdkResultRequestJson = new Gson().fromJson(FirebaseResultsJsonsService.getCurrentSdkRequestFromFirebase(requestForFirebase), SdkResultRequestJson.class);
                     JsonArray resultsArray = sdkResultRequestJson.getResults();
                     for (JsonElement result : resultsArray) {
                         TestResultData testResult = new Gson().fromJson(result, TestResultData.class);
