@@ -239,6 +239,10 @@ The id of the result request sent in [result](#post-new-test-results-for-sdk) re
   
 The group of the result request sent in [result](#post-new-test-results-for-sdk) request
   
+<u>`sdk` - String<u>
+  
+The sdk of the result request sent in [result](#post-new-test-results-for-sdk) request
+  
 ##### Returns json object of test results
   
 ```
