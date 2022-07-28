@@ -28,7 +28,7 @@ public class DailySdkHighLevelReportTableBuilder {
         this.reportSheet = new SheetData(new SheetTabIdentifier(Enums.SpreadsheetIDs.SDK.value, Enums.SdkGroupsSheetTabNames.Selenium.value));
         this.sdks = new ArrayList<>();
         for (String sdk: reportSheet.getColumnNames()) {
-            if (sdk.equals(Enums.SdkSheetColumnNames.TestName.value)) {
+            if (!sdk.equals(Enums.SdkSheetColumnNames.TestName.value)) {
                 this.sdks.add(sdk);
             }
         }
