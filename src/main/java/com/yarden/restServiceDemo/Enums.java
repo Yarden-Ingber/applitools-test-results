@@ -44,7 +44,8 @@ public class Enums {
     }
 
     public enum SdkGroupsSheetTabNames {
-        Selenium("Selenium"), Images("Images"), Appium("Appium"), Core("Core"), MobileNative("MobileNative");
+        Selenium("Selenium"), Images("Images"), Appium("Appium"), Core("Core"), MobileNative("MobileNative"),
+        Daily("Daily");
 
         public final String value;
 

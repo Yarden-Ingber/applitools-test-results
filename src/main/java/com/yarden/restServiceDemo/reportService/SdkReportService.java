@@ -8,7 +8,10 @@ import com.yarden.restServiceDemo.pojos.ExtraDataRequestJson;
 import com.yarden.restServiceDemo.pojos.SdkResultRequestJson;
 import com.yarden.restServiceDemo.pojos.TestResultData;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Map;
 
 public class SdkReportService {
 
@@ -59,6 +62,19 @@ public class SdkReportService {
         for (Enums.SdkGroupsSheetTabNames tabName : Enums.SdkGroupsSheetTabNames.values()) {
             sheetData = new SheetData(new SheetTabIdentifier(Enums.SpreadsheetIDs.SDK.value, tabName.value));
             deleteTestResultsForSdk(sdkResultRequestJson.getSdk());
+        }
+    }
+
+    public static void deleteEntireDailyReportResults(){
+        Logger.info("Deleting all result columns in Daily tab report");
+        SheetData sheetData = new SheetData(new SheetTabIdentifier(Enums.SpreadsheetIDs.SDK.value, Enums.SdkGroupsSheetTabNames.Daily.value));
+        List<String> sheetColumns = sheetData.getColumnNames();
+        for (JsonElement sheetEntry : sheetData.getSheetData()) {
+            for (String column : sheetColumns) {
+                if (!Enums.SdkSheetColumnNames.TestName.value.equals(column)) {
+                    sheetEntry.getAsJsonObject().addProperty(column, "");
+                }
+            }
         }
     }
 

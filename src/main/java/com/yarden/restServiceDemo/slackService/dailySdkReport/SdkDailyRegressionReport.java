@@ -46,9 +46,9 @@ public class SdkDailyRegressionReport {
 //                        .put(new JSONObject()
 //                                .put("Email", "adam.carmi@applitools.com")
 //                                .put("Name", "Release_Report"))
-//                        .put(new JSONObject()
-//                                .put("Email", "amit.zur@applitools.com")
-//                                .put("Name", "Release_Report"))
+                        .put(new JSONObject()
+                                .put("Email", "amit.zur@applitools.com")
+                                .put("Name", "Release_Report"))
 //                        .put(new JSONObject()
 //                                .put("Email", "daniel.puterman@applitools.com")
 //                                .put("Name", "Release_Report"))
@@ -61,6 +61,7 @@ public class SdkDailyRegressionReport {
         reportData.setReportTextPart(reportData.getReportTextPart().replace("\n", "<br/>") +
                 "<br><br>Results CSV file:<br>" + uplodaReportCsvToS3());
         new MailSender().send(reportData);
+        SdkReportService.deleteEntireDailyReportResults();
     }
 
     private String uplodaReportCsvToS3() throws FileNotFoundException, UnsupportedEncodingException {
