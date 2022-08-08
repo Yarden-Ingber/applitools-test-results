@@ -51,21 +51,33 @@ public class TrelloUpdateRequestQueue extends TimerTask {
     private void dumpStateUpdateRequest() throws EmptyQueueException {
         TicketUpdateRequest ticketUpdateRequest = getFirstRequestInQueue(stateUpdateRequestQueue);
         synchronized (RestCalls.lock) {
-            new KpisMonitoringService(ticketUpdateRequest).updateStateChange();
+            try {
+                new KpisMonitoringService(ticketUpdateRequest).updateStateChange();
+            } catch (Throwable t) {
+                stateUpdateRequestQueue.add(ticketUpdateRequest);
+            }
         }
     }
 
     private void dumpUpdateTicketFieldsRequest() throws EmptyQueueException {
         TicketUpdateRequest ticketUpdateRequest = getFirstRequestInQueue(updateTicketFieldsRequestQueue);
         synchronized (RestCalls.lock) {
-            new KpisMonitoringService(ticketUpdateRequest).updateTicketFields();
+            try {
+                new KpisMonitoringService(ticketUpdateRequest).updateTicketFields();
+            } catch (Throwable t) {
+                updateTicketFieldsRequestQueue.add(ticketUpdateRequest);
+            }
         }
     }
 
     private void dumpArchiveTicketRequest() throws EmptyQueueException {
         TicketUpdateRequest ticketUpdateRequest = getFirstRequestInQueue(archiveTicketRequestQueue);
         synchronized (RestCalls.lock) {
-            new KpisMonitoringService(ticketUpdateRequest).archiveCard();
+            try {
+                new KpisMonitoringService(ticketUpdateRequest).archiveCard();
+            } catch (Throwable t) {
+                archiveTicketRequestQueue.add(ticketUpdateRequest);
+            }
         }
     }
 
