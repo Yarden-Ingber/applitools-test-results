@@ -59,3 +59,4 @@
 @applitools/spec-driver-puppeteer
 @applitools/execution-grid-client
 @applitools/image
+@applitools/req
