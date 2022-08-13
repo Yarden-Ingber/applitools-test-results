@@ -15,7 +15,8 @@ public class TicketsNewStateResolver {
 
     public enum Boards {
         UltrafastGrid("Ultrafast Grid"), JSSDKs("JS SDKs"), AlgoBugs("Algo Bugs"), SDKs("SDKs"), EyesBackend("Eyes Backend"),
-        EyesFrontend("Eyes frontend"), EyesAppIssues("Eyes App - Issues"), EyesOperations("Eyes operations");
+        EyesFrontend("Eyes frontend"), EyesAppIssues("Eyes App - Issues"), EyesOperations("Eyes operations"), IosNmg("iOS NMG"),
+        AndroidNmg("Android NMG");
 
         public final String value;
 
@@ -37,6 +38,8 @@ public class TicketsNewStateResolver {
             return resolveStateForEyesIssues();
         } else if (request.getTeam().equals(Boards.EyesOperations.value)) {
             return resolveStateForEyesOperations();
+        } else if (request.getTeam().equals(Boards.IosNmg.value) || request.getTeam().equals(Boards.AndroidNmg.value)) {
+            return resolveStateForNmg();
         } else {
             return noStateFound();
         }
@@ -249,6 +252,38 @@ public class TicketsNewStateResolver {
             return TicketStates.Done;
         } else if (currentTrelloList.equalsIgnoreCase("Waiting for field approval")) {
             return TicketStates.WaitingForFieldApproval;
+        } else {
+            return noStateFound();
+        }
+    }
+
+    private TicketStates resolveStateForNmg() {
+        if (currentTrelloList.equalsIgnoreCase("New Field Issues")) {
+            return TicketStates.New;
+        } else if (currentTrelloList.equalsIgnoreCase("Backlog")) {
+            return TicketStates.WaitingForRD;
+        } else if (currentTrelloList.equalsIgnoreCase("Trying to Reproduce")) {
+            return TicketStates.TryingToReproduce;
+        } else if (currentTrelloList.equalsIgnoreCase("Doing")) {
+            return TicketStates.Doing;
+        } else if (currentTrelloList.equalsIgnoreCase("Waiting for Field input")) {
+            return TicketStates.WaitingForFieldInput;
+        } else if (currentTrelloList.equalsIgnoreCase("Waiting for Customer Response")) {
+            return TicketStates.WaitingForCustomerResponse;
+        } else if (currentTrelloList.equalsIgnoreCase("In Code Review")) {
+            return TicketStates.WaitingForRD;
+        } else if (currentTrelloList.equalsIgnoreCase("Waiting For Release")) {
+            return TicketStates.WaitingForRD;
+        } else if (currentTrelloList.equalsIgnoreCase("Waiting for Field Approval")) {
+            return TicketStates.WaitingForFieldApproval;
+        } else if (currentTrelloList.equalsIgnoreCase("Done")) {
+            return TicketStates.Done;
+        } else if (currentTrelloList.equalsIgnoreCase("Known Limitations")) {
+            return TicketStates.RFE;
+        } else if (currentTrelloList.equalsIgnoreCase("Low Priority")) {
+            return TicketStates.OnHold;
+        } else if (currentTrelloList.equalsIgnoreCase("On Hold")) {
+            return TicketStates.OnHold;
         } else {
             return noStateFound();
         }
