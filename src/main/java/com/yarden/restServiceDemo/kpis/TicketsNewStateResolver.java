@@ -80,50 +80,24 @@ public class TicketsNewStateResolver {
     }
 
     private TicketStates resolveStateForAlgoBugs() {
-        if (currentTrelloList.equalsIgnoreCase("Waiting for field input")) {
-            return TicketStates.WaitingForFieldInput;
-        } else if (currentTrelloList.toLowerCase().contains("on hold")){
-            return TicketStates.OnHold;
-        } else if (currentTrelloList.equalsIgnoreCase("Waiting for customer response")) {
-            return TicketStates.WaitingForCustomerResponse;
-        } else if (currentTrelloList.equalsIgnoreCase("New/Pending")) {
+        if (currentTrelloList.equalsIgnoreCase("New/Pending")) {
             return TicketStates.New;
-        } else if (currentTrelloList.equalsIgnoreCase("Layout")) {
+        } else if (currentTrelloList.equalsIgnoreCase("Waiting for R&D")){
             return TicketStates.WaitingForRD;
-        } else if (currentTrelloList.equalsIgnoreCase("RCA")) {
-            return TicketStates.WaitingForRD;
-        } else if (currentTrelloList.equalsIgnoreCase("Contrast")) {
-            return TicketStates.WaitingForRD;
-        } else if (currentTrelloList.equalsIgnoreCase("Waiting for Adam")) {
-            return TicketStates.WaitingForRD;
-        } else if (currentTrelloList.equalsIgnoreCase("Content")) {
-            return TicketStates.WaitingForRD;
-        } else if (currentTrelloList.equalsIgnoreCase("Automated maintenance")) {
-            return TicketStates.WaitingForRD;
-        } else if (currentTrelloList.equalsIgnoreCase("Strict - Broken")) {
-            return TicketStates.WaitingForRD;
-        } else if (currentTrelloList.equalsIgnoreCase("Strict - Fixed (not deployed)")) {
-            return TicketStates.WaitingForRD;
-        }else if (currentTrelloList.equalsIgnoreCase("Doing")) {
+        } else if (currentTrelloList.equalsIgnoreCase("Doing")){
             return TicketStates.Doing;
-        } else if (currentTrelloList.equalsIgnoreCase("Solved/Waiting for publish")) {
-            return TicketStates.Doing;
-        } else if (currentTrelloList.equalsIgnoreCase("Deployed to cloud")) {
-            return TicketStates.WaitingForFieldApproval;
-        } else if (currentTrelloList.equalsIgnoreCase("Closed")) {
+        } else if (currentTrelloList.equalsIgnoreCase("on hold")){
+            return TicketStates.OnHold;
+        } else if (currentTrelloList.equalsIgnoreCase("No Algo Change Required")){
             return TicketStates.Done;
-        } else if (currentTrelloList.equalsIgnoreCase("Done")) {
-            return TicketStates.Done;
-        } else if (currentTrelloList.equalsIgnoreCase("No Algo Change Required")) {
-            return TicketStates.Done;
-        } else if (currentTrelloList.equalsIgnoreCase("Known limitations (RFE)")) {
+        } else if (currentTrelloList.equalsIgnoreCase("RFE")){
             return TicketStates.RFE;
-        } else if (currentTrelloList.equalsIgnoreCase("Waiting for other ticket")) {
-            return TicketStates.WaitingForRD;
-        } else if (currentTrelloList.equalsIgnoreCase("Missing information")) {
-            return TicketStates.WaitingForFieldInput;
-        } else if (currentTrelloList.equalsIgnoreCase("Waiting for product")) {
+        } else if (currentTrelloList.equalsIgnoreCase("Waiting for product")){
             return TicketStates.WaitingForProduct;
+        } else if (currentTrelloList.equalsIgnoreCase("Waiting for field input")){
+            return TicketStates.WaitingForFieldInput;
+        } else if (currentTrelloList.equalsIgnoreCase("Waiting for customer response")){
+            return TicketStates.WaitingForCustomerResponse;
         } else {
             return noStateFound();
         }
