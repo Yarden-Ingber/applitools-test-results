@@ -200,3 +200,4 @@ example-playwright-typescript-ufg
 example-playwright-typescript-classic
 webinar-cypress-playwright-rematch
 example-cypress9-javascript-ufg
+example-cypress10-javascript-ufg
