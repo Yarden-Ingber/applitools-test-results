@@ -140,7 +140,6 @@ tutorial-protractor-basic
 tutorial-protractor-ultrafastgrid
 tutorial-selenium3-javascript-ultrafastgrid
 storybook-csf-example
-tutorial-playwright-basic
 tutorial-playwright-ultrafastgrid
 eyes.common.java3
 testcafe
@@ -201,4 +200,3 @@ example-playwright-typescript-classic
 webinar-cypress-playwright-rematch
 example-cypress9-javascript-ufg
 example-cypress10-javascript-ufg
-tutorial-playwright-basic
