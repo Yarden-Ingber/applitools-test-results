@@ -193,7 +193,6 @@ storybook-contexts-example
 webinar-cypress-vs-playwright
 example-selenium-java-junit-classic
 tutorial-selenium-javascript-ultrafastgrid
-example-cypress-javascript-ufg
 example-selenium-java-junit-ufg
 example-playwright-typescript-ufg
 example-playwright-typescript-classic
