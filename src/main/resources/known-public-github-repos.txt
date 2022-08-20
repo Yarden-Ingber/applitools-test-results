@@ -199,3 +199,4 @@ example-selenium-java-junit-ufg
 example-playwright-typescript-ufg
 example-playwright-typescript-classic
 webinar-cypress-playwright-rematch
+example-cypress9-javascript-ufg
