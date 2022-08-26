@@ -23,7 +23,7 @@ public class TrelloUpdateRequestQueue extends TimerTask {
     public static synchronized void start() {
         if (!isRunning) {
             timer = new Timer("TrelloUpdateRequestQueue");
-            timer.scheduleAtFixedRate(new TrelloUpdateRequestQueue(), 30, 1000 * 3);
+            timer.scheduleAtFixedRate(new TrelloUpdateRequestQueue(), 30, 200);
             isRunning = true;
             Logger.info("TrelloUpdateRequestQueue started");
         }
