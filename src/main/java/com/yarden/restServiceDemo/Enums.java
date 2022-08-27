@@ -3,7 +3,7 @@ package com.yarden.restServiceDemo;
 public class Enums {
 
     public enum Strings{
-        Generic("(generic)"), True("true"), Checked("checked"), Archived("archived");
+        Generic("(generic)"), True("true"), Checked("checked"), Archived("archived"), Field("Field"), Internal("Internal");
 
         public final String value;
 

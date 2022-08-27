@@ -37,15 +37,31 @@ public class KpisSummaryReporter extends TimerTask {
     private StringBuilder jsTicketsInNew;
     private StringBuilder jsTicketsWithoutType;
     private StringBuilder jsMissingQuality;
+    private StringBuilder jsUnlabelled;
+
     private StringBuilder sdksTicketsInNew;
     private StringBuilder sdksTicketsWithoutType;
     private StringBuilder sdksMissingQuality;
-    private StringBuilder eyesTicketsInNew;
-    private StringBuilder eyesTicketsWithoutType;
+    private StringBuilder sdksUnlabelled;
+
+    private StringBuilder eyesBackendTicketsInNew;
+    private StringBuilder eyesBackendTicketsWithoutType;
+    private StringBuilder eyesBackendUnlabelled;
+
     private StringBuilder eyesFrontendTicketsInNew;
     private StringBuilder eyesFrontendTicketsWithoutType;
+    private StringBuilder eyesFrontendUnlabelled;
+
     private StringBuilder ufgTicketsInNew;
     private StringBuilder ufgTicketsWithoutType;
+    private StringBuilder ufgUnlabelled;
+
+    private StringBuilder algoUnlabelled;
+
+    private StringBuilder androidNmgUnlabelled;
+
+    private StringBuilder iosNmgUnlabelled;
+
     private StringBuilder fieldTickets;
 
     private static final int SixMonthsAgo = 6;
@@ -106,24 +122,45 @@ public class KpisSummaryReporter extends TimerTask {
         sendEyesMailReport();
         sendEyesFrontendMailReport();
         sendFieldMailReport();
+        sendAlgoMailReport();
+        sendiOSNmgMailReport();
+        sendAndroidNmgMailReport();
     }
 
     private void resetTeamsStrings() {
         String ticketsWithoutTypeTitle = "Tickets without type field (not classified yet):\n";
         String ticketsInStateNewTitle = "Tickets under NEW column:\n";
         String ticketsInStateMissingQualityTitle = "Tickets in missing quality:\n";
+        String unlabelledTickets = "Unlabelled tickets:\n";
+
         jsTicketsInNew = new StringBuilder(ticketsInStateNewTitle);
         jsTicketsWithoutType = new StringBuilder(ticketsWithoutTypeTitle);
         jsMissingQuality = new StringBuilder(ticketsInStateMissingQualityTitle);
+        jsUnlabelled = new StringBuilder(unlabelledTickets);
+
         sdksTicketsInNew = new StringBuilder(ticketsInStateNewTitle);
         sdksTicketsWithoutType = new StringBuilder(ticketsWithoutTypeTitle);
         sdksMissingQuality = new StringBuilder(ticketsInStateMissingQualityTitle);
-        eyesTicketsInNew = new StringBuilder(ticketsInStateNewTitle);
-        eyesTicketsWithoutType = new StringBuilder(ticketsWithoutTypeTitle);
+        sdksUnlabelled = new StringBuilder(unlabelledTickets);
+
+        eyesBackendTicketsInNew = new StringBuilder(ticketsInStateNewTitle);
+        eyesBackendTicketsWithoutType = new StringBuilder(ticketsWithoutTypeTitle);
+        eyesBackendUnlabelled = new StringBuilder(unlabelledTickets);
+
         eyesFrontendTicketsInNew = new StringBuilder(ticketsInStateNewTitle);
         eyesFrontendTicketsWithoutType = new StringBuilder(ticketsWithoutTypeTitle);
+        eyesFrontendUnlabelled = new StringBuilder(unlabelledTickets);
+
         ufgTicketsInNew = new StringBuilder(ticketsInStateNewTitle);
         ufgTicketsWithoutType = new StringBuilder(ticketsWithoutTypeTitle);
+        ufgUnlabelled = new StringBuilder(unlabelledTickets);
+
+        algoUnlabelled = new StringBuilder(unlabelledTickets);
+
+        androidNmgUnlabelled = new StringBuilder(unlabelledTickets);
+
+        iosNmgUnlabelled = new StringBuilder(unlabelledTickets);
+
         fieldTickets = new StringBuilder("Tickets on field:\n");
     }
 
@@ -133,11 +170,15 @@ public class KpisSummaryReporter extends TimerTask {
                 String team = sheetEntry.getAsJsonObject().get(Enums.KPIsSheetColumnNames.Team.value).getAsString();
                 if (!team.equals(Enums.Strings.Archived.value)) {
                     TicketStates currentState = TicketStates.valueOf(sheetEntry.getAsJsonObject().get(Enums.KPIsSheetColumnNames.CurrentState.value).getAsString());
+                    String labels = sheetEntry.getAsJsonObject().get(Enums.KPIsSheetColumnNames.Labels.value).getAsString();
                     String ticketType = sheetEntry.getAsJsonObject().get(Enums.KPIsSheetColumnNames.TicketType.value).getAsString();
                     if (isTicketOnField(currentState, team)) {
                         String createdBy = sheetEntry.getAsJsonObject().get(Enums.KPIsSheetColumnNames.CreatedBy.value).getAsString();
                         String createdByString = createdBy.isEmpty() ? "" : "(Created by: " + createdBy + ")";
-                        fieldTickets.append(getSingleTicketLineString(sheetEntry) + " " + createdByString);
+                        fieldTickets.append(getSingleTicketLineString(sheetEntry, true) + " " + createdByString);
+                    }
+                    if (! (labels.contains(Enums.Strings.Field.value) || labels.contains(Enums.Strings.Internal.value))) {
+                        addUnlabelledTicketToStringReport(sheetEntry);
                     }
 
                     if (currentState.equals(TicketStates.New)) {
@@ -191,7 +232,7 @@ public class KpisSummaryReporter extends TimerTask {
 
     private void addStateNewTicketToStringReport(JsonElement sheetEntry) throws ParseException {
         String team = sheetEntry.getAsJsonObject().get(Enums.KPIsSheetColumnNames.Team.value).getAsString();
-        String newTicketString = getSingleTicketLineString(sheetEntry);
+        String newTicketString = getSingleTicketLineString(sheetEntry, true);
         if (team.equals(TicketsNewStateResolver.Boards.UltrafastGrid.value)) {
             ufgTicketsInNew.append(newTicketString);
         } else if (team.equals(TicketsNewStateResolver.Boards.JSSDKs.value)) {
@@ -199,7 +240,7 @@ public class KpisSummaryReporter extends TimerTask {
         } else if (team.equals(TicketsNewStateResolver.Boards.SDKs.value)) {
             sdksTicketsInNew.append(newTicketString);
         } else if (team.equals(TicketsNewStateResolver.Boards.EyesBackend.value) || team.equals(TicketsNewStateResolver.Boards.EyesAppIssues.value)) {
-            eyesTicketsInNew.append(newTicketString);
+            eyesBackendTicketsInNew.append(newTicketString);
         } else if (team.equals(TicketsNewStateResolver.Boards.EyesFrontend.value)) {
             eyesFrontendTicketsInNew.append(newTicketString);
         }
@@ -207,7 +248,7 @@ public class KpisSummaryReporter extends TimerTask {
 
     private void addTicketInMissingQualityToStringReport(JsonElement sheetEntry) throws ParseException {
         String team = sheetEntry.getAsJsonObject().get(Enums.KPIsSheetColumnNames.Team.value).getAsString();
-        String newTicketString = getSingleTicketLineString(sheetEntry);
+        String newTicketString = getSingleTicketLineString(sheetEntry, false);
         if (team.equals(TicketsNewStateResolver.Boards.JSSDKs.value)) {
             jsMissingQuality.append(newTicketString);
         } else if (team.equals(TicketsNewStateResolver.Boards.SDKs.value)) {
@@ -217,7 +258,7 @@ public class KpisSummaryReporter extends TimerTask {
 
     private void addTicketsWithoutTypeToStringReport(JsonElement sheetEntry) throws ParseException {
         String team = sheetEntry.getAsJsonObject().get(Enums.KPIsSheetColumnNames.Team.value).getAsString();
-        String newTicketString = getSingleTicketLineString(sheetEntry);
+        String newTicketString = getSingleTicketLineString(sheetEntry, false);
         if (team.equals(TicketsNewStateResolver.Boards.UltrafastGrid.value)) {
             ufgTicketsWithoutType.append(newTicketString);
         } else if (team.equals(TicketsNewStateResolver.Boards.JSSDKs.value)) {
@@ -225,19 +266,43 @@ public class KpisSummaryReporter extends TimerTask {
         } else if (team.equals(TicketsNewStateResolver.Boards.SDKs.value)) {
             sdksTicketsWithoutType.append(newTicketString);
         } else if (team.equals(TicketsNewStateResolver.Boards.EyesBackend.value) || team.equals(TicketsNewStateResolver.Boards.EyesAppIssues.value)) {
-            eyesTicketsWithoutType.append(newTicketString);
+            eyesBackendTicketsWithoutType.append(newTicketString);
         } else if (team.equals(TicketsNewStateResolver.Boards.EyesFrontend.value)) {
             eyesFrontendTicketsWithoutType.append(newTicketString);
         }
     }
 
-    private String getSingleTicketLineString(JsonElement sheetEntry) throws ParseException {
+    private void addUnlabelledTicketToStringReport(JsonElement sheetEntry) throws ParseException {
+        String team = sheetEntry.getAsJsonObject().get(Enums.KPIsSheetColumnNames.Team.value).getAsString();
+        String newTicketString = getSingleTicketLineString(sheetEntry, false);
+        if (team.equals(TicketsNewStateResolver.Boards.UltrafastGrid.value)) {
+            ufgUnlabelled.append(newTicketString);
+        } else if (team.equals(TicketsNewStateResolver.Boards.JSSDKs.value)) {
+            jsUnlabelled.append(newTicketString);
+        } else if (team.equals(TicketsNewStateResolver.Boards.SDKs.value)) {
+            sdksUnlabelled.append(newTicketString);
+        } else if (team.equals(TicketsNewStateResolver.Boards.EyesBackend.value) || team.equals(TicketsNewStateResolver.Boards.EyesAppIssues.value)) {
+            eyesBackendUnlabelled.append(newTicketString);
+        } else if (team.equals(TicketsNewStateResolver.Boards.EyesFrontend.value)) {
+            eyesFrontendUnlabelled.append(newTicketString);
+        } else if (team.equals(TicketsNewStateResolver.Boards.AlgoBugs.value)) {
+            algoUnlabelled.append(newTicketString);
+        } else if (team.equals(TicketsNewStateResolver.Boards.IosNmg.value)) {
+            iosNmgUnlabelled.append(newTicketString);
+        } else if (team.equals(TicketsNewStateResolver.Boards.AndroidNmg.value)) {
+            androidNmgUnlabelled.append(newTicketString);
+        }
+    }
+
+    private String getSingleTicketLineString(JsonElement sheetEntry, boolean showTicketLifetime) throws ParseException {
         String ticketUrl = sheetEntry.getAsJsonObject().get(Enums.KPIsSheetColumnNames.TicketUrl.value).getAsString();
         String hot = sheetEntry.getAsJsonObject().get(Enums.KPIsSheetColumnNames.Labels.value).getAsString().toLowerCase().contains("hot") ? " (HOT)" : "";
         String closed = sheetEntry.getAsJsonObject().get(Enums.KPIsSheetColumnNames.CurrentState.value).getAsString().equals(TicketStates.Done.name()) ? " (Closed)" : "";
-        String newTicketString = "\n" +
-                ticketUrl + " (Ticket lifetime: " + getTicketDurationUntilToday(sheetEntry) + " days ===== Time in state NEW: " + getTicketDurationInStateNew(sheetEntry) + " days) "
-                + hot + closed;
+        String newTicketString = "\n" + ticketUrl;
+        if (showTicketLifetime) {
+            newTicketString = newTicketString + " (Ticket lifetime: " + getTicketDurationUntilToday(sheetEntry) +
+                    " days ===== Time in state NEW: " + getTicketDurationInStateNew(sheetEntry) + " days) " + hot + closed;
+        }
         return newTicketString;
     }
 
@@ -263,7 +328,7 @@ public class KpisSummaryReporter extends TimerTask {
         recipients.put(new JSONObject().put("Email", "ben.babayoff@applitools.com").put("Name", "Ben Babayoff"));
         recipients.put(new JSONObject().put("Email", "adam.carmi@applitools.com").put("Name", "Adam Carmi"));
         recipients.put(new JSONObject().put("Email", "amit.zur@applitools.com").put("Name", "Amit Zur"));
-        sendMailReports("JS SDKs Trello board report", jsTicketsInNew + "\n\n" + jsTicketsWithoutType + "\n\n" + jsMissingQuality, recipients);
+        sendMailReports("JS SDKs Trello board report", jsTicketsInNew + "\n\n" + jsTicketsWithoutType + "\n\n" + jsMissingQuality + "\n\n" + jsUnlabelled, recipients);
     }
 
     private void sendSDKsMailReport() throws MailjetSocketTimeoutException, MailjetException {
@@ -272,7 +337,7 @@ public class KpisSummaryReporter extends TimerTask {
         recipients.put(new JSONObject().put("Email", "ben.babayoff@applitools.com").put("Name", "Ben Babayoff"));
         recipients.put(new JSONObject().put("Email", "adam.carmi@applitools.com").put("Name", "Adam Carmi"));
         recipients.put(new JSONObject().put("Email", "daniel.puterman@applitools.com").put("Name", "Daniel Puterman"));
-        sendMailReports("SDKs Trello board report", sdksTicketsInNew + "\n\n" + sdksTicketsWithoutType + "\n\n" + sdksMissingQuality, recipients);
+        sendMailReports("SDKs Trello board report", sdksTicketsInNew + "\n\n" + sdksTicketsWithoutType + "\n\n" + sdksMissingQuality + "\n\n" + sdksUnlabelled, recipients);
     }
 
     private void sendUFGMailReport() throws MailjetSocketTimeoutException, MailjetException {
@@ -281,7 +346,7 @@ public class KpisSummaryReporter extends TimerTask {
         recipients.put(new JSONObject().put("Email", "ben.babayoff@applitools.com").put("Name", "Ben Babayoff"));
         recipients.put(new JSONObject().put("Email", "adam.carmi@applitools.com").put("Name", "Adam Carmi"));
         recipients.put(new JSONObject().put("Email", "or.david@applitools.com").put("Name", "Or David"));
-        sendMailReports("UFG Trello board report", ufgTicketsInNew + "\n\n" + ufgTicketsWithoutType, recipients);
+        sendMailReports("UFG Trello board report", ufgTicketsInNew + "\n\n" + ufgTicketsWithoutType + "\n\n" + ufgUnlabelled, recipients);
     }
 
     private void sendEyesMailReport() throws MailjetSocketTimeoutException, MailjetException {
@@ -289,7 +354,7 @@ public class KpisSummaryReporter extends TimerTask {
         recipients.put(new JSONObject().put("Email", "yarden.ingber@applitools.com").put("Name", "Yarden Ingber"));
         recipients.put(new JSONObject().put("Email", "adam.carmi@applitools.com").put("Name", "Adam Carmi"));
         recipients.put(new JSONObject().put("Email", "yotam.madem@applitools.com").put("Name", "Yotam Madem"));
-        sendMailReports("Eyes Backend Trello board report", eyesTicketsInNew + "\n\n" + eyesTicketsWithoutType, recipients);
+        sendMailReports("Eyes Backend Trello board report", eyesBackendTicketsInNew + "\n\n" + eyesBackendTicketsWithoutType + "\n\n" + eyesBackendUnlabelled, recipients);
     }
 
     private void sendEyesFrontendMailReport() throws MailjetSocketTimeoutException, MailjetException {
@@ -297,7 +362,7 @@ public class KpisSummaryReporter extends TimerTask {
         recipients.put(new JSONObject().put("Email", "yarden.ingber@applitools.com").put("Name", "Yarden Ingber"));
         recipients.put(new JSONObject().put("Email", "adam.carmi@applitools.com").put("Name", "Adam Carmi"));
         recipients.put(new JSONObject().put("Email", "amit.zur@applitools.com").put("Name", "Amit Zur"));
-        sendMailReports("Eyes Frontend Trello board report", eyesFrontendTicketsInNew + "\n\n" + eyesFrontendTicketsWithoutType, recipients);
+        sendMailReports("Eyes Frontend Trello board report", eyesFrontendTicketsInNew + "\n\n" + eyesFrontendTicketsWithoutType + "\n\n" + eyesFrontendUnlabelled, recipients);
     }
 
     private void sendFieldMailReport() throws MailjetSocketTimeoutException, MailjetException {
@@ -309,6 +374,30 @@ public class KpisSummaryReporter extends TimerTask {
         recipients.put(new JSONObject().put("Email", "patrick.mccartney@applitools.com").put("Name", "Patrick McCartney"));
         recipients.put(new JSONObject().put("Email", "satish.mallela@applitools.com").put("Name", "Satish Mallela"));
         sendMailReports("Field Trello tickets report", fieldTickets.toString(), recipients);
+    }
+
+    private void sendAlgoMailReport() throws MailjetSocketTimeoutException, MailjetException {
+        JSONArray recipients = new JSONArray();
+        recipients.put(new JSONObject().put("Email", "yarden.ingber@applitools.com").put("Name", "Yarden Ingber"));
+        recipients.put(new JSONObject().put("Email", "adam.carmi@applitools.com").put("Name", "Adam Carmi"));
+        recipients.put(new JSONObject().put("Email", "ram.nathaniel@applitools.com").put("Name", "Ram Nathaniel"));
+        sendMailReports("Algo Trello board report", algoUnlabelled.toString(), recipients);
+    }
+
+    private void sendAndroidNmgMailReport() throws MailjetSocketTimeoutException, MailjetException {
+        JSONArray recipients = new JSONArray();
+        recipients.put(new JSONObject().put("Email", "yarden.ingber@applitools.com").put("Name", "Yarden Ingber"));
+        recipients.put(new JSONObject().put("Email", "adam.carmi@applitools.com").put("Name", "Adam Carmi"));
+        recipients.put(new JSONObject().put("Email", "daniel.puterman@applitools.com").put("Name", "Daniel Puterman"));
+        sendMailReports("Android NMG Trello board report", androidNmgUnlabelled.toString(), recipients);
+    }
+
+    private void sendiOSNmgMailReport() throws MailjetSocketTimeoutException, MailjetException {
+        JSONArray recipients = new JSONArray();
+        recipients.put(new JSONObject().put("Email", "yarden.ingber@applitools.com").put("Name", "Yarden Ingber"));
+        recipients.put(new JSONObject().put("Email", "adam.carmi@applitools.com").put("Name", "Adam Carmi"));
+        recipients.put(new JSONObject().put("Email", "daniel.puterman@applitools.com").put("Name", "Daniel Puterman"));
+        sendMailReports("iOS NMG Trello board report", iosNmgUnlabelled.toString(), recipients);
     }
 
     private boolean isDateWithinTimeSpan (Date date, int numOfMonthsAgo) {
