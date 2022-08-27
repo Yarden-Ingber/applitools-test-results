@@ -131,7 +131,7 @@ public class KpisSummaryReporter extends TimerTask {
         String ticketsWithoutTypeTitle = "Tickets without type field (not classified yet):\n";
         String ticketsInStateNewTitle = "Tickets under NEW column:\n";
         String ticketsInStateMissingQualityTitle = "Tickets in missing quality:\n";
-        String unlabelledTickets = "Unlabelled tickets:\n";
+        String unlabelledTickets = "Unlabelled tickets (no Field or Internal labels):\n";
 
         jsTicketsInNew = new StringBuilder(ticketsInStateNewTitle);
         jsTicketsWithoutType = new StringBuilder(ticketsWithoutTypeTitle);
@@ -170,14 +170,13 @@ public class KpisSummaryReporter extends TimerTask {
                 String team = sheetEntry.getAsJsonObject().get(Enums.KPIsSheetColumnNames.Team.value).getAsString();
                 if (!team.equals(Enums.Strings.Archived.value)) {
                     TicketStates currentState = TicketStates.valueOf(sheetEntry.getAsJsonObject().get(Enums.KPIsSheetColumnNames.CurrentState.value).getAsString());
-                    String labels = sheetEntry.getAsJsonObject().get(Enums.KPIsSheetColumnNames.Labels.value).getAsString();
                     String ticketType = sheetEntry.getAsJsonObject().get(Enums.KPIsSheetColumnNames.TicketType.value).getAsString();
                     if (isTicketOnField(currentState, team)) {
                         String createdBy = sheetEntry.getAsJsonObject().get(Enums.KPIsSheetColumnNames.CreatedBy.value).getAsString();
                         String createdByString = createdBy.isEmpty() ? "" : "(Created by: " + createdBy + ")";
                         fieldTickets.append(getSingleTicketLineString(sheetEntry, true) + " " + createdByString);
                     }
-                    if (! (labels.contains(Enums.Strings.Field.value) || labels.contains(Enums.Strings.Internal.value))) {
+                    if (isTicketRelevantForUnlabelled(sheetEntry, currentState)) {
                         addUnlabelledTicketToStringReport(sheetEntry);
                     }
 
@@ -201,6 +200,12 @@ public class KpisSummaryReporter extends TimerTask {
                 (currentState.equals(TicketStates.WaitingForFieldApproval) ||
                 currentState.equals(TicketStates.WaitingForFieldInput) ||
                 currentState.equals(TicketStates.WaitingForCustomerResponse));
+    }
+
+    private boolean isTicketRelevantForUnlabelled(JsonElement sheetEntry, TicketStates currentState) {
+        String labels = sheetEntry.getAsJsonObject().get(Enums.KPIsSheetColumnNames.Labels.value).getAsString();
+        boolean isLabelExist = labels.contains(Enums.Strings.Field.value) || labels.contains(Enums.Strings.Internal.value);
+        return ! (isLabelExist || currentState.equals(TicketStates.Done));
     }
 
     private boolean isTicketRelevantForMissingTypeField(JsonElement sheetEntry) throws ParseException {
