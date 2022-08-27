@@ -75,7 +75,7 @@ public class WriteKpisToSplunkPeriodically extends TimerTask{
         return false;
     }
 
-    private void periodicDumpTickets() throws ParseException {
+    void periodicDumpTickets() throws ParseException {
         SheetData rawDataSheetData = new SheetData(new SheetTabIdentifier(Enums.SpreadsheetIDs.KPIS.value, Enums.KPIsSheetTabsNames.RawData.value));
         String timeStamp = Logger.getTimaStamp();
         updateCurrentTimestampToAllTickets(rawDataSheetData, timeStamp);

@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.text.ParseException;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
@@ -63,6 +64,13 @@ public class KpisRestCalls {
         stopWatch.stop();
         Logger.info("/archive_card took: " + stopWatch.getTime(TimeUnit.MILLISECONDS));
         return new ResponseEntity(ticketUpdateRequest.toString(), HttpStatus.OK);
+    }
+
+    @RequestMapping(method = RequestMethod.POST, path = "/dump_kpi_tickets_to_splunk_manually")
+    public ResponseEntity archive_card() throws ParseException {
+        newRequestPrint("", "/dump_kpi_tickets_to_splunk_manually");
+        new WriteKpisToSplunkPeriodically().periodicDumpTickets();
+        return new ResponseEntity(HttpStatus.OK);
     }
 
     @GetMapping(value = "/get_create_ticket_page", produces = MediaType.TEXT_HTML_VALUE)
