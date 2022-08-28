@@ -40,16 +40,7 @@ public class KpisRestCalls {
 
     @RequestMapping(method = RequestMethod.POST, path = "/update_ticket_fields")
     public ResponseEntity update_ticket_fields(@RequestBody String json) {
-        StopWatch stopWatch = new StopWatch();
-        stopWatch.start();
-        WriteEntireSheetsPeriodically.shouldStopSheetWritingTimer = false;
-        WriteEntireSheetsPeriodically.start();
-        newRequestPrint(json, "/update_ticket_fields");
-        TicketUpdateRequest ticketUpdateRequest = new Gson().fromJson(json, TicketUpdateRequest.class);
-        TrelloUpdateRequestQueue.addUpdateTicketFieldsRequestToQueue(ticketUpdateRequest);
-        stopWatch.stop();
-        Logger.info("/update_ticket_fields took: " + stopWatch.getTime(TimeUnit.MILLISECONDS));
-        return new ResponseEntity(ticketUpdateRequest.toString(), HttpStatus.OK);
+        return state_update(json);
     }
 
     @RequestMapping(method = RequestMethod.POST, path = "/archive_card")

@@ -14,7 +14,6 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 public class TrelloUpdateRequestQueue extends TimerTask {
 
     private static ConcurrentLinkedQueue<TicketUpdateRequest> stateUpdateRequestQueue = new ConcurrentLinkedQueue<>();
-    private static ConcurrentLinkedQueue<TicketUpdateRequest> updateTicketFieldsRequestQueue = new ConcurrentLinkedQueue<>();
     private static ConcurrentLinkedQueue<TicketUpdateRequest> archiveTicketRequestQueue = new ConcurrentLinkedQueue<>();
     private static boolean isRunning = false;
     private static Timer timer;
@@ -32,16 +31,11 @@ public class TrelloUpdateRequestQueue extends TimerTask {
     @Override
     public void run() {
         try {dumpStateUpdateRequest();} catch (EmptyQueueException e) {}
-        try {dumpUpdateTicketFieldsRequest();} catch (EmptyQueueException e) {}
         try {dumpArchiveTicketRequest();} catch (EmptyQueueException e) {}
     }
 
     public static void addStateUpdateRequestToQueue(TicketUpdateRequest ticketUpdateRequest) {
         stateUpdateRequestQueue.add(ticketUpdateRequest);
-    }
-
-    public static void addUpdateTicketFieldsRequestToQueue(TicketUpdateRequest ticketUpdateRequest) {
-        updateTicketFieldsRequestQueue.add(ticketUpdateRequest);
     }
 
     public static void addArchiveTicketRequestToQueue(TicketUpdateRequest ticketUpdateRequest) {
@@ -55,17 +49,6 @@ public class TrelloUpdateRequestQueue extends TimerTask {
                 new KpisMonitoringService(ticketUpdateRequest).updateStateChange();
             } catch (Throwable t) {
                 stateUpdateRequestQueue.add(ticketUpdateRequest);
-            }
-        }
-    }
-
-    private void dumpUpdateTicketFieldsRequest() throws EmptyQueueException {
-        TicketUpdateRequest ticketUpdateRequest = getFirstRequestInQueue(updateTicketFieldsRequestQueue);
-        synchronized (RestCalls.lock) {
-            try {
-                new KpisMonitoringService(ticketUpdateRequest).updateTicketFields();
-            } catch (Throwable t) {
-                updateTicketFieldsRequestQueue.add(ticketUpdateRequest);
             }
         }
     }

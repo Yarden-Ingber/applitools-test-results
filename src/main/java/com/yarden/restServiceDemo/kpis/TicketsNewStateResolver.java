@@ -2,6 +2,7 @@ package com.yarden.restServiceDemo.kpis;
 
 import com.google.gson.Gson;
 import com.yarden.restServiceDemo.Logger;
+import org.apache.commons.lang3.StringUtils;
 
 public class TicketsNewStateResolver {
 
@@ -43,6 +44,20 @@ public class TicketsNewStateResolver {
         } else {
             return noStateFound();
         }
+    }
+
+    public static boolean isTicketInATeamBoard(String team) {
+        if (StringUtils.isEmpty(team)) {
+            return false;
+        }
+        for (Boards board : TicketsNewStateResolver.Boards.values()) {
+            if (board != Boards.EyesAppIssues && board != Boards.EyesOperations) {
+                if (team.equalsIgnoreCase(board.value)) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     private TicketStates resolveStateForUFG(){

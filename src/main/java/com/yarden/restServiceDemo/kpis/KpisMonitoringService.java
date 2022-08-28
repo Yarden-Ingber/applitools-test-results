@@ -23,28 +23,17 @@ public class KpisMonitoringService {
         TicketSearchResult ticketSearchResult = findSheetEntry();
         if (ticketSearchResult.isFound) {
             archiveTicketIfMovedToEyesAppIssuesBoard();
-            if (!newState.equals(TicketStates.NoState)) {
-                new TicketsStateChanger().updateExistingTicketState(ticketSearchResult.ticket, newState);
-                ignoreTeamChangeForEyesOperationsBoard(ticketSearchResult.ticket);
-                updateTicketFields(ticketSearchResult.ticket);
-            }
-        } else {
-            if (newState.equals(TicketStates.New)) {
-                JsonElement ticket = addNewTicketEntry();
-            } else {
-                Logger.info("KPIs: Ticket" + ticketUpdateRequest.getTicketId() + " sent an update but wasn't opened under field new column");
-            }
-        }
-        new KpiSplunkReporter(rawDataSheetData, ticketUpdateRequest).reportStandAloneEvent(newState);
-    }
-
-    public void updateTicketFields() {
-        TicketSearchResult ticketSearchResult = findSheetEntry();
-        if (ticketSearchResult.isFound) {
             ignoreTeamChangeForEyesOperationsBoard(ticketSearchResult.ticket);
             updateTicketFields(ticketSearchResult.ticket);
+            if (!newState.equals(TicketStates.NoState)) {
+                new TicketsStateChanger().updateExistingTicketState(ticketSearchResult.ticket, newState);
+            }
         } else {
-            Logger.info("KPIs: Ticket " + ticketUpdateRequest.getTicketId() + " wasn't found in the sheet");
+            if (!newState.equals(TicketStates.NoState) && TicketsNewStateResolver.isTicketInATeamBoard(ticketUpdateRequest.getTeam())) {
+                JsonElement ticket = addNewTicketEntry();
+            } else {
+                Logger.info("KPIs: Ticket" + ticketUpdateRequest.getTicketId() + " sent an update but doesn't correspond to a valid state");
+            }
         }
         new KpiSplunkReporter(rawDataSheetData, ticketUpdateRequest).reportStandAloneEvent(newState);
     }
@@ -131,7 +120,7 @@ public class KpisMonitoringService {
         newEntry.getAsJsonObject().addProperty(Enums.KPIsSheetColumnNames.Workaround.value, ticketUpdateRequest.getWorkaround());
         newEntry.getAsJsonObject().addProperty(Enums.KPIsSheetColumnNames.CurrentTrelloList.value, ticketUpdateRequest.getCurrent_trello_list());
         newEntry.getAsJsonObject().addProperty(Enums.KPIsSheetColumnNames.Labels.value, ticketUpdateRequest.getLabels());
-        newEntry.getAsJsonObject().addProperty(Enums.KPIsSheetColumnNames.EnterForTimeCalculationState.value + TicketStates.New.name(), Logger.getTimaStamp());
+        newEntry.getAsJsonObject().addProperty(Enums.KPIsSheetColumnNames.EnterForTimeCalculationState.value + newState.name(), Logger.getTimaStamp());
         newEntry.getAsJsonObject().addProperty(Enums.KPIsSheetColumnNames.CurrentState.value, newState.name());
         Logger.info("KPIs: Adding a new ticket to the sheet: " + newEntry.toString());
         rawDataSheetData.getSheetData().add(newEntry);
