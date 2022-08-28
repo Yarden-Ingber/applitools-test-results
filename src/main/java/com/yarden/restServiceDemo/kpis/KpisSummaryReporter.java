@@ -122,9 +122,9 @@ public class KpisSummaryReporter extends TimerTask {
         sendEyesMailReport();
         sendEyesFrontendMailReport();
         sendFieldMailReport();
-//        sendAlgoMailReport();
-//        sendiOSNmgMailReport();
-//        sendAndroidNmgMailReport();
+        sendAlgoMailReport();
+        sendiOSNmgMailReport();
+        sendAndroidNmgMailReport();
     }
 
     private void resetTeamsStrings() {
@@ -203,10 +203,11 @@ public class KpisSummaryReporter extends TimerTask {
     }
 
     private boolean isTicketRelevantForUnlabeled(JsonElement sheetEntry, TicketStates currentState) {
-        return false;
-//        String labels = sheetEntry.getAsJsonObject().get(Enums.KPIsSheetColumnNames.Labels.value).getAsString();
-//        boolean isLabelExist = labels.contains(Enums.Strings.Field.value) || labels.contains(Enums.Strings.Internal.value);
-//        return ! (isLabelExist || currentState.equals(TicketStates.Done));
+        String labels = sheetEntry.getAsJsonObject().get(Enums.KPIsSheetColumnNames.Labels.value).getAsString();
+        boolean isLabelExist = labels.contains(Enums.Strings.Field.value) || labels.contains(Enums.Strings.Internal.value);
+        return !isLabelExist &&
+                (currentState.equals(TicketStates.New) || currentState.equals(TicketStates.Doing) ||
+                        currentState.equals(TicketStates.WaitingForRD) || currentState.equals(TicketStates.TryingToReproduce));
     }
 
     private boolean isTicketRelevantForMissingTypeField(JsonElement sheetEntry) throws ParseException {
@@ -382,29 +383,29 @@ public class KpisSummaryReporter extends TimerTask {
         sendMailReports("Field Trello tickets report", fieldTickets.toString(), recipients);
     }
 
-//    private void sendAlgoMailReport() throws MailjetSocketTimeoutException, MailjetException {
-//        JSONArray recipients = new JSONArray();
-//        recipients.put(new JSONObject().put("Email", "yarden.ingber@applitools.com").put("Name", "Yarden Ingber"));
-//        recipients.put(new JSONObject().put("Email", "adam.carmi@applitools.com").put("Name", "Adam Carmi"));
-//        recipients.put(new JSONObject().put("Email", "ram.nathaniel@applitools.com").put("Name", "Ram Nathaniel"));
-//        sendMailReports("Algo Trello board report", algoUnlabeled.toString(), recipients);
-//    }
-//
-//    private void sendAndroidNmgMailReport() throws MailjetSocketTimeoutException, MailjetException {
-//        JSONArray recipients = new JSONArray();
-//        recipients.put(new JSONObject().put("Email", "yarden.ingber@applitools.com").put("Name", "Yarden Ingber"));
-//        recipients.put(new JSONObject().put("Email", "adam.carmi@applitools.com").put("Name", "Adam Carmi"));
-//        recipients.put(new JSONObject().put("Email", "daniel.puterman@applitools.com").put("Name", "Daniel Puterman"));
-//        sendMailReports("Android NMG Trello board report", androidNmgUnlabeled.toString(), recipients);
-//    }
-//
-//    private void sendiOSNmgMailReport() throws MailjetSocketTimeoutException, MailjetException {
-//        JSONArray recipients = new JSONArray();
-//        recipients.put(new JSONObject().put("Email", "yarden.ingber@applitools.com").put("Name", "Yarden Ingber"));
-//        recipients.put(new JSONObject().put("Email", "adam.carmi@applitools.com").put("Name", "Adam Carmi"));
-//        recipients.put(new JSONObject().put("Email", "daniel.puterman@applitools.com").put("Name", "Daniel Puterman"));
-//        sendMailReports("iOS NMG Trello board report", iosNmgUnlabeled.toString(), recipients);
-//    }
+    private void sendAlgoMailReport() throws MailjetSocketTimeoutException, MailjetException {
+        JSONArray recipients = new JSONArray();
+        recipients.put(new JSONObject().put("Email", "yarden.ingber@applitools.com").put("Name", "Yarden Ingber"));
+        recipients.put(new JSONObject().put("Email", "adam.carmi@applitools.com").put("Name", "Adam Carmi"));
+        recipients.put(new JSONObject().put("Email", "ram.nathaniel@applitools.com").put("Name", "Ram Nathaniel"));
+        sendMailReports("Algo Trello board report", algoUnlabeled.toString(), recipients);
+    }
+
+    private void sendAndroidNmgMailReport() throws MailjetSocketTimeoutException, MailjetException {
+        JSONArray recipients = new JSONArray();
+        recipients.put(new JSONObject().put("Email", "yarden.ingber@applitools.com").put("Name", "Yarden Ingber"));
+        recipients.put(new JSONObject().put("Email", "adam.carmi@applitools.com").put("Name", "Adam Carmi"));
+        recipients.put(new JSONObject().put("Email", "daniel.puterman@applitools.com").put("Name", "Daniel Puterman"));
+        sendMailReports("Android NMG Trello board report", androidNmgUnlabeled.toString(), recipients);
+    }
+
+    private void sendiOSNmgMailReport() throws MailjetSocketTimeoutException, MailjetException {
+        JSONArray recipients = new JSONArray();
+        recipients.put(new JSONObject().put("Email", "yarden.ingber@applitools.com").put("Name", "Yarden Ingber"));
+        recipients.put(new JSONObject().put("Email", "adam.carmi@applitools.com").put("Name", "Adam Carmi"));
+        recipients.put(new JSONObject().put("Email", "daniel.puterman@applitools.com").put("Name", "Daniel Puterman"));
+        sendMailReports("iOS NMG Trello board report", iosNmgUnlabeled.toString(), recipients);
+    }
 
     private boolean isDateWithinTimeSpan (Date date, int numOfMonthsAgo) {
         Calendar calendar = Calendar.getInstance();

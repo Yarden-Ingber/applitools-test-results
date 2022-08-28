@@ -31,6 +31,7 @@ public class KpiSplunkReporter {
         splunkEventJson.put(Enums.KPIsSheetColumnNames.Team.value.replace(" ", "_"), ticketUpdateRequest.getTeam());
         splunkEventJson.put(Enums.KPIsSheetColumnNames.SubProject.value.replace(" ", "_"), ticketUpdateRequest.getSubProject());
         splunkEventJson.put(Enums.KPIsSheetColumnNames.TicketID.value.replace(" ", "_"), ticketUpdateRequest.getTicketId());
+        splunkEventJson.put(Enums.KPIsSheetColumnNames.ParentTicket.value.replace(" ", "_"), ticketUpdateRequest.getParentTicket());
         splunkEventJson.put(Enums.KPIsSheetColumnNames.TicketType.value.replace(" ", "_"), ticketUpdateRequest.getTicketType());
         splunkEventJson.put(Enums.KPIsSheetColumnNames.CreatedBy.value.replace(" ", "_"), ticketUpdateRequest.getCreatedBy());
         splunkEventJson.put(Enums.KPIsSheetColumnNames.Workaround.value.replace(" ", "_"), ticketUpdateRequest.getWorkaround());

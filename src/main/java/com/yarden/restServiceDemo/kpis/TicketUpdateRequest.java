@@ -14,6 +14,9 @@ public class TicketUpdateRequest {
     @SerializedName("ticket_id")
     @Expose
     private String ticketId;
+    @SerializedName("parent_ticket")
+    @Expose
+    private String parentTicket;
     @SerializedName("ticket_title")
     @Expose
     private String ticketTitle;
@@ -26,9 +29,6 @@ public class TicketUpdateRequest {
     @SerializedName("ticket_url")
     @Expose
     private String ticketUrl;
-    @SerializedName("state")
-    @Expose
-    private String state;
     @SerializedName("current_trello_list")
     @Expose
     private String current_trello_list;
@@ -101,14 +101,6 @@ public class TicketUpdateRequest {
         this.ticketUrl = ticketUrl;
     }
 
-    public String getState() {
-        return state;
-    }
-
-    public void setState(String state) {
-        this.state = state;
-    }
-
     public String getCurrent_trello_list() {
         return current_trello_list;
     }
@@ -147,5 +139,13 @@ public class TicketUpdateRequest {
 
     public void setSdk(String sdk) {
         this.sdk = sdk;
+    }
+
+    public String getParentTicket() {
+        return parentTicket;
+    }
+
+    public void setParentTicket(String parentTicket) {
+        this.parentTicket = parentTicket;
     }
 }

@@ -38,11 +38,6 @@ public class KpisRestCalls {
         return new ResponseEntity(ticketUpdateRequest.toString(), HttpStatus.OK);
     }
 
-    @RequestMapping(method = RequestMethod.POST, path = "/update_ticket_fields")
-    public ResponseEntity update_ticket_fields(@RequestBody String json) {
-        return state_update(json);
-    }
-
     @RequestMapping(method = RequestMethod.POST, path = "/archive_card")
     public ResponseEntity archive_card(@RequestBody String json) {
         StopWatch stopWatch = new StopWatch();

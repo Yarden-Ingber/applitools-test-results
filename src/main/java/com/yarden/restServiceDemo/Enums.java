@@ -141,7 +141,7 @@ public class Enums {
     }
 
     public enum KPIsSheetColumnNames {
-        Team("Team"), SubProject("Sub project"), IsCrossBoards("Is cross boards"), TicketID("Ticket ID"), TicketTitle("Ticket title"),
+        Team("Team"), SubProject("Sub project"), IsCrossBoards("Is cross boards"), TicketID("Ticket ID"), ParentTicket("Parent ticket"), TicketTitle("Ticket title"),
         TicketUrl("Ticket url"), TicketType("Ticket type"), CreationDate("Creation date"), CreatedBy("Created by"), CurrentState("Current state"),
         TimeUntilLeftNewForTheFirstTime("Time until left New for the first time"), EnterForTimeCalculationState("Enter for time calculation state "),
         LeftForTimeCalculationState("Left for time calculation state "), CalculatedTimeInState("Calculated time in state "), Labels("Labels"),
