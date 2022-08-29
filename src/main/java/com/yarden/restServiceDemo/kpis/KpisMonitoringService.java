@@ -22,7 +22,6 @@ public class KpisMonitoringService {
     public void updateStateChange() {
         TicketSearchResult ticketSearchResult = findSheetEntry();
         if (ticketSearchResult.isFound) {
-            archiveTicketIfMovedToEyesAppIssuesBoard();
             ignoreTeamChangeForEyesOperationsBoard(ticketSearchResult.ticket);
             updateTicketFields(ticketSearchResult.ticket);
             if (!newState.equals(TicketStates.NoState)) {
@@ -31,9 +30,14 @@ public class KpisMonitoringService {
         } else {
             if (!newState.equals(TicketStates.NoState) && TicketsNewStateResolver.isTicketInATeamBoard(ticketUpdateRequest.getTeam())) {
                 JsonElement ticket = addNewTicketEntry();
+                ticketSearchResult = new TicketSearchResult(ticket);
             } else {
                 Logger.info("KPIs: Ticket" + ticketUpdateRequest.getTicketId() + " sent an update but doesn't correspond to a valid state");
             }
+        }
+        updateStateIfParentExists(ticketSearchResult);
+        if (!newState.equals(TicketStates.NoState)) {
+            updateAllChildTicketsStates();
         }
         new KpiSplunkReporter(rawDataSheetData, ticketUpdateRequest).reportStandAloneEvent(newState);
     }
@@ -47,6 +51,38 @@ public class KpisMonitoringService {
             Logger.info("KPIs: Ticket " + ticketUpdateRequest.getTicketId() + " wasn't found in the sheet");
         }
         new KpiSplunkReporter(rawDataSheetData, ticketUpdateRequest).reportStandAloneEvent(newState);
+    }
+
+    private void updateAllChildTicketsStates() {
+        for (JsonElement sheetEntry: rawDataSheetData.getSheetData()){
+            if (sheetEntry.getAsJsonObject().get(Enums.KPIsSheetColumnNames.ParentTicket.value).getAsString().equals(ticketUpdateRequest.getTicketId())){
+                Logger.info("KPIs: Updating state of child ticket: " + sheetEntry.getAsJsonObject().get(Enums.KPIsSheetColumnNames.TicketID.value).getAsString() + " as parent ticket: " + ticketUpdateRequest.getTicketId());
+                new TicketsStateChanger().updateExistingTicketState(sheetEntry, newState);
+            }
+        }
+    }
+
+    private void updateStateIfParentExists(TicketSearchResult ticketSearchResult) {
+        String parentId = "";
+        JsonElement childTicket = ticketSearchResult.ticket;
+        if (childTicket.getAsJsonObject().get(Enums.KPIsSheetColumnNames.ParentTicket.value) == null ||
+                childTicket.getAsJsonObject().get(Enums.KPIsSheetColumnNames.ParentTicket.value).isJsonNull() ||
+                StringUtils.isEmpty(childTicket.getAsJsonObject().get(Enums.KPIsSheetColumnNames.ParentTicket.value).getAsString())) {
+            return;
+        } else {
+            parentId = childTicket.getAsJsonObject().get(Enums.KPIsSheetColumnNames.ParentTicket.value).getAsString();
+        }
+        Logger.info("KPIs: Updating state of child ticket: " + ticketUpdateRequest.getTicketId() + " as parent ticket: " + parentId);
+        for (JsonElement sheetEntry: rawDataSheetData.getSheetData()){
+            if (sheetEntry.getAsJsonObject().get(Enums.KPIsSheetColumnNames.TicketID.value).getAsString().equals(parentId)){
+                for (TicketStates state : TicketStates.values()) {
+                    if (state.name().equals(sheetEntry.getAsJsonObject().get(Enums.KPIsSheetColumnNames.CurrentState.value).getAsString())) {
+                        new TicketsStateChanger().updateExistingTicketState(childTicket, state);
+                        return;
+                    }
+                }
+            }
+        }
     }
 
     private void ignoreTeamChangeForEyesOperationsBoard(JsonElement ticket) {
