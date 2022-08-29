@@ -35,7 +35,7 @@ public class KpisMonitoringService {
                 Logger.info("KPIs: Ticket" + ticketUpdateRequest.getTicketId() + " sent an update but doesn't correspond to a valid state");
             }
         }
-        updateStateIfParentExists(ticketSearchResult);
+        updateStateIfParentExists(ticketSearchResult.ticket);
         if (!newState.equals(TicketStates.NoState)) {
             updateAllChildTicketsStates();
         }
@@ -62,9 +62,8 @@ public class KpisMonitoringService {
         }
     }
 
-    private void updateStateIfParentExists(TicketSearchResult ticketSearchResult) {
+    private void updateStateIfParentExists(JsonElement childTicket) {
         String parentId = "";
-        JsonElement childTicket = ticketSearchResult.ticket;
         if (childTicket.getAsJsonObject().get(Enums.KPIsSheetColumnNames.ParentTicket.value) == null ||
                 childTicket.getAsJsonObject().get(Enums.KPIsSheetColumnNames.ParentTicket.value).isJsonNull() ||
                 StringUtils.isEmpty(childTicket.getAsJsonObject().get(Enums.KPIsSheetColumnNames.ParentTicket.value).getAsString())) {
