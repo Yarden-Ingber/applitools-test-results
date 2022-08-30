@@ -199,3 +199,4 @@ example-playwright-typescript-classic
 webinar-cypress-playwright-rematch
 example-cypress9-javascript-ufg
 example-cypress10-javascript-ufg
+universal_bindings_termination_test
