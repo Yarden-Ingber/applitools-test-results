@@ -89,7 +89,7 @@ public class ProductionMonitor extends TimerTask {
                     domain.contains("kpn2eyes.applitools") || domain.contains("slack2eyes.applitools") || domain.contains("ihealth2eyes.applitools") ||
                     domain.contains("twitter2eyes.applitools") || domain.contains("kobitest.applitools") || domain.contains("oracleeyes.applitools") ||
                     domain.contains("oracleeyesapi.applitools") || domain.contains("adidas2eyes.applitools") || domain.contains("nabconnect2eyes.applitools") ||
-                    domain.contains("mailchimpeyes.applitools") || site.equals("Eshopworld")) ) {
+                    domain.contains("mailchimpeyes.applitools") || site.equals("Eshopworld") || domain.contains("wix2eyes.applitools")) ) {
                 domain = domain + "/api/admin/userinfo";
                 URL endpoint = new URL(domain);
                 JSONObject productionMonitorEventJson = new JSONObject();
