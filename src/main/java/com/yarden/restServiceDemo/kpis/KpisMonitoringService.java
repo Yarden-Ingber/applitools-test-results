@@ -55,21 +55,21 @@ public class KpisMonitoringService {
 
     private void updateAllChildTicketsStates() {
         for (JsonElement sheetEntry: rawDataSheetData.getSheetData()){
-            if (sheetEntry.getAsJsonObject().get(Enums.KPIsSheetColumnNames.ParentTicket.value).getAsString().equals(ticketUpdateRequest.getTicketId())){
-                Logger.info("KPIs: Updating state of child ticket: " + sheetEntry.getAsJsonObject().get(Enums.KPIsSheetColumnNames.TicketID.value).getAsString() + " as parent ticket: " + ticketUpdateRequest.getTicketId());
-                new TicketsStateChanger().updateExistingTicketState(sheetEntry, newState);
+            if (isParentExist(sheetEntry)) {
+                if (sheetEntry.getAsJsonObject().get(Enums.KPIsSheetColumnNames.ParentTicket.value).getAsString().equals(ticketUpdateRequest.getTicketId())) {
+                    Logger.info("KPIs: Updating state of child ticket: " + sheetEntry.getAsJsonObject().get(Enums.KPIsSheetColumnNames.TicketID.value).getAsString() + " as parent ticket: " + ticketUpdateRequest.getTicketId());
+                    new TicketsStateChanger().updateExistingTicketState(sheetEntry, newState);
+                }
             }
         }
     }
 
     private void updateStateIfParentExists(JsonElement childTicket) {
         String parentId = "";
-        if (childTicket.getAsJsonObject().get(Enums.KPIsSheetColumnNames.ParentTicket.value) == null ||
-                childTicket.getAsJsonObject().get(Enums.KPIsSheetColumnNames.ParentTicket.value).isJsonNull() ||
-                StringUtils.isEmpty(childTicket.getAsJsonObject().get(Enums.KPIsSheetColumnNames.ParentTicket.value).getAsString())) {
-            return;
-        } else {
+        if (isParentExist(childTicket)) {
             parentId = childTicket.getAsJsonObject().get(Enums.KPIsSheetColumnNames.ParentTicket.value).getAsString();
+        } else {
+            return;
         }
         Logger.info("KPIs: Updating state of child ticket: " + ticketUpdateRequest.getTicketId() + " as parent ticket: " + parentId);
         for (JsonElement sheetEntry: rawDataSheetData.getSheetData()){
@@ -82,6 +82,12 @@ public class KpisMonitoringService {
                 }
             }
         }
+    }
+
+    private boolean isParentExist(JsonElement ticket) {
+        return !(ticket.getAsJsonObject().get(Enums.KPIsSheetColumnNames.ParentTicket.value) == null ||
+                ticket.getAsJsonObject().get(Enums.KPIsSheetColumnNames.ParentTicket.value).isJsonNull() ||
+                StringUtils.isEmpty(ticket.getAsJsonObject().get(Enums.KPIsSheetColumnNames.ParentTicket.value).getAsString()));
     }
 
     private void ignoreTeamChangeForEyesOperationsBoard(JsonElement ticket) {
