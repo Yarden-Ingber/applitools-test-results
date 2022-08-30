@@ -48,6 +48,7 @@ public class TrelloUpdateRequestQueue extends TimerTask {
             try {
                 new KpisMonitoringService(ticketUpdateRequest).updateStateChange();
             } catch (Throwable t) {
+                t.printStackTrace();
                 stateUpdateRequestQueue.add(ticketUpdateRequest);
             }
         }

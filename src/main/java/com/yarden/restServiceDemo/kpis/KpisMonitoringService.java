@@ -32,7 +32,7 @@ public class KpisMonitoringService {
                 JsonElement ticket = addNewTicketEntry();
                 ticketSearchResult = new TicketSearchResult(ticket);
             } else {
-                Logger.info("KPIs: Ticket" + ticketUpdateRequest.getTicketId() + " sent an update but doesn't correspond to a valid state");
+                Logger.info("KPIs: Ticket: " + ticketUpdateRequest.getTicketId() + " sent an update but doesn't correspond to a valid state");
             }
         }
         updateStateIfParentExists(ticketSearchResult.ticket);
