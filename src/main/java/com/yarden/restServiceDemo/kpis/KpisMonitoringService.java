@@ -35,9 +35,11 @@ public class KpisMonitoringService {
                 Logger.info("KPIs: Ticket: " + ticketUpdateRequest.getTicketId() + " sent an update but doesn't correspond to a valid state");
             }
         }
-        updateStateIfParentExists(ticketSearchResult.ticket);
-        if (!newState.equals(TicketStates.NoState)) {
-            updateAllChildTicketsStates();
+        if (ticketSearchResult.isFound) {
+            updateStateIfParentExists(ticketSearchResult.ticket);
+            if (!newState.equals(TicketStates.NoState)) {
+                updateAllChildTicketsStates();
+            }
         }
         new KpiSplunkReporter(rawDataSheetData, ticketUpdateRequest).reportStandAloneEvent(newState);
     }
@@ -85,7 +87,8 @@ public class KpisMonitoringService {
     }
 
     private boolean isParentExist(JsonElement ticket) {
-        return !(ticket.getAsJsonObject().get(Enums.KPIsSheetColumnNames.ParentTicket.value) == null ||
+        return !(ticket == null ||
+                ticket.getAsJsonObject().get(Enums.KPIsSheetColumnNames.ParentTicket.value) == null ||
                 ticket.getAsJsonObject().get(Enums.KPIsSheetColumnNames.ParentTicket.value).isJsonNull() ||
                 StringUtils.isEmpty(ticket.getAsJsonObject().get(Enums.KPIsSheetColumnNames.ParentTicket.value).getAsString()));
     }
