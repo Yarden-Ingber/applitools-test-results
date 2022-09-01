@@ -125,7 +125,7 @@ public class RestCalls {
             Logger.info("**********New VG status request detected**********");
             HttpClient client = HttpClient.newHttpClient();
             HttpRequest request = HttpRequest.newBuilder()
-                    .uri(URI.create(Enums.Strings.NewHerokuApp.value))
+                    .uri(URI.create(Enums.Strings.NewHerokuApp.value + "/vg_status"))
                     .POST(HttpRequest.BodyPublishers.ofString(json))
                     .build();
             HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
