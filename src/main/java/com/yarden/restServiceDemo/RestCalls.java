@@ -129,7 +129,10 @@ public class RestCalls {
                     .POST(HttpRequest.BodyPublishers.ofString(json))
                     .build();
             HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-            Logger.info("Response: " + response.statusCode() + ": " + response.body());
+            Logger.info("Response: " + response.statusCode());
+            if (response.statusCode() != HttpStatus.OK.value()) {
+                Logger.error("Response: " + response.statusCode() + ": " + response.body());
+            }
             return new ResponseEntity(json, HttpStatus.valueOf(response.statusCode()));
         }
     }
