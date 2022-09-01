@@ -3,7 +3,8 @@ package com.yarden.restServiceDemo;
 public class Enums {
 
     public enum Strings{
-        Generic("(generic)"), True("true"), Checked("checked"), Archived("archived"), Field("Field"), Internal("Internal");
+        Generic("(generic)"), True("true"), Checked("checked"), Archived("archived"), Field("Field"), Internal("Internal"),
+        NewHerokuApp("https://applitools-quality-server.herokuapp.com/");
 
         public final String value;
 

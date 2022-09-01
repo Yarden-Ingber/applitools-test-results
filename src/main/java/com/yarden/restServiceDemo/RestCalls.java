@@ -20,6 +20,10 @@ import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URI;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
 import java.nio.charset.StandardCharsets;
 
 @RestController
@@ -113,20 +117,20 @@ public class RestCalls {
     }
 
     @RequestMapping(method = RequestMethod.POST, path = "/vg_status")
-    public ResponseEntity postVisualGridStatus(@RequestBody String json) {
+    public ResponseEntity postVisualGridStatus(@RequestBody String json) throws IOException, InterruptedException {
         synchronized (lock) {
             VisualGridStatusPageRequestTimer.isRequestReceived = true;
             WriteEntireSheetsPeriodically.shouldStopSheetWritingTimer = false;
             WriteEntireSheetsPeriodically.start();
             Logger.info("**********New VG status request detected**********");
-            try {
-                new VisualGridStatusPageService().postResults(json);
-            } catch (Throwable e) {
-                String errorMessage = "Request failed: \n\n" + json + "\n\n" + e.getMessage();
-                Logger.error(errorMessage);
-                return new ResponseEntity(errorMessage, HttpStatus.INTERNAL_SERVER_ERROR);
-            }
-            return new ResponseEntity(json, HttpStatus.OK);
+            HttpClient client = HttpClient.newHttpClient();
+            HttpRequest request = HttpRequest.newBuilder()
+                    .uri(URI.create(Enums.Strings.NewHerokuApp.value))
+                    .POST(HttpRequest.BodyPublishers.ofString(json))
+                    .build();
+            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+            Logger.info("Response: " + response.statusCode() + ": " + response.body());
+            return new ResponseEntity(json, HttpStatus.valueOf(response.statusCode()));
         }
     }
 
