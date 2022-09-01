@@ -89,7 +89,7 @@ public class TicketsNewStateResolver {
             return TicketStates.WaitingForProduct;
         } else if (currentTrelloList.equalsIgnoreCase("Couldn't Reproduce")) {
             return TicketStates.WaitingForFieldInput;
-        }else  {
+        } else  {
             return noStateFound();
         }
     }
@@ -272,6 +272,12 @@ public class TicketsNewStateResolver {
         } else if (currentTrelloList.equalsIgnoreCase("Low Priority")) {
             return TicketStates.OnHold;
         } else if (currentTrelloList.equalsIgnoreCase("On Hold")) {
+            return TicketStates.OnHold;
+        } else if (currentTrelloList.equalsIgnoreCase("Waiting For R&D Investigation")) {
+            return TicketStates.WaitingForRD;
+        } else if (currentTrelloList.equalsIgnoreCase("New")) {
+            return TicketStates.New;
+        } else if (currentTrelloList.equalsIgnoreCase("On-Hold")) {
             return TicketStates.OnHold;
         } else {
             return noStateFound();
