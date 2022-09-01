@@ -4,7 +4,7 @@ public class Enums {
 
     public enum Strings{
         Generic("(generic)"), True("true"), Checked("checked"), Archived("archived"), Field("Field"), Internal("Internal"),
-        NewHerokuApp("https://applitools-quality-server.herokuapp.com/");
+        NewHerokuApp("https://applitools-quality-server.herokuapp.com");
 
         public final String value;
 
