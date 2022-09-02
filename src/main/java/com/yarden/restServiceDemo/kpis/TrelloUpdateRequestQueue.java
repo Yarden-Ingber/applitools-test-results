@@ -10,7 +10,6 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
-@Configuration
 public class TrelloUpdateRequestQueue extends TimerTask {
 
     private static ConcurrentLinkedQueue<TicketUpdateRequest> stateUpdateRequestQueue = new ConcurrentLinkedQueue<>();
