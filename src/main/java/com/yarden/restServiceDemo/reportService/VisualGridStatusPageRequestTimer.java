@@ -10,7 +10,6 @@ import java.io.IOException;
 import java.util.Timer;
 import java.util.TimerTask;
 
-@Configuration
 public class VisualGridStatusPageRequestTimer extends TimerTask {
 
     public static boolean isRequestReceived;

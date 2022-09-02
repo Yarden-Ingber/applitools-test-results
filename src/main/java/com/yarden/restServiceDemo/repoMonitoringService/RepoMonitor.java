@@ -34,7 +34,6 @@ import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
 
-@Configuration
 public class RepoMonitor extends TimerTask{
 
     private static boolean isRunning = false;

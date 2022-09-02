@@ -16,7 +16,6 @@ import java.util.Date;
 import java.util.Timer;
 import java.util.TimerTask;
 
-@Configuration
 public class WriteKpisToSplunkPeriodically extends TimerTask{
     private static boolean isRunning = false;
     private static Timer timer;

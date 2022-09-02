@@ -27,7 +27,6 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.TimeUnit;
 
-@Configuration
 public class KpisSummaryReporter extends TimerTask {
 
     private static boolean isRunning = false;
